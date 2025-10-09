@@ -1,5 +1,6 @@
 package com.example.uinavegacion.ui.theme
 
+import android.R
 import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -12,15 +13,31 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80
+    primary = LilaClaro,
+    onPrimary = GrisTexto,
+    secondary = LilaOscuro,
+    onSecondary = Blanco,
+    tertiary = Rosado,
+    onTertiary = Blanco,
+    background = BackDark,
+    surface = SurDark,
+    onSurface = Blanco
+
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
-    tertiary = Pink40
+    primary = LilaOscuro,
+    onPrimary = Blanco,
+    secondary = LilaClaro,
+    onSecondary = GrisTexto,
+    tertiary = Rosado,
+    onTertiary = Blanco,
+    background = LilaClaro,
+    surface = LilaClaro,
+    onSurface = GrisTexto,
+    error = ErrorColor,
+    onError = Blanco
+
 
     /* Other default colors to override
     background = Color(0xFFFFFBFE),
@@ -37,11 +54,11 @@ private val LightColorScheme = lightColorScheme(
 fun UINavegacionTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
+    dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
+        Build.VERSION.SDK_INT >= Build.VERSION_CODES.S  && dynamicColor-> {
             val context = LocalContext.current
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }

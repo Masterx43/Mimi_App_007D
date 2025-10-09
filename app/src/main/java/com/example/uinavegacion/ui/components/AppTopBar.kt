@@ -1,23 +1,33 @@
 package com.example.uinavegacion.ui.components
 
-import androidx.compose.material.icons.Icons // Conjunto de íconos Material
-import androidx.compose.material.icons.filled.Home // Ícono Home
-import androidx.compose.material.icons.filled.AccountCircle // Ícono Login
+
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.DateRange
-import androidx.compose.material.icons.filled.Menu // Ícono hamburguesa
-import androidx.compose.material.icons.filled.MoreVert // Ícono 3 puntitos (overflow)
-import androidx.compose.material.icons.filled.Person // Ícono Registro
-import androidx.compose.material3.CenterAlignedTopAppBar // TopAppBar centrada
-import androidx.compose.material3.DropdownMenu // Menú desplegable
-import androidx.compose.material3.DropdownMenuItem // Opción del menú
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon // Para mostrar íconos
-import androidx.compose.material3.IconButton // Botones con ícono
-import androidx.compose.material3.MaterialTheme // Tema Material
-import androidx.compose.material3.Text // Texto
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.runtime.* // remember / mutableStateOf
+import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
+import com.example.uinavegacion.ui.theme.LilaOscuro
+import com.example.uinavegacion.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable // Composable reutilizable: barra superior
@@ -37,12 +47,12 @@ fun AppTopBar(
             containerColor = MaterialTheme.colorScheme.primary
         ),
         title = { // Slot del título
-            Text(
-                text = "Mimi", // Título visible
-                style = MaterialTheme.typography.titleLarge, // Estilo grande
-                maxLines = 1,              // asegura una sola línea Int.MAX_VALUE   // permite varias líneas
-                overflow = TextOverflow.Ellipsis // agrega "..." si no cabe
-
+            Image(
+                painter = painterResource(id = R.drawable.mimi_logo),
+                contentDescription = "Logo Mimi",
+                modifier = Modifier
+                    .height(56.dp) // ajusta tamaño del logo
+                    .padding(top = 4.dp)
             )
         },
         navigationIcon = { // Ícono a la izquierda (hamburguesa)

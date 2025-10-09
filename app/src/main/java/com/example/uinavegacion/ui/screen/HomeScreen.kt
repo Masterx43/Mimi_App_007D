@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
@@ -22,7 +23,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.uinavegacion.ui.theme.Rosado
+import com.example.uinavegacion.ui.theme.UINavegacionTheme
 
 @Composable // Pantalla Home (sin formularios, solo navegación/diseño)
 fun HomeScreen(
@@ -87,12 +91,31 @@ fun HomeScreen(
             Row( // Dos botones en fila
                 horizontalArrangement = Arrangement.spacedBy(12.dp) // Espacio entre botones
             ) {
-                Button(onClick = onGoLogin) { Text("Ir a Login") } // Navega a Login
-                OutlinedButton(onClick = onGoRegister) { Text("Ir a Registro") } // A Registro
+                Button(onClick = onGoLogin,
+                    colors= ButtonDefaults.buttonColors(
+                        containerColor = Rosado)) { Text("Ir a Login") } // Navega a Login
+                OutlinedButton(onClick = onGoRegister,
+                    colors= ButtonDefaults.buttonColors(
+                        containerColor = Rosado)) { Text("Ir a Registro") } // A Registro
             }
             Spacer(Modifier.height(12.dp))
 
-            Button(onClick = onGoReserve) {Text("Ir a Agendar") }
+            Button(onClick = onGoReserve,
+            colors= ButtonDefaults.buttonColors(
+                containerColor = Rosado
+            )) {Text("Ir a Agendar") }
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun PreviewHomeScreen() {
+    UINavegacionTheme {
+        HomeScreen(
+            onGoLogin = {},
+            onGoRegister = {},
+            onGoReserve = {}
+        )
     }
 }

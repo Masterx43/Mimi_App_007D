@@ -33,22 +33,22 @@ fun RegisterScreen(
             .padding(16.dp), // Margen
         contentAlignment = Alignment.Center // Centro
     ) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) { // Estructura vertical
+        Column(horizontalAlignment = Alignment.CenterHorizontally) { //Estructura vertical
             Text(
                 text = "Registro",
-                style = MaterialTheme.typography.headlineSmall // Título
+                style = MaterialTheme.typography.headlineSmall //Título
             )
-            Spacer(Modifier.height(12.dp)) // Separación
+            Spacer(Modifier.height(12.dp)) //Separación
             Text(
                 text = "Pantalla de Registro (demo). Practica navegación con botones.",
-                textAlign = TextAlign.Center // Centra el texto
+                textAlign = TextAlign.Center //Centra el texto
             )
-            Spacer(Modifier.height(20.dp)) // Separación
+            Spacer(Modifier.height(20.dp)) //Separación
 
-            // Botones con Row para variar la composición
-            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) { // Espacio entre botones
-                Button(onClick = onRegistered) { Text("Ir a Login") } // Navega a Login
-                OutlinedButton(onClick = onGoLogin) { Text("Volver a Login") } // También a Login
+            //Botones con Row para variar la composición
+            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) { //Espacio entre botones
+                Button(onClick = onRegistered) { Text("Ir a Login") } //Navega a Login
+                OutlinedButton(onClick = onGoLogin) { Text("Volver a Login") } //También a Login
             }
         }
     }

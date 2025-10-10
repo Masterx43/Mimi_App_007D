@@ -11,6 +11,7 @@ import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -47,13 +48,15 @@ fun AppTopBar(
             containerColor = MaterialTheme.colorScheme.primary
         ),
         title = { // Slot del título
-            Image(
-                painter = painterResource(id = R.drawable.mimi_logo),
-                contentDescription = "Logo Mimi",
-                modifier = Modifier
-                    .height(56.dp) // ajusta tamaño del logo
-                    .padding(top = 4.dp)
-            )
+            Button(onClick = onHome) {
+                Image(
+                    painter = painterResource(id = R.drawable.mimi_logo),
+                    contentDescription = "Logo Mimi",
+                    modifier = Modifier
+                        .height(56.dp) // ajusta tamaño del logo
+                        .padding(top = 4.dp)
+                )
+            }
         },
         navigationIcon = { // Ícono a la izquierda (hamburguesa)
             IconButton(onClick = onOpenDrawer) { // Al presionar, abre drawer
@@ -64,17 +67,8 @@ fun AppTopBar(
             IconButton(onClick = onHome) { // Ir a Home
                 Icon(Icons.Filled.Home, contentDescription = "Home") // Ícono Home
             }
-            IconButton(onClick = onLogin) { // Ir a Login
-                Icon(Icons.Filled.AccountCircle, contentDescription = "Login") // Ícono Login
-            }
-            IconButton(onClick = onRegister) { // Ir a Registro
-                Icon(Icons.Filled.Person, contentDescription = "Registro") // Ícono Registro
-            }
             IconButton(onClick = onReserve) {
                 Icon(Icons.Filled.DateRange, contentDescription = "Agendar")
-            }
-            IconButton(onClick = { showMenu = true }) { // Abre menú overflow
-                Icon(Icons.Filled.MoreVert, contentDescription = "Más") // Ícono 3 puntitos
             }
             DropdownMenu(
                 expanded = showMenu, // Si está abierto

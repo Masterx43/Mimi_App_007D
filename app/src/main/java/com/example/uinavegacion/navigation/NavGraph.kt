@@ -67,9 +67,7 @@ fun AppNavGraph(navController: NavHostController) { // Recibe el controlador
                     onHome = goHome,     // Botón Home
                     onLogin = goLogin,   // Botón Login
                     onRegister = goRegister, // Botón Registro
-                    onReserve ={
-                        navController.navigate(Route.Booking.path)
-                    }
+                    onReserve = goReserve
                 )
             }
         ) { innerPadding -> // Padding que evita solapar contenido
@@ -82,7 +80,7 @@ fun AppNavGraph(navController: NavHostController) { // Recibe el controlador
                     HomeScreen(
                         onGoLogin = goLogin,     // Botón para ir a Login
                         onGoRegister = goRegister, // Botón para ir a Registro
-                        onGoReserve = {navController.navigate(Route.Booking.path)}
+                        onGoReserve = goReserve
                     )
                 }
                 composable(Route.Login.path) { // Destino Login

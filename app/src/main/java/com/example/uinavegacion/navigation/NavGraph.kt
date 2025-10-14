@@ -19,8 +19,8 @@ import com.example.uinavegacion.ui.components.AppDrawer // Drawer composable
 import com.example.uinavegacion.ui.components.defaultDrawerItems // Ítems por defecto
 import com.example.uinavegacion.ui.screen.BookingScreen
 import com.example.uinavegacion.ui.screen.HomeScreen // Pantalla Home
-import com.example.uinavegacion.ui.screen.LoginScreen // Pantalla Login
-import com.example.uinavegacion.ui.screen.RegisterScreen // Pantalla Registro
+import com.example.uinavegacion.ui.screen.LoginScreenVm // Pantalla Login
+import com.example.uinavegacion.ui.screen.RegisterScreenVm // Pantalla Registro
 
 @Composable // Gráfico de navegación + Drawer + Scaffold
 fun AppNavGraph(navController: NavHostController) { // Recibe el controlador
@@ -84,14 +84,14 @@ fun AppNavGraph(navController: NavHostController) { // Recibe el controlador
                     )
                 }
                 composable(Route.Login.path) { // Destino Login
-                    LoginScreen(
-                        onLoginOk = goHome,      // Botón para volver al Home
+                    LoginScreenVm(
+                        onLoginOkNavigateHome = goHome,      // Botón para volver al Home
                         onGoRegister = goRegister // Botón para ir a Registro
                     )
                 }
                 composable(Route.Register.path) { // Destino Registro
-                    RegisterScreen(
-                        onRegistered = goLogin, // Botón para ir a Login
+                    RegisterScreenVm (
+                        onRegisteredNavigateLogin = goLogin, // Botón para ir a Login
                         onGoLogin = goLogin     // Botón alternativo a Login
                     )
                 }

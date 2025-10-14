@@ -4,11 +4,14 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
 import com.example.uinavegacion.navigation.AppNavGraph
+import com.example.uinavegacion.ui.theme.UINavegacionTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,9 +36,13 @@ Piensa en él como una “lona base” sobre la cual vas a pintar tu UI.
 @Composable // Indica que esta función dibuja UI
 fun AppRoot() { // Raíz de la app para separar responsabilidades
     val navController = rememberNavController() // Controlador de navegación
-    MaterialTheme { // Provee colores/tipografías Material 3
-        Surface(color = MaterialTheme.colorScheme.background) { // Fondo general
-            AppNavGraph(navController = navController) // Carga el NavHost + Scaffold + Drawer
+    UINavegacionTheme {
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+            color = MaterialTheme.colorScheme.background
+        ) {
+            AppNavGraph(navController = navController)
         }
     }
+
 }

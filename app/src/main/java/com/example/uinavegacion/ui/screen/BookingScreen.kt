@@ -1,6 +1,7 @@
 package com.example.uinavegacion.ui.screen
 
 import android.widget.Toast
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -9,6 +10,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.example.uinavegacion.ui.theme.Blanco
+import com.example.uinavegacion.ui.theme.FondoClaro
+import com.example.uinavegacion.ui.theme.LilaClaro
 
 @Composable
 fun BookingScreen() {
@@ -18,7 +22,7 @@ fun BookingScreen() {
     val context = LocalContext.current
 
     Column(
-        modifier = Modifier
+        modifier = Modifier.background(color = FondoClaro)
             .fillMaxSize()
             .padding(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally

@@ -1,5 +1,6 @@
 package com.example.uinavegacion.ui.screen
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -21,12 +22,15 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.uinavegacion.ui.theme.Rosado
 import com.example.uinavegacion.ui.theme.UINavegacionTheme
+import com.example.uinavegacion.R
 
 @Composable // Pantalla Home (sin formularios, solo navegación/diseño)
 fun HomeScreen(
@@ -65,6 +69,40 @@ fun HomeScreen(
             Spacer(Modifier.height(20.dp)) // Separación
 
             // Tarjeta con un mini “hero”
+            ElevatedCard(
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Column(
+                    modifier = Modifier.padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    // 🖼️ Imagen arriba
+                    //Image(
+                        //painter = painterResource(id = R.drawable.uñas_rosadas),
+                        //contentDescription = "Decoración",
+                        //modifier = Modifier
+                          //  .fillMaxWidth()
+                            //.height(180.dp),
+                        //contentScale = ContentScale.Crop // Ajusta la imagen sin deformarla
+                    //)
+
+                    Spacer(Modifier.height(12.dp))
+
+                    // 📝 Texto dentro de la card
+                    Text(
+                        "Demostración de navegación con TopBar + Drawer + Botones",
+                        style = MaterialTheme.typography.titleMedium,
+                        textAlign = TextAlign.Center
+                    )
+                    Spacer(Modifier.height(8.dp))
+                    Text(
+                        "Usa la barra superior (íconos y menú), el menú lateral o estos botones.",
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                }
+            }
+
+            Spacer(Modifier.height(12.dp)) // Separación
             ElevatedCard( // Card elevada para remarcar contenido
                 modifier = Modifier.fillMaxWidth() // Ancho completo
             ) {

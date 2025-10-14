@@ -58,8 +58,13 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.test.manifest)
 
     //librerias nuevas
-    implementation("androidx.navigation:navigation-compose:2.9.5")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.9.4")
-    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.9.4")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2")
+    implementation("androidx.navigation:navigation-compose:2.8.0")         // Navegación Compose
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.4") // ViewModel para Compose
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.4")   // Ciclo de vida Compose
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.4")       // Extensiones de ciclo de vida
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1") // Corrutinas Android
+    implementation("androidx.compose.material:material-icons-extended")
+
+
+
 }

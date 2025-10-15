@@ -12,6 +12,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -20,6 +22,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -38,7 +41,7 @@ fun HomeScreen(
     onGoRegister: () -> Unit, // Acción a Registro
     onGoReserve:() -> Unit
 ) {
-    val bg = MaterialTheme.colorScheme.surfaceVariant // Fondo agradable para Home
+    val bg = MaterialTheme.colorScheme.surfaceVariant
 
     Box( // Contenedor a pantalla completa
         modifier = Modifier
@@ -47,7 +50,10 @@ fun HomeScreen(
             .padding(16.dp), // Margen interior
         contentAlignment = Alignment.Center // Centra contenido
     ) {
-        Column( // Estructura vertical
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally // Centra hijos
         ) {
             // Cabecera como Row (ejemplo de estructura)
@@ -55,15 +61,15 @@ fun HomeScreen(
                 verticalAlignment = Alignment.CenterVertically // Centra vertical
             ) {
                 Text( // Título Home
-                    text = "Home",
+                    text = "Bienvenidos a nuestra aplicacion",
                     style = MaterialTheme.typography.headlineSmall, // Estilo título
                     fontWeight = FontWeight.SemiBold // Seminegrita
                 )
                 Spacer(Modifier.width(8.dp)) // Separación horizontal
-                AssistChip( // Chip decorativo (Material 3)
-                    onClick = {}, // Sin acción (demo)
-                    label = { Text("Navega desde arriba o aquí") } // Texto chip
-                )
+            //    AssistChip( // Chip decorativo (Material 3)
+            //        onClick = {}, // Sin acción (demo)
+            //        label = { Text("Navega desde arriba o aquí") } // Texto chip
+            //    )
             }
 
             Spacer(Modifier.height(20.dp)) // Separación
@@ -76,49 +82,65 @@ fun HomeScreen(
                     modifier = Modifier.padding(16.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    // 🖼️ Imagen arriba
-                    //Image(
-                        //painter = painterResource(id = R.drawable.uñas_rosadas),
-                        //contentDescription = "Decoración",
-                        //modifier = Modifier
-                          //  .fillMaxWidth()
-                            //.height(180.dp),
-                        //contentScale = ContentScale.Crop // Ajusta la imagen sin deformarla
-                    //)
+
+                    Image(
+                       painter = painterResource(id = R.drawable.manicure),
+                        contentDescription = "Manicure",
+                       modifier = Modifier
+                           .fillMaxWidth()
+                           .height(180.dp),
+                        contentScale = ContentScale.Crop // Ajusta la imagen sin deformarla
+                    )
 
                     Spacer(Modifier.height(12.dp))
 
-                    // 📝 Texto dentro de la card
+
                     Text(
-                        "Demostración de navegación con TopBar + Drawer + Botones",
-                        style = MaterialTheme.typography.titleMedium,
+                        "Servicio de Manicure y Pedicure",
+                        style = MaterialTheme.typography.titleLarge,
                         textAlign = TextAlign.Center
                     )
                     Spacer(Modifier.height(8.dp))
                     Text(
-                        "Usa la barra superior (íconos y menú), el menú lateral o estos botones.",
-                        style = MaterialTheme.typography.bodyMedium
+                        "Cuidado profesional para tus manos y pies. " +
+                                "Disfruta de una experiencia relajante con manicure y pedicure que incluye limpieza, " +
+                                "hidratación y acabado impecable para lucir siempre radiante.",
+                        style = MaterialTheme.typography.bodySmall
                     )
                 }
             }
 
             Spacer(Modifier.height(12.dp)) // Separación
-            ElevatedCard( // Card elevada para remarcar contenido
-                modifier = Modifier.fillMaxWidth() // Ancho completo
+            ElevatedCard(
+                modifier = Modifier.fillMaxWidth()
             ) {
                 Column(
-                    modifier = Modifier.padding(16.dp), // Margen interno de la card
-                    horizontalAlignment = Alignment.CenterHorizontally // Centrado
+                    modifier = Modifier.padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Text(
-                        "Demostración de navegación con TopBar + Drawer + Botones",
-                        style = MaterialTheme.typography.titleMedium, // Estilo medio
-                        textAlign = TextAlign.Center // Alineación centrada
+
+                    Image(
+                        painter = painterResource(id = R.drawable.tratamientos_capilares),
+                        contentDescription = "Coloracion y tratamientos capilares",
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(180.dp),
+                        contentScale = ContentScale.Crop // Ajusta la imagen sin deformarla
                     )
-                    Spacer(Modifier.height(12.dp)) // Separación
+
+                    Spacer(Modifier.height(12.dp))
+
+
                     Text(
-                        "Usa la barra superior (íconos y menú), el menú lateral o estos botones.",
-                        style = MaterialTheme.typography.bodyMedium // Texto base
+                        "Servicio de Coloracion y tratamientos capilares",
+                        style = MaterialTheme.typography.titleLarge,
+                        textAlign = TextAlign.Center
+                    )
+                    Spacer(Modifier.height(8.dp))
+                    Text(
+                        "Renueva tu estilo con servicios de coloración y tratamientos capilares. " +
+                                "Cuida tu cabello mientras obtienes el tono perfecto, brillo duradero e hidratación profunda.",
+                        style = MaterialTheme.typography.bodySmall
                     )
                 }
             }

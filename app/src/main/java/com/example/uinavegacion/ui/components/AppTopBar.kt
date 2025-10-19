@@ -2,6 +2,8 @@ package com.example.uinavegacion.ui.components
 
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -12,6 +14,7 @@ import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -23,12 +26,15 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.uinavegacion.ui.theme.LilaOscuro
 import com.example.uinavegacion.R
+import com.example.uinavegacion.ui.theme.LilaPri
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable // Composable reutilizable: barra superior
@@ -43,54 +49,81 @@ fun AppTopBar(
     // si el menú desplegable de 3 puntitos debe estar visible (true) o oculto (false).
     var showMenu by remember { mutableStateOf(false) } // Estado del menú overflow
 
-    CenterAlignedTopAppBar( // Barra alineada al centro
-        colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-            containerColor = MaterialTheme.colorScheme.primary
+    androidx.compose.material3.Surface(
+        tonalElevation = 4.dp,
+        color = MaterialTheme.colorScheme.primary,
+        shape = androidx.compose.foundation.shape.RoundedCornerShape(
+            bottomStart = 32.dp,
+            bottomEnd = 32.dp
         ),
-        title = { // Slot del título
-            Button(onClick = onHome) {
-                Image(
-                    painter = painterResource(id = R.drawable.mimi_logo),
-                    contentDescription = "Logo Mimi",
-                    modifier = Modifier
-                        .height(56.dp) // ajusta tamaño del logo
-                        .padding(top = 4.dp)
-                )
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(80.dp)
+
+    ) {
+
+        CenterAlignedTopAppBar( // Barra alineada al centro
+            colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                containerColor = Color.Transparent,
+                titleContentColor = Color.White
+            ),
+            title = { // Slot del título
+                Button(onClick = onHome,
+                    colors= ButtonDefaults.buttonColors(
+                        containerColor = LilaPri)) {
+
+                    Image(
+                        painter = painterResource(id = R.drawable.mimi_logo),
+                        contentDescription = "Logo Mimi",
+                        modifier = Modifier
+                            .height(60.dp) // ajusta tamaño del logo
+                            .padding( top = 4.dp)
+
+
+                    )
+                }
+            },
+            navigationIcon = { // Ícono a la izquierda (hamburguesa)
+                IconButton(onClick = onOpenDrawer) { // Al presionar, abre drawer
+                    Icon(imageVector = Icons.Filled.Menu,
+                        contentDescription = "Menú",
+                        tint = Color.White) // Ícono
+                }
+            },
+            actions = { // Acciones a la derecha (íconos + overflow)
+                IconButton(onClick = onHome) { // Ir a Home
+                    Icon(Icons.Filled.Home,
+                        contentDescription = "Home",
+                        tint = Color.White)// Ícono Home
+                }
+                IconButton(onClick = onReserve) {
+                    Icon(Icons.Filled.DateRange,
+                        contentDescription = "Agendar",
+                        tint = Color.White)
+                }
+                DropdownMenu(
+                    expanded = showMenu, // Si está abierto
+                    onDismissRequest = { showMenu = false } // Cierra al tocar fuera
+                ) {
+                    DropdownMenuItem( // Opción Home
+                        text = { Text("Home") }, // Texto opción
+                        onClick = { showMenu = false; onHome() } // Navega y cierra
+                    )
+                    DropdownMenuItem( // Opción Login
+                        text = { Text("Login") },
+                        onClick = { showMenu = false; onLogin() }
+                    )
+                    DropdownMenuItem( // Opción Registro
+                        text = { Text("Registro") },
+                        onClick = { showMenu = false; onRegister() }
+                    )
+                    DropdownMenuItem(
+                        text = { Text("Agendar") },
+                        onClick = { showMenu = false; onReserve() }
+                    )
+                    }
             }
-        },
-        navigationIcon = { // Ícono a la izquierda (hamburguesa)
-            IconButton(onClick = onOpenDrawer) { // Al presionar, abre drawer
-                Icon(imageVector = Icons.Filled.Menu, contentDescription = "Menú") // Ícono
-            }
-        },
-        actions = { // Acciones a la derecha (íconos + overflow)
-            IconButton(onClick = onHome) { // Ir a Home
-                Icon(Icons.Filled.Home, contentDescription = "Home") // Ícono Home
-            }
-            IconButton(onClick = onReserve) {
-                Icon(Icons.Filled.DateRange, contentDescription = "Agendar")
-            }
-            DropdownMenu(
-                expanded = showMenu, // Si está abierto
-                onDismissRequest = { showMenu = false } // Cierra al tocar fuera
-            ) {
-                DropdownMenuItem( // Opción Home
-                    text = { Text("Home") }, // Texto opción
-                    onClick = { showMenu = false; onHome() } // Navega y cierra
-                )
-                DropdownMenuItem( // Opción Login
-                    text = { Text("Login") },
-                    onClick = { showMenu = false; onLogin() }
-                )
-                DropdownMenuItem( // Opción Registro
-                    text = { Text("Registro") },
-                    onClick = { showMenu = false; onRegister() }
-                )
-                DropdownMenuItem(
-                    text = { Text("Agendar")},
-                    onClick = {showMenu= false; onReserve() }
-                )
-            }
-        }
-    )
+        )
+    }
+
 }

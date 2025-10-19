@@ -34,6 +34,8 @@ import androidx.compose.ui.unit.dp
 import com.example.uinavegacion.ui.theme.Rosado
 import com.example.uinavegacion.ui.theme.UINavegacionTheme
 import com.example.uinavegacion.R
+import com.example.uinavegacion.ui.theme.Blanco
+import com.example.uinavegacion.ui.theme.LilaPri
 
 @Composable // Pantalla Home (sin formularios, solo navegación/diseño)
 fun HomeScreen(

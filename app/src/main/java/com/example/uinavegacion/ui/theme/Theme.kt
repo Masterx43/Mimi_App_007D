@@ -10,23 +10,13 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 
-private val DarkColorScheme = darkColorScheme(
-    primary = LilaClaro,
-    onPrimary = GrisTexto,
-    secondary = LilaOscuro,
-    onSecondary = Blanco,
-    tertiary = Rosado,
-    onTertiary = Blanco,
-    background = BackDark,
-    surface = SurDark,
-    onSurface = Blanco
 
-)
 
 private val LightColorScheme = lightColorScheme(
-    primary = LilaOscuro,
+    primary = LilaPri,
     onPrimary = Blanco,
     secondary = LilaClaro,
     onSecondary = GrisTexto,
@@ -38,6 +28,23 @@ private val LightColorScheme = lightColorScheme(
     error = ErrorColor,
     onError = Blanco
 
+)
+
+private val DarkColorScheme = darkColorScheme(
+    primary = LilaPri,
+    onPrimary = GrisTexto,
+    secondary = LilaOscuro,
+    onSecondary = Blanco,
+    tertiary = Rosado,
+    onTertiary = Blanco,
+    background = BackDark,
+    surface = SurDark,
+    onSurface = Blanco
+
+)
+
+
+
 
     /* Other default colors to override
     background = Color(0xFFFFFBFE),
@@ -48,7 +55,7 @@ private val LightColorScheme = lightColorScheme(
     onBackground = Color(0xFF1C1B1F),
     onSurface = Color(0xFF1C1B1F),
     */
-)
+
 
 @Composable
 fun UINavegacionTheme(

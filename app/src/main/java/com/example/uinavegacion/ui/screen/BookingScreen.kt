@@ -13,10 +13,12 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.uinavegacion.ui.theme.FondoClaro
-import com.example.uinavegacion.ui.theme.textoNegro
+import com.example.uinavegacion.viewmodel.BookingViewModel
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -24,196 +26,137 @@ import java.util.Locale
 @Composable
 fun BookingScreen() {
     val context = LocalContext.current
+    val vm: BookingViewModel = viewModel()
+    val state by vm.uiState.collectAsState()
 
-    var nombre by remember { mutableStateOf("") }
-    var email by remember { mutableStateOf("") }
-    var servicio by remember { mutableStateOf("") }
-    var fecha by remember { mutableStateOf("") }
-    var hora by remember { mutableStateOf("") }
+    val horasDisponibles = listOf(
+        "09:00", "10:00", "11:00", "12:00",
+        "13:00", "14:00", "15:00", "16:00",
+        "17:00", "18:00"
+    )
 
-    var mostrarHoras by remember { mutableStateOf(false) }
-    var horasDisponibles by remember { mutableStateOf(listOf<String>()) }
-    val scrollState = rememberScrollState()
-
-    // Función para abrir el calendario
     fun abrirCalendario() {
-        val calendario = Calendar.getInstance()
-        val year = calendario.get(Calendar.YEAR)
-        val month = calendario.get(Calendar.MONTH)
-        val day = calendario.get(Calendar.DAY_OF_MONTH)
+        val cal = Calendar.getInstance()
+        val year = cal.get(Calendar.YEAR)
+        val month = cal.get(Calendar.MONTH)
+        val day = cal.get(Calendar.DAY_OF_MONTH)
 
-        val datePicker = DatePickerDialog(
+        val picker = DatePickerDialog(
             context,
-            { _, selectedYear, selectedMonth, selectedDay ->
-                val seleccionada = Calendar.getInstance().apply {
-                    set(selectedYear, selectedMonth, selectedDay)
-                }
+            { _, y, m, d ->
+                val seleccionada = Calendar.getInstance().apply { set(y, m, d) }
 
-                val formato = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-                fecha = formato.format(seleccionada.time)
-
-                when (seleccionada.get(Calendar.DAY_OF_WEEK)) {
-                    Calendar.SUNDAY -> {
-                        Toast.makeText(
-                            context,
-                            "No trabajamos los domingos. Por favor elige otro día.",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        mostrarHoras = false
-                    }
-
-                    Calendar.SATURDAY -> {
-                        Toast.makeText(
-                            context,
-                            "Los sábados trabajamos hasta las 14:00 ",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        horasDisponibles = listOf("10:00", "11:00", "12:00", "13:00", "14:00")
-                        mostrarHoras = true
-                    }
-
-                    else -> {
-                        horasDisponibles = listOf(
-                            "10:00", "11:00", "12:00", "13:00",
-                            "15:00", "16:00", "17:00", "18:00"
-                        )
-                        mostrarHoras = true
-                    }
+                // Bloquear domingos
+                if (seleccionada.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) {
+                    Toast.makeText(
+                        context,
+                        "No trabajamos los domingos",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                } else {
+                    val formato = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+                    vm.onFechaChange(formato.format(seleccionada.time))
                 }
             },
             year, month, day
         )
 
-        // No permitir fechas pasadas
-        datePicker.datePicker.minDate = System.currentTimeMillis()
-        datePicker.show()
+        picker.datePicker.minDate = System.currentTimeMillis()
+        picker.show()
     }
 
-    // interfaz de la screen
     Column(
         modifier = Modifier
-            .background(FondoClaro)
             .fillMaxSize()
-            .verticalScroll(scrollState)
+            .background(FondoClaro)
+            .verticalScroll(rememberScrollState())
             .padding(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text("Reserva tu hora", style = MaterialTheme.typography.headlineSmall)
+
         Spacer(Modifier.height(16.dp))
 
-        // Nombre
         OutlinedTextField(
-            value = nombre,
-            onValueChange = { nombre = it },
+            value = state.nombre,
+            onValueChange = vm::onNombreChange,
             label = { Text("Nombre") },
-            singleLine = true,
             modifier = Modifier.fillMaxWidth()
         )
 
         Spacer(Modifier.height(12.dp))
 
-        // Email
         OutlinedTextField(
-            value = email,
-            onValueChange = { email = it },
-            label = { Text("Correo electrónico") },
-            singleLine = true,
+            value = state.email,
+            onValueChange = vm::onEmailChange,
+            label = { Text("Correo") },
             modifier = Modifier.fillMaxWidth()
         )
 
         Spacer(Modifier.height(12.dp))
 
-        // Servicio
         OutlinedTextField(
-            value = servicio,
-            onValueChange = { servicio = it },
+            value = state.servicio,
+            onValueChange = vm::onServicioChange,
             label = { Text("Servicio (Ej: Corte, Manicure...)") },
-            singleLine = true,
             modifier = Modifier.fillMaxWidth()
         )
 
         Spacer(Modifier.height(12.dp))
 
-        // Fecha de la reserva
+        // Fecha
         OutlinedTextField(
-            value = fecha,
+            value = state.fecha,
             onValueChange = {},
-            label = { Text("Fecha de la reserva") },
-            readOnly = true,
+            label = { Text("Fecha") },
             trailingIcon = {
-                Icon(
-                    imageVector = Icons.Filled.DateRange,
-                    contentDescription = "Seleccionar fecha",
-                    modifier = Modifier.clickable { abrirCalendario() }
-                )
+                Icon(Icons.Filled.DateRange, contentDescription = "Seleccionar fecha")
             },
             modifier = Modifier
                 .fillMaxWidth()
-                .clickable { abrirCalendario() }
+                .clickable { abrirCalendario() },
+            readOnly = true
         )
 
-        //Horas disponibles (solo si no es domingo)
-        if (mostrarHoras) {
-            Spacer(Modifier.height(16.dp))
-            Text("Selecciona la hora disponible:")
-            Spacer(Modifier.height(8.dp))
+        Spacer(Modifier.height(16.dp))
 
-            horasDisponibles.forEach { h ->
-                Button(
-                    onClick = { hora = h },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = if (hora == h)
-                            MaterialTheme.colorScheme.primary
-                        else
-                            MaterialTheme.colorScheme.secondaryContainer
-                    ),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 4.dp)
-                ) {
-                    Text(h, color = textoNegro)
-                }
+        // Horas disponibles
+        Text("Selecciona una hora:", style = MaterialTheme.typography.titleMedium)
+        Spacer(Modifier.height(8.dp))
+
+        horasDisponibles.forEach { h ->
+            Button(
+                onClick = { vm.onHoraChange(h) },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = if (state.hora == h)
+                        MaterialTheme.colorScheme.primary
+                    else
+                        MaterialTheme.colorScheme.secondaryContainer
+                ),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 4.dp)
+            ) {
+                Text(
+                    h,
+                    color = if (state.hora == h) Color.White else Color.Black // negro si no está seleccionada
+                )
             }
         }
 
-        Spacer(Modifier.height(24.dp))
+        Spacer(Modifier.height(20.dp))
 
-        // BOTÓN FINAL DE AGENDAMIENTO
         Button(
             onClick = {
-                if (nombre.isBlank() || email.isBlank() || servicio.isBlank() || fecha.isBlank() || hora.isBlank()) {
-                    Toast.makeText(context, "Completa todos los campos", Toast.LENGTH_SHORT).show()
-                } else {
-                    // Mensaje de confirmación
-                    val mensaje = """
-                        ¡Reserva agendada con éxito!
-                        
-                        Cliente: $nombre
-                        Correo: $email
-                        Servicio: $servicio
-                        Fecha: $fecha
-                        Hora: $hora
-                        
-                        Te llegará un correo con la confirmación y los detalles de tu cita.
-                    """.trimIndent()
-
-                    Toast.makeText(context, mensaje, Toast.LENGTH_LONG).show()
-
-                    // Simulación de envío de correo (más adelante puedes integrar un backend real)
-                    println("Enviando correo a $email con los datos de la reserva...")
-
-                    // Reset del formulario
-                    nombre = ""
-                    email = ""
-                    servicio = ""
-                    fecha = ""
-                    hora = ""
-                    mostrarHoras = false
-                }
+                vm.registrarReserva()
+                if (state.successMessage != null)
+                    Toast.makeText(context, state.successMessage, Toast.LENGTH_LONG).show()
+                else if (state.errorMessage != null)
+                    Toast.makeText(context, state.errorMessage, Toast.LENGTH_SHORT).show()
             },
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text("Agendar hora")
+            Text("Agendar")
         }
     }
 }

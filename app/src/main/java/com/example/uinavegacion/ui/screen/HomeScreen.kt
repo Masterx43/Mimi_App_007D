@@ -48,7 +48,7 @@ fun HomeScreen(
     Box( // Contenedor a pantalla completa
         modifier = Modifier
             .fillMaxSize() // Ocupa todo
-            .background(bg) // Aplica fondo
+            .background(Blanco) // Aplica fondo
             .padding(16.dp), // Margen interior
         contentAlignment = Alignment.Center // Centra contenido
     ) {

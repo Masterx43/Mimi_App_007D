@@ -3,6 +3,7 @@ package com.example.uinavegacion.ui.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -22,6 +23,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.*
@@ -49,16 +51,16 @@ fun AppTopBar(
     // si el menú desplegable de 3 puntitos debe estar visible (true) o oculto (false).
     var showMenu by remember { mutableStateOf(false) } // Estado del menú overflow
 
-    androidx.compose.material3.Surface(
+    Surface(
         tonalElevation = 4.dp,
-        color = MaterialTheme.colorScheme.primary,
+        color = LilaPri,
         shape = androidx.compose.foundation.shape.RoundedCornerShape(
             bottomStart = 32.dp,
             bottomEnd = 32.dp
         ),
         modifier = Modifier
             .fillMaxWidth()
-            .height(80.dp)
+            .height(100.dp)
 
     ) {
 
@@ -70,14 +72,15 @@ fun AppTopBar(
             title = { // Slot del título
                 Button(onClick = onHome,
                     colors= ButtonDefaults.buttonColors(
-                        containerColor = LilaPri)) {
+                        containerColor = LilaPri),
+                    modifier = Modifier.height(80.dp)) {
 
                     Image(
                         painter = painterResource(id = R.drawable.mimi_logo),
                         contentDescription = "Logo Mimi",
                         modifier = Modifier
-                            .height(60.dp) // ajusta tamaño del logo
-                            .padding( top = 4.dp)
+                            .fillMaxHeight() // ajusta tamaño del logo
+                            .padding( top = 3.dp)
 
 
                     )

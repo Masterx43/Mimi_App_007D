@@ -38,6 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.uinavegacion.navigation.Route
+import com.example.uinavegacion.ui.theme.Blanco
 import com.example.uinavegacion.viewmodel.AuthViewModel
 import kotlin.String
 
@@ -110,14 +111,14 @@ private fun RegisterScreen(
     onSubmit: () -> Unit,
     onGoLogin: () -> Unit     // Acción alternativa a Login
 ) {
-    val bg = MaterialTheme.colorScheme.tertiaryContainer // Fondo único
+
     var showPass by remember { mutableStateOf(false) }
     var showConfirm by remember { mutableStateOf(false) }
 
     Box(
         modifier = Modifier
             .fillMaxSize() // Ocupa todo
-            .background(bg) // Fondo
+            .background(Blanco) // Fondo
             .padding(16.dp), // Margen
         contentAlignment = Alignment.Center // Centro
     ) {

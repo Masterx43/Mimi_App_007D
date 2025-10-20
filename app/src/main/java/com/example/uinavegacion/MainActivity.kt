@@ -41,7 +41,7 @@ fun AppRoot() { // Raíz de la app para separar responsabilidades
     UINavegacionTheme {
         Surface(
             modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colorScheme.background
+            color = Color.Transparent
         ) {
             AppNavGraph(navController = navController)
         }

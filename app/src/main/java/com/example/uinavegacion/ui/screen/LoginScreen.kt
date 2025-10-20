@@ -41,6 +41,8 @@ import kotlin.String
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.graphics.Color
+import com.example.uinavegacion.ui.theme.Blanco
 
 
 @Composable
@@ -85,13 +87,13 @@ private fun LoginScreen(
     onSubmit: ()->Unit,
     onGoRegister: () -> Unit // Acción para ir a Registro
 ) {
-    val bg = MaterialTheme.colorScheme.secondaryContainer // Fondo distinto para contraste
+    val Blanco = Blanco // Fondo distinto para contraste
     var showPass by remember { mutableStateOf(false) }
 
     Box(
         modifier = Modifier
             .fillMaxSize() // Ocupa todo
-            .background(bg) // Fondo
+            .background(Blanco) // Fondo
             .padding(16.dp), // Margen
         contentAlignment = Alignment.Center // Centro
     ) {

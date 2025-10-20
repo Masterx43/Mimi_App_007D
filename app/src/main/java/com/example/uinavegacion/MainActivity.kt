@@ -9,6 +9,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.uinavegacion.navigation.AppNavGraph
 import com.example.uinavegacion.ui.theme.UINavegacionTheme
@@ -39,7 +41,7 @@ fun AppRoot() { // Raíz de la app para separar responsabilidades
     UINavegacionTheme {
         Surface(
             modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colorScheme.background
+            color = Color.Transparent
         ) {
             AppNavGraph(navController = navController)
         }

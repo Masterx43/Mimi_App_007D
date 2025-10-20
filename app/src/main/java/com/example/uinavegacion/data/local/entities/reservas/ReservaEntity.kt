@@ -2,6 +2,7 @@ package com.example.uinavegacion.data.local.entities.reservas
 
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.PrimaryKey
 import com.example.uinavegacion.data.local.entities.estado.EstadoEntity
 import com.example.uinavegacion.data.local.entities.servicio.ServicioEntity
 import com.example.uinavegacion.data.local.entities.user.UserEntity
@@ -29,6 +30,7 @@ import java.util.Date
         )
     ])
 data class ReservaEntity (
+    @PrimaryKey(autoGenerate = true)
     val idReserva : Long = 0L,
     val fechaReserva : Date,
     val subtotal : Int,

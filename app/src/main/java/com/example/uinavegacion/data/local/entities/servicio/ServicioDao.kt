@@ -10,7 +10,7 @@ import androidx.room.Update
 @Dao
 interface ServicioDao {
     @Insert(onConflict = OnConflictStrategy.ABORT)
-    suspend fun insertServicio(servicio : ServicioEntity) : Int
+    suspend fun insertServicio(servicio : ServicioEntity) : Long
 
     @Query("select * from servicios where idServicio = :servicioId LIMIT 1")
     suspend fun getServicioById(servicioId : Long) : ServicioEntity?

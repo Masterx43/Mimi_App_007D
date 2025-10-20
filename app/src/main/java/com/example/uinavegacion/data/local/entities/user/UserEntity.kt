@@ -15,8 +15,8 @@ import com.example.uinavegacion.data.local.entities.rol.RolEntity
         ),
         ForeignKey(
             entity = EstadoEntity::class,
-            parentColumns = ["idCategoria"],
-            childColumns = ["categoriaId"],
+            parentColumns = ["idEstado"],
+            childColumns = ["estadoId"],
             onDelete = ForeignKey.CASCADE
         )
     ],
@@ -32,5 +32,6 @@ data class UserEntity (
     val direccion : String,
     val phone : String,
     val rolId : Long,
-    val categoriaId : Long
+    val categoriaId : Long,
+    val estadoId : Long
 )

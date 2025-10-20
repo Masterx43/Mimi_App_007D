@@ -63,8 +63,8 @@ fun LoginScreenVm(
         isSubmitting=state.isSubmitting,
         canSubmit=state.canSubmit,
         errorMsg=state.errorMsg,
-        onEmailChange= vm::onEmailChange,
-        onPassChange= vm::onContraChange,
+        onEmailChange= vm::onLoginEmailChange,
+        onPassChange= vm::onLoginContraChange,
         onSubmit= vm::submitLogin,
         onGoRegister= onGoRegister
 

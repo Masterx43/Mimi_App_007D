@@ -36,7 +36,8 @@ class UserRepository(
                 pass = password,
                 direccion = direccion,
                 rolId = 1L,
-                categoriaId = 1L
+                categoriaId = 1L,
+                estadoId = 1L
             )
         )
         return Result.success(id)                                    // Devuelve ID generado

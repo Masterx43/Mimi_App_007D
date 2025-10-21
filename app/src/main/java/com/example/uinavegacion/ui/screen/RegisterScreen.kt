@@ -46,9 +46,9 @@ import kotlin.String
 @Composable
 fun RegisterScreenVm(
     onRegisteredNavigateLogin:() -> Unit,
-    onGoLogin: () -> Unit
+    onGoLogin: () -> Unit,
+    vm : AuthViewModel
 ){
-    val vm: AuthViewModel= viewModel()
     val state by vm.register.collectAsStateWithLifecycle()
 
     if (state.success){

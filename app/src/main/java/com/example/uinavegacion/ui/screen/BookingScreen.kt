@@ -23,9 +23,10 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 @Composable
-fun BookingScreen() {
+fun BookingScreen(
+    vm : BookingViewModel
+) {
     val context = LocalContext.current
-    val vm: BookingViewModel = viewModel()
     val state by vm.uiState.collectAsState()
 
     // 🔹 Lista de horas (que se actualizará cuando elijas una fecha)

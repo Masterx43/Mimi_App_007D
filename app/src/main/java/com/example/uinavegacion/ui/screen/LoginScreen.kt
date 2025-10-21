@@ -48,9 +48,9 @@ import com.example.uinavegacion.ui.theme.Blanco
 @Composable
 fun LoginScreenVm(
     onLoginOkNavigateHome:()->Unit,
-    onGoRegister: () -> Unit
+    onGoRegister: () -> Unit,
+    vm : AuthViewModel
 ){
-    val vm: AuthViewModel= viewModel()
     val state by vm.login.collectAsStateWithLifecycle()
 
     if (state.success){
@@ -69,8 +69,6 @@ fun LoginScreenVm(
         onPassChange= vm::onLoginContraChange,
         onSubmit= vm::submitLogin,
         onGoRegister= onGoRegister
-
-
     )
 }
 @Composable // Pantalla Login (solo navegación, sin formularios)

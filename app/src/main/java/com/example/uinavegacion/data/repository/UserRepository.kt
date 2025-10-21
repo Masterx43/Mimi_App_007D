@@ -20,8 +20,7 @@ class UserRepository(
         apellido : String,
         email: String,
         phone: String,
-        password: String,
-        direccion : String,
+        password: String
     ): Result<Long> {
         val exists = userDao.getByEmail(email) != null               // ¿Correo ya usado?
         if (exists) {
@@ -34,7 +33,6 @@ class UserRepository(
                 correo = email,
                 phone = phone,                                       // Teléfono incluido
                 pass = password,
-                direccion = direccion,
                 rolId = 1L,
                 categoriaId = 1L,
                 estadoId = 1L

@@ -16,18 +16,26 @@ import androidx.navigation.compose.composable
 import com.example.uinavegacion.ui.components.*
 import com.example.uinavegacion.ui.screen.*
 import com.example.uinavegacion.ui.theme.LilaPri
-import kotlinx.coroutines.launch
 
-@Composable
-fun AppNavGraph(navController: NavHostController) {
+import com.example.uinavegacion.viewmodel.AuthViewModel
+import com.example.uinavegacion.viewmodel.BookingViewModel
+
+@Composable // Gráfico de navegación + Drawer + Scaffold
+fun AppNavGraph(navController: NavHostController,
+                authViewModel: AuthViewModel,
+                bookingViewModel: BookingViewModel
+) { // Recibe el controlador
+
 
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
 
-    val goHome: () -> Unit = { navController.navigate(Route.Home.path) }
-    val goLogin: () -> Unit = { navController.navigate(Route.Login.path) }
-    val goRegister: () -> Unit = { navController.navigate(Route.Register.path) }
-    val goReserve: () -> Unit = { navController.navigate(Route.Booking.path) }
+
+    // Helpers de navegación (reutilizamos en topbar/drawer/botones)
+    val goHome: () -> Unit    = { navController.navigate(Route.Home.path) }    // Ir a Home
+    val goLogin: () -> Unit   = { navController.navigate(Route.Login.path) }   // Ir a Login
+    val goRegister: () -> Unit = { navController.navigate(Route.Register.path) } // Ir a Registro
+    val goReserve: () -> Unit= {navController.navigate(Route.Booking.path)}
 
     ModalNavigationDrawer(
         drawerState = drawerState,
@@ -88,18 +96,24 @@ fun AppNavGraph(navController: NavHostController) {
                     }
                     composable(Route.Login.path) {
                         LoginScreenVm(
-                            onLoginOkNavigateHome = goHome,
-                            onGoRegister = goRegister
+                            vm = authViewModel,            // <-- NUEVO: pasamos VM inyectado
+                            onLoginOkNavigateHome = goHome,            // Si el VM marca success=true, navegamos a Home
+                            onGoRegister = goRegister                  // Enlace para ir a la pantalla de Registro
+
                         )
                     }
                     composable(Route.Register.path) {
                         RegisterScreenVm(
-                            onRegisteredNavigateLogin = goLogin,
-                            onGoLogin = goLogin
+                            vm = authViewModel,
+                            onRegisteredNavigateLogin = goLogin, // Botón para ir a Login
+                            onGoLogin = goLogin     // Botón alternativo a Login
+
                         )
                     }
                     composable(Route.Booking.path) {
-                        BookingScreen()
+                        BookingScreen(
+                            vm = bookingViewModel
+                        )
                     }
                 }
             }

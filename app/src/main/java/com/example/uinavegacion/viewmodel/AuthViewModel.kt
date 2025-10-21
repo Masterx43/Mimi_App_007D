@@ -46,6 +46,14 @@ data class RegisterUiState(
     val errorMsg: String?= null
 
 )
+
+data class SessionUiState(
+    val isLoggedIn: Boolean = false,
+    val userId: Long? = null,
+    val userName: String? = null,
+    val userEmail: String? = null,
+    val userRoleId: Long? = null
+)
 class AuthViewModel(
     private val repository: UserRepository
 ): ViewModel(){
@@ -55,6 +63,9 @@ class AuthViewModel(
 
     private val _register = MutableStateFlow(RegisterUiState())
     val register: StateFlow<RegisterUiState> = _register
+
+    private val _session = MutableStateFlow(SessionUiState())
+    val session: StateFlow<SessionUiState> = _session
 
 
     fun onLoginEmailChange(value: String){
@@ -84,10 +95,26 @@ class AuthViewModel(
 
             _login.update {
                 if (result.isSuccess) {
-                    it.copy(isSubmitting = false, success = true, errorMsg = null) // OK: éxito
+                    val user = result.getOrNull()
+                    // se guarda la sesion si el usuario existe
+                    if (user != null) {
+                        _session.update {
+                            SessionUiState(
+                                isLoggedIn = true,
+                                userId = user.idUser,
+                                userName = user.nombre,
+                                userEmail = user.correo,
+                                userRoleId = user.rolId
+                            )
+                        }
+                    }
+                    it.copy(isSubmitting = false, success = true, errorMsg = null)
                 } else {
-                    it.copy(isSubmitting = false, success = false,
-                        errorMsg = result.exceptionOrNull()?.message ?: "Error de autenticación")
+                    it.copy(
+                        isSubmitting = false,
+                        success = false,
+                        errorMsg = result.exceptionOrNull()?.message ?: "Error de autenticación"
+                    )
                 }
             }
         }
@@ -140,7 +167,7 @@ class AuthViewModel(
             _register.update { it.copy(isSubmitting = true, errorMsg = null, success = false) }
             delay(700)
 
-            // 7.- Se cambia esto por lo anterior✅ NUEVO: inserta en BD (con teléfono) vía repositorio
+            // 7.- Se cambia esto por lo anterior inserta en BD (con teléfono) vía repositorio
             val result = repository.register(
                 name = s.nombre.trim(),
                 apellido = "ejemplo",                      //modificar para que reciba desde registerScreen
@@ -163,6 +190,10 @@ class AuthViewModel(
 
     fun clearRegisterResult() {
         _register.update { it.copy(success = false, errorMsg = null) }
+    }
+
+    fun logout() {
+        _session.update { SessionUiState() } // reset
     }
 
 }

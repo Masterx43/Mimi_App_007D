@@ -55,8 +55,8 @@ fun AppTopBar(
 
     Surface(
         color = LilaPri,
-        tonalElevation = 8.dp, // 👈 sombra más suave y visible
-        shadowElevation = 8.dp, // 👈 añade profundidad visual
+        tonalElevation = 8.dp, // sombra más suave y visible
+        shadowElevation = 8.dp, // añade profundidad visual
         shape = RoundedCornerShape(
             bottomStart = 30.dp,
             bottomEnd = 30.dp

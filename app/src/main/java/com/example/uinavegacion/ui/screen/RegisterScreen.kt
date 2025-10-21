@@ -128,6 +128,9 @@ private fun RegisterScreen(
                 style = MaterialTheme.typography.headlineSmall //Título
             )
             Spacer(Modifier.height(12.dp)) //Separación
+            Text(
+                text = "Registrese para poder utilizar nuestros servicios"
+            )
             OutlinedTextField(
                 value = nombre,                                // Valor actual
                 onValueChange = onNombreChange,                // Notifica VM (filtra y valida)

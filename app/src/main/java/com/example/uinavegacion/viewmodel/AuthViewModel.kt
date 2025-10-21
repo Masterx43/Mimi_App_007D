@@ -56,7 +56,7 @@ private data class DemoUser(
 class AuthViewModel: ViewModel(){
     companion object{
         private val USERS=mutableListOf(
-            DemoUser(nombre="Demo", email="demo@duoc.cl", celu= "12345678", contra= "Demo123!")
+            DemoUser(nombre="Demo", email="demo@duoc.cl", celu= "12345678", contra= "Demo123!") ///////////////////////////////////////////
         )
     }
     private val _login = MutableStateFlow(LoginUiState())

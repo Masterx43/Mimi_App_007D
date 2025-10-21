@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.AccountCircle
@@ -52,15 +54,17 @@ fun AppTopBar(
     var showMenu by remember { mutableStateOf(false) } // Estado del menú overflow
 
     Surface(
-        tonalElevation = 4.dp,
         color = LilaPri,
-        shape = androidx.compose.foundation.shape.RoundedCornerShape(
-            bottomStart = 32.dp,
-            bottomEnd = 32.dp
+        tonalElevation = 8.dp, // 👈 sombra más suave y visible
+        shadowElevation = 8.dp, // 👈 añade profundidad visual
+        shape = RoundedCornerShape(
+            bottomStart = 30.dp,
+            bottomEnd = 30.dp
         ),
         modifier = Modifier
             .fillMaxWidth()
-            .height(100.dp)
+            .height(90.dp) //
+            .statusBarsPadding()
 
     ) {
 
@@ -76,11 +80,11 @@ fun AppTopBar(
                     modifier = Modifier.height(80.dp)) {
 
                     Image(
-                        painter = painterResource(id = R.drawable.mimi_logo),
+                        painter = painterResource(id = R.drawable.logotopbarmimi),
                         contentDescription = "Logo Mimi",
                         modifier = Modifier
                             .fillMaxHeight() // ajusta tamaño del logo
-                            .padding( top = 3.dp)
+                            .padding( horizontal = 8.dp)
 
 
                     )

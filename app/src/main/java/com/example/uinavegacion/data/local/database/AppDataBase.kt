@@ -13,6 +13,7 @@ import com.example.uinavegacion.data.local.entities.estado.*
 import com.example.uinavegacion.data.local.entities.reservas.*
 import com.example.uinavegacion.data.local.entities.rol.*
 import com.example.uinavegacion.data.local.entities.servicio.*
+import com.example.uinavegacion.data.local.entities.estado.*
 import com.example.uinavegacion.data.local.entities.user.*// Import del DAO de usuario // Import de la entidad de usuario
 import kotlinx.coroutines.CoroutineScope                        // Para corrutinas en callback
 import kotlinx.coroutines.Dispatchers                           // Dispatcher IO
@@ -33,7 +34,6 @@ import kotlinx.coroutines.launch                                // Lanzar corrut
     version = 1,
     exportSchema = true // Mantener true para inspección de esquema (útil en educación)
 )
-@TypeConverters(DateConverters::class)
 abstract class AppDatabase : RoomDatabase() {
 
     // Exponemos el DAO de usuarios
@@ -41,6 +41,8 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun rolDao(): RolDao
     abstract fun servicioDao(): ServicioDao
     abstract fun categoriaDao(): CategoriaDao
+    abstract fun reservaDao() : ReservaDao
+    abstract fun estadoDao() : EstadoDao
 
     companion object {
         @Volatile
@@ -62,10 +64,19 @@ abstract class AppDatabase : RoomDatabase() {
                             super.onCreate(db)
                             // Lanzamos una corrutina en IO para insertar datos iniciales
                             CoroutineScope(Dispatchers.IO).launch {
-                                val userdao = getInstance(context).userDao()
                                 val rolDao = getInstance(context).rolDao()
                                 val servicioDao = getInstance(context).servicioDao()
                                 val categoriaDao = getInstance(context).categoriaDao()
+                                val userdao = getInstance(context).userDao()
+                                val estadoDao = getInstance(context).estadoDao()
+
+                                val estadosSeed = listOf(
+                                    EstadoEntity(nombre = "Activo"),
+                                    EstadoEntity(nombre = "Inactivo")
+                                )
+                                if (estadoDao.getTotalEstado() == 0) {
+                                    estadosSeed.forEach { estadoDao.insertEstado(it) }
+                                }
 
 
                                 val rolesSeed = listOf(RolEntity( descripcion = "Cliente"), RolEntity(descripcion = "Administrador"))
@@ -83,19 +94,16 @@ abstract class AppDatabase : RoomDatabase() {
                                         apellido = "Usuario",
                                         correo = "demo@duoc.cl",
                                         pass = "Demo123!",          // Recuerda que en producción se debería encriptar
-                                        direccion = "Calle Falsa 123",
                                         phone = "987654321",
                                         rolId = 1L,                 // Rol por defecto
                                         categoriaId = 2L,
                                         estadoId = 1L
                                     ),
                                     UserEntity(
-
                                         nombre = "Demo2",
                                         apellido = "Usuario",
                                         correo = "demo2@duoc.cl",
                                         pass = "Demo12!",          // Recuerda que en producción se debería encriptar
-                                        direccion = "Calle Falsa 123",
                                         phone = "987654321",
                                         rolId = 2L,                 // Rol por defecto
                                         categoriaId = 1L,
@@ -143,6 +151,7 @@ abstract class AppDatabase : RoomDatabase() {
                                     )
                                 )
                                 if (servicioDao.getTotalServicios() == 0) serviciosSeed.forEach { servicioDao.insertServicio(it) }
+
 
                             }
                         }

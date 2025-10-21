@@ -2,6 +2,7 @@ package com.example.uinavegacion.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.uinavegacion.data.repository.UserRepository
 import com.example.uinavegacion.domain.validation.validateCelDigitsOnly
 import com.example.uinavegacion.domain.validation.validateConfirm
 import com.example.uinavegacion.domain.validation.validateEmail
@@ -45,20 +46,10 @@ data class RegisterUiState(
     val errorMsg: String?= null
 
 )
+class AuthViewModel(
+    private val repository: UserRepository
+): ViewModel(){
 
-private data class DemoUser(
-    val nombre: String,
-    val email: String,
-    val celu: String,
-    val contra: String
-)
-
-class AuthViewModel: ViewModel(){
-    companion object{
-        private val USERS=mutableListOf(
-            DemoUser(nombre="Demo", email="demo@duoc.cl", celu= "12345678", contra= "Demo123!")
-        )
-    }
     private val _login = MutableStateFlow(LoginUiState())
     val login: StateFlow<LoginUiState> = _login
 
@@ -89,15 +80,15 @@ class AuthViewModel: ViewModel(){
             _login.update { it.copy(isSubmitting = true, errorMsg = null, success = false)}
             delay(600)
 
-            val user= USERS.firstOrNull { it.email.equals(s.email, ignoreCase = true) }
-            val ok= user!= null && user.contra ==s.contra
+            val result = repository.login(s.email.trim(), s.contra)
 
-            _login.update{
-                it.copy(
-                    isSubmitting = false,
-                    success = ok,
-                    errorMsg = if(!ok) "Credenciales invalidas" else null
-                )
+            _login.update {
+                if (result.isSuccess) {
+                    it.copy(isSubmitting = false, success = true, errorMsg = null) // OK: éxito
+                } else {
+                    it.copy(isSubmitting = false, success = false,
+                        errorMsg = result.exceptionOrNull()?.message ?: "Error de autenticación")
+                }
             }
         }
     }
@@ -149,16 +140,24 @@ class AuthViewModel: ViewModel(){
             _register.update { it.copy(isSubmitting = true, errorMsg = null, success = false) }
             delay(700)
 
-            val exists = USERS.any { it.email.equals(s.email, ignoreCase = true) }
-            if (exists) {
-                _register.update {
-                    it.copy(isSubmitting = false, success = false, errorMsg = "El usuario ya existe")
-                }
-                return@launch
-            }
+            // 7.- Se cambia esto por lo anterior✅ NUEVO: inserta en BD (con teléfono) vía repositorio
+            val result = repository.register(
+                name = s.nombre.trim(),
+                apellido = "ejemplo",                      //modificar para que reciba desde registerScreen
+                email = s.email.trim(),
+                phone = s.cel,                     // Incluye teléfono
+                password = s.contra,
+            )
 
-            USERS.add(DemoUser(s.nombre.trim(), s.email.trim(), s.cel.trim(), s.contra))
-            _register.update { it.copy(isSubmitting = false, success = true, errorMsg = null) }
+            // Interpreta resultado y actualiza estado
+            _register.update {
+                if (result.isSuccess) {
+                    it.copy(isSubmitting = false, success = true, errorMsg = null)  // OK
+                } else {
+                    it.copy(isSubmitting = false, success = false,
+                        errorMsg = result.exceptionOrNull()?.message ?: "No se pudo registrar")
+                }
+            }
         }
     }
 

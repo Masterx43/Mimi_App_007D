@@ -32,7 +32,7 @@ import java.util.Date
 data class ReservaEntity (
     @PrimaryKey(autoGenerate = true)
     val idReserva : Long = 0L,
-    val fechaReserva : Date,
+    val fechaReserva : String,  //campo cambiado temporalmente para probar
     val subtotal : Int,
     val userId : Long,
     val estadoId : Long,

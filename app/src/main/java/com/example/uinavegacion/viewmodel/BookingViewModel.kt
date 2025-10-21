@@ -3,6 +3,8 @@ package com.example.uinavegacion.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.uinavegacion.data.local.entities.reservas.ReservaEntity
+import com.example.uinavegacion.data.repository.ReservaRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -18,7 +20,9 @@ data class BookingUiState(
     val errorMessage: String? = null
 )
 
-class BookingViewModel : ViewModel() {
+class BookingViewModel(
+    private val repository: ReservaRepository
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(BookingUiState())
     val uiState: StateFlow<BookingUiState> = _uiState
@@ -42,11 +46,30 @@ class BookingViewModel : ViewModel() {
                     )
                 }
             } else {
+
+
+
+                val results = repository.crearReserva(ReservaEntity(
+                    //modificar estos campos para que calze con el entity del repository
+                    fechaReserva = s.fecha,  //ajustar para que lo acepte sql, cambiado para prueba
+                    subtotal = 1500,
+                    userId = 1L,
+                    estadoId = 1L,
+                    servicioId = 1L
+                ))
                 _uiState.update {
-                    it.copy(
-                        successMessage = "Reserva agendada con éxito para ${s.fecha} a las ${s.hora}",
-                        errorMessage = null
-                    )
+                    if (results.isSuccess) {
+                        it.copy(
+                            successMessage = "Reserva agendada con éxito para ${s.fecha} a las ${s.hora}",
+                            errorMessage = null
+                        )
+                    } else {
+                        it.copy(
+
+                            successMessage = null,
+                            errorMessage = results.exceptionOrNull()?.message ?:"No se pudo registrar la reserva",
+                        )
+                    }
                 }
             }
         }

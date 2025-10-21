@@ -24,9 +24,10 @@ import java.util.Calendar
 import java.util.Locale
 
 @Composable
-fun BookingScreen() {
+fun BookingScreen(
+    vm : BookingViewModel
+) {
     val context = LocalContext.current
-    val vm: BookingViewModel = viewModel()
     val state by vm.uiState.collectAsState()
 
     val horasDisponibles = listOf(

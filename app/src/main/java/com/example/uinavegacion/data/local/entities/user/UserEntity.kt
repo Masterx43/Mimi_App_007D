@@ -29,9 +29,8 @@ data class UserEntity (
     val apellido : String,
     val correo : String,
     val pass : String,
-    val direccion : String,
     val phone : String,
     val rolId : Long,
-    val categoriaId : Long,
+    val categoriaId : Long?,
     val estadoId : Long
 )

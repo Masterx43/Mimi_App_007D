@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -55,18 +57,23 @@ fun AppRoot() { // Raíz de la app para separar responsabilidades
 
     val userDao = db.userDao()
     val reservaDao = db.reservaDao()
+    val servicioDao = db.servicioDao()
     // ^ Daos para viewModel.
 
     val userRepository = UserRepository(userDao)
     val reservaRepository = ReservaRepository(reservaDao)
+
+
     // ^ Repositorios.
 
     val authViewModel: AuthViewModel = viewModel(
         factory = AuthViewModelFactory(userRepository)
     )
+    val authState by authViewModel.session.collectAsState()
+    val userId = authState.userId ?: 1L
 
     val bookingViewModel : BookingViewModel = viewModel (
-        factory = BookingViewModelFactory(reservaRepository)
+        factory = BookingViewModelFactory(reservaRepository, servicioDao, userId)
     )
     // ^ Creamos el ViewModel con factory para inyectar el repositorio.
 

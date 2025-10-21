@@ -1,9 +1,10 @@
 package com.example.uinavegacion.viewmodel
 
-
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.uinavegacion.data.local.entities.reservas.ReservaEntity
+import com.example.uinavegacion.data.local.entities.servicio.ServicioDao
+import com.example.uinavegacion.data.local.entities.servicio.ServicioEntity
 import com.example.uinavegacion.data.repository.ReservaRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -14,22 +15,41 @@ data class BookingUiState(
     val nombre: String = "",
     val email: String = "",
     val servicio: String = "",
+    val servicioId: Long? = null,
     val fecha: String = "",
     val hora: String = "",
     val successMessage: String? = null,
-    val errorMessage: String? = null
+    val errorMessage: String? = null,
+    val serviciosDisponibles: List<ServicioEntity> = emptyList()
 )
 
 class BookingViewModel(
-    private val repository: ReservaRepository
+    private val reservaRepository: ReservaRepository, // para guardar la reserva
+    private val servicioDao: ServicioDao, // para cargar los servicios
+    private val userId: Long
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(BookingUiState())
     val uiState: StateFlow<BookingUiState> = _uiState
 
+    init {
+        cargarServicios() // cargamos los servicios de la base
+    }
+
+    private fun cargarServicios() {
+        viewModelScope.launch {
+            try {
+                val lista = servicioDao.getAllServicios()
+                _uiState.update { it.copy(serviciosDisponibles = lista) }
+            } catch (e: Exception) {
+                _uiState.update { it.copy(errorMessage = "Error al cargar servicios") }
+            }
+        }
+    }
+
     fun onNombreChange(value: String) = _uiState.update { it.copy(nombre = value) }
     fun onEmailChange(value: String) = _uiState.update { it.copy(email = value) }
-    fun onServicioChange(value: String) = _uiState.update { it.copy(servicio = value) }
+    fun onServicioChange(nombre: String, id: Long) = _uiState.update { it.copy(servicio = nombre, servicioId = id) }
     fun onFechaChange(value: String) = _uiState.update { it.copy(fecha = value) }
     fun onHoraChange(value: String) = _uiState.update { it.copy(hora = value) }
 
@@ -46,28 +66,28 @@ class BookingViewModel(
                     )
                 }
             } else {
+                try {
+                    // Crear y guardar la reserva en la base de datos
+                    val reserva = ReservaEntity(
+                        fechaReserva = s.fecha,
+                        subtotal = 10000, // ejemplo, puedes calcular con el precio del servicio
+                        userId = userId,
+                        estadoId = 1L,
+                        servicioId = s.servicioId ?: 1L
+                    )
+                    reservaRepository.crearReserva(reserva)
 
-
-
-                val results = repository.crearReserva(ReservaEntity(
-                    //modificar estos campos para que calze con el entity del repository
-                    fechaReserva = s.fecha,  //ajustar para que lo acepte sql, cambiado para prueba
-                    subtotal = 1500,
-                    userId = 1L,
-                    estadoId = 1L,
-                    servicioId = 1L
-                ))
-                _uiState.update {
-                    if (results.isSuccess) {
+                    _uiState.update {
                         it.copy(
-                            successMessage = "Reserva agendada con éxito para ${s.fecha} a las ${s.hora}",
+                            successMessage = "Reserva agendada con éxito para ${s.fecha} a las ${s.hora} (${s.servicio})",
                             errorMessage = null
                         )
-                    } else {
+                    }
+                } catch (e: Exception) {
+                    _uiState.update {
                         it.copy(
-
-                            successMessage = null,
-                            errorMessage = results.exceptionOrNull()?.message ?:"No se pudo registrar la reserva",
+                            errorMessage = "Error al registrar la reserva: ${e.message}",
+                            successMessage = null
                         )
                     }
                 }

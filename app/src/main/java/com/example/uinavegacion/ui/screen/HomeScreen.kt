@@ -60,18 +60,32 @@ fun HomeScreen(
         ) {
             // Cabecera como Row (ejemplo de estructura)
             Row(
-                verticalAlignment = Alignment.CenterVertically // Centra vertical
+                verticalAlignment = Alignment.CenterVertically, // Centra vertical
+                horizontalArrangement = Arrangement.Center,
+                modifier = Modifier.fillMaxWidth()
             ) {
-                Text( // Título Home
-                    text = "Bienvenidos a nuestra aplicacion",
-                    style = MaterialTheme.typography.headlineSmall, // Estilo título
-                    fontWeight = FontWeight.SemiBold // Seminegrita
-                )
-                Spacer(Modifier.width(8.dp)) // Separación horizontal
-            //    AssistChip( // Chip decorativo (Material 3)
-            //        onClick = {}, // Sin acción (demo)
-            //        label = { Text("Navega desde arriba o aquí") } // Texto chip
-            //    )
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ){
+                    Text( // Título Home
+                        text = "Bienvenidos a nuestra nueva aplicacion",
+                        style = MaterialTheme.typography.headlineSmall, // Estilo título
+                        fontWeight = FontWeight.SemiBold // Seminegrita
+                    )
+                    Spacer(Modifier.width(8.dp))
+                    Text(
+                        text = "Descubre todos nuestros servicios de belleza",
+                        style = MaterialTheme.typography.bodyMedium,
+                        textAlign = TextAlign.Center
+
+                    )
+                    Spacer(Modifier.width(8.dp)) // Separación horizontal
+                    //    AssistChip( // Chip decorativo (Material 3)
+                    //        onClick = {}, // Sin acción (demo)
+                    //        label = { Text("Navega desde arriba o aquí") } // Texto chip
+                    //    )
+                }
+
             }
 
             Spacer(Modifier.height(20.dp)) // Separación
@@ -147,10 +161,45 @@ fun HomeScreen(
                 }
             }
 
-            Spacer(Modifier.height(24.dp)) // Separación
+            Spacer(Modifier.height(12.dp)) // Separación
+            ElevatedCard(
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Column(
+                    modifier = Modifier.padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+
+                    Image(
+                        painter = painterResource(id = R.drawable.brushingystyling),
+                        contentDescription = "Brushing y styling",
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(180.dp),
+                        contentScale = ContentScale.Crop // Ajusta la imagen sin deformarla
+                    )
+
+                    Spacer(Modifier.height(12.dp))
+
+
+                    Text(
+                        "Servicio de Brushing y styling",
+                        style = MaterialTheme.typography.titleLarge,
+                        textAlign = TextAlign.Center
+                    )
+                    Spacer(Modifier.height(8.dp))
+                    Text(
+                        "Logra el look ideal con nuestros servicios de brushing y styling. " +
+                                "Desde un liso perfecto hasta ondas definidas, realza tu estilo con acabado profesional y duradero.",
+                        style = MaterialTheme.typography.bodySmall
+                    )
+                }
+            }
+
+            /*Spacer(Modifier.height(24.dp)) // Separación*/
 
             // Botones de navegación principales
-            Row( // Dos botones en fila
+ /*           Row( // Dos botones en fila
                 horizontalArrangement = Arrangement.spacedBy(12.dp) // Espacio entre botones
             ) {
                 Button(onClick = onGoLogin,
@@ -165,7 +214,7 @@ fun HomeScreen(
             Button(onClick = onGoReserve,
             colors= ButtonDefaults.buttonColors(
                 containerColor = Rosado
-            )) {Text("Ir a Agendar") }
+            )) {Text("Ir a Agendar") }*/
         }
     }
 }

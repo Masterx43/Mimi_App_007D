@@ -1,32 +1,22 @@
 package com.example.uinavegacion.navigation
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding // Para aplicar innerPadding
-import androidx.compose.material3.Scaffold // Estructura base con slots
-import androidx.compose.runtime.Composable // Marcador composable
-import androidx.compose.ui.Modifier // Modificador
-import androidx.navigation.NavHostController // Controlador de navegación
-import androidx.navigation.compose.NavHost // Contenedor de destinos
-import androidx.navigation.compose.composable // Declarar cada destino
-import kotlinx.coroutines.launch // Para abrir/cerrar drawer con corrutinas
-
-import androidx.compose.material3.ModalNavigationDrawer // Drawer lateral modal
-import androidx.compose.material3.rememberDrawerState // Estado del drawer
-import androidx.compose.material3.DrawerValue // Valores (Opened/Closed)
-import androidx.compose.runtime.rememberCoroutineScope // Alcance de corrutina
-import androidx.compose.ui.graphics.Brush
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-
-
-import com.example.uinavegacion.ui.components.AppTopBar // Barra superior
-import com.example.uinavegacion.ui.components.AppDrawer // Drawer composable
-import com.example.uinavegacion.ui.components.defaultDrawerItems // Ítems por defecto
-import com.example.uinavegacion.ui.screen.BookingScreen
-import com.example.uinavegacion.ui.screen.HomeScreen // Pantalla Home
-import com.example.uinavegacion.ui.screen.LoginScreenVm // Pantalla Login
-import com.example.uinavegacion.ui.screen.RegisterScreenVm // Pantalla Registro
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import com.example.uinavegacion.ui.components.*
+import com.example.uinavegacion.ui.screen.*
 import com.example.uinavegacion.ui.theme.LilaPri
+
 import com.example.uinavegacion.viewmodel.AuthViewModel
 import com.example.uinavegacion.viewmodel.BookingViewModel
 
@@ -36,8 +26,10 @@ fun AppNavGraph(navController: NavHostController,
                 bookingViewModel: BookingViewModel
 ) { // Recibe el controlador
 
-    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed) // Estado del drawer
-    val scope = rememberCoroutineScope() // Necesario para abrir/cerrar drawer
+
+    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+    val scope = rememberCoroutineScope()
+
 
     // Helpers de navegación (reutilizamos en topbar/drawer/botones)
     val goHome: () -> Unit    = { navController.navigate(Route.Home.path) }    // Ir a Home
@@ -45,70 +37,77 @@ fun AppNavGraph(navController: NavHostController,
     val goRegister: () -> Unit = { navController.navigate(Route.Register.path) } // Ir a Registro
     val goReserve: () -> Unit= {navController.navigate(Route.Booking.path)}
 
-    ModalNavigationDrawer( // Capa superior con drawer lateral
-        drawerState = drawerState, // Estado del drawer
-        drawerContent = { // Contenido del drawer (menú)
-            AppDrawer( // Nuestro componente Drawer
-                currentRoute = null, // Puedes pasar navController.currentBackStackEntry?.destination?.route
-                items = defaultDrawerItems( // Lista estándar
-                    onHome = {
-                        scope.launch { drawerState.close() } // Cierra drawer
-                        goHome() // Navega a Home
-                    },
-                    onLogin = {
-                        scope.launch { drawerState.close() } // Cierra drawer
-                        goLogin() // Navega a Login
-                    },
-                    onRegister = {
-                        scope.launch { drawerState.close() } // Cierra drawer
-                        goRegister() // Navega a Registro
-                    },
-                    onReserve = {
-                        scope.launch { drawerState.close() }
-                        goReserve()
-                    }
+    ModalNavigationDrawer(
+        drawerState = drawerState,
+        drawerContent = {
+            AppDrawer(
+                currentRoute = null,
+                items = defaultDrawerItems(
+                    onHome = { scope.launch { drawerState.close() }; goHome() },
+                    onLogin = { scope.launch { drawerState.close() }; goLogin() },
+                    onRegister = { scope.launch { drawerState.close() }; goRegister() },
+                    onReserve = { scope.launch { drawerState.close() }; goReserve() }
                 )
             )
         }
     ) {
-        Scaffold( // Estructura base de pantalla
+        Scaffold(
+            //  Fondo transparente (para que se vean las curvas)
             containerColor = Color.Transparent,
-            topBar = { // Barra superior con íconos/menú
+            // Elimina paddings automáticos del sistema
+            contentWindowInsets = WindowInsets(0, 0, 0, 0),
+
+            topBar = {
                 AppTopBar(
-                    onOpenDrawer = { scope.launch { drawerState.open() } }, // Abre drawer
-                    onHome = goHome,     // Botón Home
-                    onLogin = goLogin,   // Botón Login
-                    onRegister = goRegister, // Botón Registro
+                    onOpenDrawer = { scope.launch { drawerState.open() } },
+                    onHome = goHome,
+                    onLogin = goLogin,
+                    onRegister = goRegister,
+                    onReserve = goReserve
+                )
+            },
+            bottomBar = {
+                AppBottomBar(
+                    onLogin = goLogin,
+                    onRegister = goRegister,
                     onReserve = goReserve
                 )
             }
         ) { innerPadding ->
-                NavHost( // Contenedor de destinos navegables
-                    navController = navController, // Controlador
-                    startDestination = Route.Home.path, // Inicio: Home
-                    modifier = Modifier
-                        .padding(innerPadding)
-                        .background(LilaPri)// Respeta topBar
+
+            // 👇 El contenido principal NO debe pintar el fondo del BottomBar
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.White) // fondo del contenido
+                    .padding(innerPadding)
+            ) {
+                NavHost(
+                    navController = navController,
+                    startDestination = Route.Home.path,
+                    modifier = Modifier.fillMaxSize()
                 ) {
-                    composable(Route.Home.path) { // Destino Home
+                    composable(Route.Home.path) {
                         HomeScreen(
-                            onGoLogin = goLogin,     // Botón para ir a Login
-                            onGoRegister = goRegister, // Botón para ir a Registro
+                            onGoLogin = goLogin,
+                            onGoRegister = goRegister,
                             onGoReserve = goReserve
                         )
                     }
-                    composable(Route.Login.path) { // Destino Login
+                    composable(Route.Login.path) {
                         LoginScreenVm(
                             vm = authViewModel,            // <-- NUEVO: pasamos VM inyectado
                             onLoginOkNavigateHome = goHome,            // Si el VM marca success=true, navegamos a Home
                             onGoRegister = goRegister                  // Enlace para ir a la pantalla de Registro
+
                         )
                     }
-                    composable(Route.Register.path) { // Destino Registro
+                    composable(Route.Register.path) {
                         RegisterScreenVm(
                             vm = authViewModel,
                             onRegisteredNavigateLogin = goLogin, // Botón para ir a Login
                             onGoLogin = goLogin     // Botón alternativo a Login
+
                         )
                     }
                     composable(Route.Booking.path) {
@@ -116,8 +115,8 @@ fun AppNavGraph(navController: NavHostController,
                             vm = bookingViewModel
                         )
                     }
-
                 }
+            }
         }
     }
 }

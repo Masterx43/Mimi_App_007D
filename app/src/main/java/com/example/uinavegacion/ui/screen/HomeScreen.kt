@@ -22,18 +22,22 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.uinavegacion.ui.theme.Rosado
 import com.example.uinavegacion.ui.theme.UINavegacionTheme
 import com.example.uinavegacion.R
+import com.example.uinavegacion.data.local.storage.UserPreferences
 import com.example.uinavegacion.ui.theme.Blanco
 import com.example.uinavegacion.ui.theme.LilaPri
 
@@ -43,7 +47,11 @@ fun HomeScreen(
     onGoRegister: () -> Unit, // Acción a Registro
     onGoReserve:() -> Unit
 ) {
+    val context = LocalContext.current
+
     val bg = MaterialTheme.colorScheme.surfaceVariant
+    val userPrefs =remember { UserPreferences(context) }
+    val isLoggedIn by userPrefs.isLoogedIn.collectAsStateWithLifecycle(false)
 
     Box( // Contenedor a pantalla completa
         modifier = Modifier

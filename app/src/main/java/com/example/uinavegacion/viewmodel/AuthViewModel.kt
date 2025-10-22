@@ -2,6 +2,7 @@ package com.example.uinavegacion.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.uinavegacion.data.local.storage.UserPreferences
 import com.example.uinavegacion.data.repository.UserRepository
 import com.example.uinavegacion.domain.validation.validateCelDigitsOnly
 import com.example.uinavegacion.domain.validation.validateConfirm
@@ -57,7 +58,8 @@ data class SessionUiState(
     val userRoleId: Long? = null
 )
 class AuthViewModel(
-    private val repository: UserRepository
+    private val repository: UserRepository,
+    private val userPrefs: UserPreferences
 ): ViewModel(){
 
     private val _login = MutableStateFlow(LoginUiState())
@@ -106,10 +108,15 @@ class AuthViewModel(
                                 userId = user.idUser,
                                 userName = user.nombre,
                                 userEmail = user.correo,
-                                userRoleId = user.rolId
+                                userRoleId = user.rolId,
                             )
                         }
+                        viewModelScope.launch {
+                            userPrefs.saveLoginState(true, user.rolId)
+                        }
+
                     }
+
                     it.copy(isSubmitting = false, success = true, errorMsg = null)
                 } else {
                     it.copy(
@@ -201,6 +208,7 @@ class AuthViewModel(
     }
 
     fun logout() {
+        viewModelScope.launch { userPrefs.clear() }
         _session.update { SessionUiState() } // reset
     }
 

@@ -70,6 +70,9 @@ dependencies {
     ksp("androidx.room:room-compiler:2.6.1")
     implementation("androidx.compose.material3:material3:1.3.0")
 
+    //Data Store Preferncias
+    implementation("androidx.datastore:datastore-preferences:1.1.1")
+
 
 
 

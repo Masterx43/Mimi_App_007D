@@ -6,6 +6,7 @@ import com.example.uinavegacion.data.local.entities.reservas.ReservaEntity
 import com.example.uinavegacion.data.local.entities.servicio.ServicioDao
 import com.example.uinavegacion.data.local.entities.servicio.ServicioEntity
 import com.example.uinavegacion.data.repository.ReservaRepository
+import com.example.uinavegacion.data.repository.ServicioRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -26,7 +27,7 @@ data class BookingUiState(
 
 class BookingViewModel(
     private val reservaRepository: ReservaRepository, // para guardar la reserva
-    private val servicioDao: ServicioDao, // para cargar los servicios
+    private val servicioRepository: ServicioRepository, // para cargar los servicios
     private val userId: Long
 ) : ViewModel() {
 
@@ -39,10 +40,12 @@ class BookingViewModel(
 
     private fun cargarServicios() {
         viewModelScope.launch {
-            try {
-                val lista = servicioDao.getAllServicios()
+            val result = servicioRepository.obtenerTodosServicios()
+
+            if (result.isSuccess) {
+                val lista = result.getOrNull().orEmpty()
                 _uiState.update { it.copy(serviciosDisponibles = lista) }
-            } catch (e: Exception) {
+            } else {
                 _uiState.update { it.copy(errorMessage = "Error al cargar servicios") }
             }
         }
@@ -80,7 +83,7 @@ class BookingViewModel(
 
                     _uiState.update {
                         it.copy(
-                            successMessage = "${userId} Reserva agendada con éxito para ${s.fecha} a las ${s.hora} (${s.servicio})",
+                            successMessage = "$userId Reserva agendada con éxito para ${s.fecha} a las ${s.hora} (${s.servicio})",
                             errorMessage = null
                         )
                     }

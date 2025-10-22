@@ -27,7 +27,8 @@ fun AppBottomBar(
     onLogin: () -> Unit,
     onRegister: () -> Unit,
     onReserve: () -> Unit,
-    onUserInfo: () -> Unit
+    onUserInfo: () -> Unit,
+    onAdmin: () -> Unit
 ) {
     val context = LocalContext.current
     val userPrefs =remember { UserPreferences(context) }
@@ -71,7 +72,11 @@ fun AppBottomBar(
                 selected = false,
                 onClick = {
                     if (isLoggedIn) {
-                        onUserInfo()   //Si está logueado → ir a UserInfoScreen
+                        when (roleId) {
+                            2L -> onAdmin()
+                            3L -> onUserInfo()  // Reemplazar por ruta para screen Trabajador
+                            else -> onUserInfo()
+                        }
                     } else {
                         onLogin()      // Si no está logueado → ir al Login
                     }

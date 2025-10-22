@@ -26,6 +26,8 @@ import com.example.uinavegacion.data.repository.ServicioRepository
 import com.example.uinavegacion.data.repository.UserRepository
 import com.example.uinavegacion.navigation.AppNavGraph
 import com.example.uinavegacion.ui.theme.UINavegacionTheme
+import com.example.uinavegacion.viewmodel.AdminViewModel
+import com.example.uinavegacion.viewmodel.AdminViewModelFactory
 import com.example.uinavegacion.viewmodel.AuthViewModel
 import com.example.uinavegacion.viewmodel.AuthViewModelFactory
 import com.example.uinavegacion.viewmodel.BookingViewModel
@@ -65,13 +67,11 @@ fun AppRoot() { // Raíz de la app para separar responsabilidades
     val servicioDao = db.servicioDao()
     val rolDao = db.rolDao()
     val categoriaDao = db.categoriaDao()
-    val estadoDao = db.estadoDao()
     // ^ Daos para viewModel.
 
     val userRepository = UserRepository(userDao)
     val reservaRepository = ReservaRepository(reservaDao)
     val servicioRepository = ServicioRepository(servicioDao)
-    val estadoRepository = EstadoRepository(estadoDao)
     val rolRepository = RolRepository(rolDao)
     val categoriaRepository = CategoriaRepository(categoriaDao)
     // ^ Repositorios.
@@ -81,6 +81,11 @@ fun AppRoot() { // Raíz de la app para separar responsabilidades
     val authViewModel: AuthViewModel = viewModel(
         factory = AuthViewModelFactory(userRepository, userPrefs)
     )
+    val adminVm: AdminViewModel = viewModel(
+        factory = AdminViewModelFactory(
+            servicioRepository,categoriaRepository,rolRepository)
+    )
+
     val authState by authViewModel.session.collectAsState()
     val userId = authState.userId ?: 1L
 
@@ -100,7 +105,8 @@ fun AppRoot() { // Raíz de la app para separar responsabilidades
             AppNavGraph(
                 navController = navController,
                 authViewModel=  authViewModel,
-                bookingViewModel = bookingViewModel// <-- NUEVO parámetro
+                bookingViewModel = bookingViewModel,// <-- NUEVO parámetro
+                adminViewModel = adminVm
             )
             // NOTA: Si tu AppNavGraph no tiene este parámetro aún, basta con agregarlo:
             // fun AppNavGraph(navController: NavHostController, authViewModel: AuthViewModel) { ... }

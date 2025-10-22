@@ -16,6 +16,7 @@ import androidx.navigation.compose.composable
 import com.example.uinavegacion.ui.components.*
 import com.example.uinavegacion.ui.screen.*
 import com.example.uinavegacion.ui.theme.LilaPri
+import com.example.uinavegacion.viewmodel.AdminViewModel
 
 import com.example.uinavegacion.viewmodel.AuthViewModel
 import com.example.uinavegacion.viewmodel.BookingViewModel
@@ -24,7 +25,8 @@ import kotlinx.coroutines.launch
 @Composable // Gráfico de navegación + Drawer + Scaffold
 fun AppNavGraph(navController: NavHostController,
                 authViewModel: AuthViewModel,
-                bookingViewModel: BookingViewModel
+                bookingViewModel: BookingViewModel,
+                adminViewModel: AdminViewModel
 ) { // Recibe el controlador
 
 
@@ -38,6 +40,7 @@ fun AppNavGraph(navController: NavHostController,
     val goRegister: () -> Unit = { navController.navigate(Route.Register.path) } // Ir a Registro
     val goReserve: () -> Unit= {navController.navigate(Route.Booking.path)}
     val goUserInfo:() -> Unit = {navController.navigate(Route.UserInfo.path)}
+    val goAdmin: () -> Unit = {navController.navigate(Route.AdminInfo.path)}
 
     ModalNavigationDrawer(
         drawerState = drawerState,
@@ -74,8 +77,8 @@ fun AppNavGraph(navController: NavHostController,
                     onLogin = goLogin,
                     onRegister = goRegister,
                     onReserve = goReserve,
-                    onUserInfo = goUserInfo
-
+                    onUserInfo = goUserInfo,
+                    onAdmin = goAdmin
                 )
             }
         ) { innerPadding ->

@@ -29,12 +29,14 @@ data class LoginUiState(
 
 data class RegisterUiState(
     val nombre: String= "",
+    val apellido: String = "",
     val email: String= "",
     val cel: String= "",
     val contra: String="",
     val confirm: String="",
 
     val nombreError: String?=null,
+    val apellidoError: String? = null,
     val emailError: String? = null,
     val celError: String?= null,
     val contraError: String?= null,
@@ -130,6 +132,12 @@ class AuthViewModel(
         recomputeRegisterCanSubmit()
     }
 
+    fun onApellidoChange(value: String) {
+        val limpio = value.filter { it.isLetter() || it.isWhitespace() }
+        _register.update { it.copy(apellido = limpio, apellidoError = validateNombreLettersOnly(limpio)) }
+        recomputeRegisterCanSubmit()
+    }
+
     fun onEmailChange(value: String) {
         _register.update { it.copy(email = value, emailError = validateEmail(value)) }
         recomputeRegisterCanSubmit()
@@ -154,8 +162,8 @@ class AuthViewModel(
 
     private fun recomputeRegisterCanSubmit() {
         val s = _register.value
-        val noErrors = listOf(s.nombreError, s.emailError, s.celError, s.contraError, s.confirmError).all { it == null }
-        val filled = listOf(s.nombre, s.email, s.cel, s.contra, s.confirm).all { it.isNotBlank() }
+        val noErrors = listOf(s.nombreError,s.apellidoError , s.emailError, s.celError, s.contraError, s.confirmError).all { it == null }
+        val filled = listOf(s.nombre, s.apellido, s.email, s.cel, s.contra, s.confirm).all { it.isNotBlank() }
         _register.update { it.copy(canSubmit = noErrors && filled) }
     }
 
@@ -170,7 +178,7 @@ class AuthViewModel(
             // 7.- Se cambia esto por lo anterior inserta en BD (con teléfono) vía repositorio
             val result = repository.register(
                 name = s.nombre.trim(),
-                apellido = "ejemplo",                      //modificar para que reciba desde registerScreen
+                apellido = s.apellido.trim(),                      //modificar para que reciba desde registerScreen
                 email = s.email.trim(),
                 phone = s.cel,                     // Incluye teléfono
                 password = s.contra,

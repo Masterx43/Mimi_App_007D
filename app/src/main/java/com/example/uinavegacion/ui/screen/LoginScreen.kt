@@ -104,7 +104,7 @@ private fun LoginScreen(
             )
             Spacer(Modifier.height(12.dp)) // Separación
             Text(
-                text = "Pantalla de Login (demo). Usa la barra superior, el menú lateral o los botones.",
+                text = "Inicie sesion para poder reservar nuestros servicios.",
                 textAlign = TextAlign.Center // Alineación centrada
             )
             Spacer(Modifier.height(20.dp)) // Separación

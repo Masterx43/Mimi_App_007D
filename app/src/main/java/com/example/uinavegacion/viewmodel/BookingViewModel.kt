@@ -16,6 +16,7 @@ data class BookingUiState(
     val email: String = "",
     val servicio: String = "",
     val servicioId: Long? = null,
+    val precioServicio: Int? = null,
     val fecha: String = "",
     val hora: String = "",
     val successMessage: String? = null,
@@ -70,7 +71,7 @@ class BookingViewModel(
                     // Crear y guardar la reserva en la base de datos
                     val reserva = ReservaEntity(
                         fechaReserva = s.fecha,
-                        subtotal = 10000, // ejemplo, puedes calcular con el precio del servicio
+                        subtotal = s.precioServicio ?: 0, // ejemplo, puedes calcular con el precio del servicio
                         userId = userId,
                         estadoId = 1L,
                         servicioId = s.servicioId ?: 1L
@@ -79,7 +80,7 @@ class BookingViewModel(
 
                     _uiState.update {
                         it.copy(
-                            successMessage = "Reserva agendada con éxito para ${s.fecha} a las ${s.hora} (${s.servicio})",
+                            successMessage = "${userId} Reserva agendada con éxito para ${s.fecha} a las ${s.hora} (${s.servicio})",
                             errorMessage = null
                         )
                     }

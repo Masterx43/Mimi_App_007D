@@ -57,12 +57,14 @@ fun RegisterScreenVm(
     }
     RegisterScreen(
         nombre= state.nombre,
+        apellido = state.apellido,
         email= state.email,
         cel=state.cel,
         contra=state.contra,
         confirm=state.confirm,
 
         nombreError=state.nombreError,
+        apellidoError = state.apellidoError,
         emailError=state.emailError ,
         celError= state.celError,
         confirmError=state.confirmError,
@@ -73,6 +75,7 @@ fun RegisterScreenVm(
         errorMsg= state.errorMsg,
 
         onNombreChange= vm::onNombreChange,
+        onApellidoChange = vm::onApellidoChange,
         onEmailChange= vm::onEmailChange,
         onCelChange= vm::onCelChange,
         onContraChange= vm::onContraChange,
@@ -87,12 +90,14 @@ fun RegisterScreenVm(
 @Composable // Pantalla Registro (solo navegación)
 private fun RegisterScreen(
     nombre:String,
+    apellido : String,
     email: String,
     cel:String,
     contra:String,
     confirm:String,
 
     nombreError:String?,
+    apellidoError:String?,
     emailError:String?,
     celError:String?,
     confirmError:String?,
@@ -103,6 +108,7 @@ private fun RegisterScreen(
     errorMsg:String?,
 
     onNombreChange:(String)-> Unit,
+    onApellidoChange:(String) -> Unit,
     onEmailChange: (String) -> Unit,
     onCelChange: (String) -> Unit,
     onContraChange: (String) -> Unit,
@@ -146,6 +152,25 @@ private fun RegisterScreen(
                 Text(nombreError, color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.labelSmall)
             }
             Spacer(Modifier.height(8.dp)) //Separación
+
+            OutlinedTextField(
+                value = apellido,
+                onValueChange = onApellidoChange,
+                label = { Text("Apellido") },
+                singleLine = true,
+                isError = apellidoError != null,
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                modifier = Modifier.fillMaxWidth()
+            )
+            if (apellidoError != null) {
+                Text(
+                    apellidoError,
+                    color = MaterialTheme.colorScheme.error,
+                    style = MaterialTheme.typography.labelSmall
+                )
+            }
+
+            Spacer(Modifier.height(8.dp))
 
             OutlinedTextField(
                 value = email,                               // Valor actual

@@ -28,7 +28,8 @@ fun AppBottomBar(
     onRegister: () -> Unit,
     onReserve: () -> Unit,
     onUserInfo: () -> Unit,
-    onAdmin: () -> Unit
+    onAdmin: () -> Unit,
+    onWorker: ()-> Unit
 ) {
     val context = LocalContext.current
     val userPrefs =remember { UserPreferences(context) }
@@ -36,8 +37,8 @@ fun AppBottomBar(
     val roleId by userPrefs.userRoleId.collectAsStateWithLifecycle(null)
 
     Surface(
-        tonalElevation = 8.dp,  // 👈 sombra suave para dar profundidad
-        shadowElevation = 8.dp, // 👈 mejora el contraste con el fondo
+        tonalElevation = 8.dp,  // sombra suave para dar profundidad
+        shadowElevation = 8.dp, // mejora el contraste con el fondo
         color = LilaPri,
         shape = RoundedCornerShape(
             topStart = 30.dp,
@@ -64,7 +65,11 @@ fun AppBottomBar(
                 label = {
                     Text(
                         if (isLoggedIn) {
-                            if (roleId == 2L) "Admin" else "Cliente"
+                            when (roleId) {
+                                2L -> "Admin"
+                                3L -> "Trabajador" // Reemplazar por ruta para screen Trabajador
+                                else -> "Cliente"
+                            }
                         } else "Invitado",
                         color = Color.White
                     )
@@ -74,7 +79,7 @@ fun AppBottomBar(
                     if (isLoggedIn) {
                         when (roleId) {
                             2L -> onAdmin()
-                            3L -> onUserInfo()  // Reemplazar por ruta para screen Trabajador
+                            3L -> onWorker()  // Reemplazar por ruta para screen Trabajador
                             else -> onUserInfo()
                         }
                     } else {

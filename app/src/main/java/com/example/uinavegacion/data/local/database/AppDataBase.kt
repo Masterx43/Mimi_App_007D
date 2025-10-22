@@ -79,7 +79,11 @@ abstract class AppDatabase : RoomDatabase() {
                                 }
 
 
-                                val rolesSeed = listOf(RolEntity( descripcion = "Cliente"), RolEntity(descripcion = "Administrador"))
+                                val rolesSeed = listOf(
+                                    RolEntity( descripcion = "Cliente"),
+                                    RolEntity(descripcion = "Administrador"),
+                                    RolEntity(descripcion = "Trabajador")
+                                )
                                 if (rolDao.getTotalRols() == 0) rolesSeed.forEach { rolDao.insertRol(it) }
 
                                 // Categorías
@@ -93,9 +97,9 @@ abstract class AppDatabase : RoomDatabase() {
                                         nombre = "Demo",
                                         apellido = "Usuario",
                                         correo = "demo@duoc.cl",
-                                        pass = "Demo123!",          // Recuerda que en producción se debería encriptar
+                                        pass = "Demo123!",          // en producción se debería encriptar
                                         phone = "987654321",
-                                        rolId = 1L,                 // Rol por defecto
+                                        rolId = 1L,                 // Cliente
                                         categoriaId = 2L,
                                         estadoId = 1L
                                     ),
@@ -103,9 +107,19 @@ abstract class AppDatabase : RoomDatabase() {
                                         nombre = "Demo2",
                                         apellido = "Usuario",
                                         correo = "demo2@duoc.cl",
-                                        pass = "Demo12!",          // Recuerda que en producción se debería encriptar
+                                        pass = "Demo12!",          // en producción se debería encriptar
                                         phone = "987654321",
-                                        rolId = 2L,                 // Rol por defecto
+                                        rolId = 2L,                 // Administrador
+                                        categoriaId = 1L,
+                                        estadoId = 1L// Categoría por defecto
+                                    ),
+                                    UserEntity(
+                                        nombre = "Demo3",
+                                        apellido = "Trabajador",
+                                        correo = "demo3@duoc.cl",
+                                        pass = "Demo12!",          // en producción se debería encriptar
+                                        phone = "9876543212",
+                                        rolId = 3L,                 // Trabajador
                                         categoriaId = 1L,
                                         estadoId = 1L// Categoría por defecto
                                     )

@@ -20,13 +20,15 @@ import com.example.uinavegacion.viewmodel.AdminViewModel
 
 import com.example.uinavegacion.viewmodel.AuthViewModel
 import com.example.uinavegacion.viewmodel.BookingViewModel
+import com.example.uinavegacion.viewmodel.WorkerViewModel
 import kotlinx.coroutines.launch
 
 @Composable // Gráfico de navegación + Drawer + Scaffold
 fun AppNavGraph(navController: NavHostController,
                 authViewModel: AuthViewModel,
                 bookingViewModel: BookingViewModel,
-                adminViewModel: AdminViewModel
+                adminViewModel: AdminViewModel,
+                workerViewModel: WorkerViewModel
 ) { // Recibe el controlador
 
 
@@ -41,6 +43,7 @@ fun AppNavGraph(navController: NavHostController,
     val goReserve: () -> Unit= {navController.navigate(Route.Booking.path)}
     val goUserInfo:() -> Unit = {navController.navigate(Route.UserInfo.path)}
     val goAdmin: () -> Unit = {navController.navigate(Route.AdminInfo.path)}
+    val goWorker: () -> Unit = {navController.navigate(Route.WorkerInfo.path)}
 
     ModalNavigationDrawer(
         drawerState = drawerState,
@@ -78,7 +81,8 @@ fun AppNavGraph(navController: NavHostController,
                     onRegister = goRegister,
                     onReserve = goReserve,
                     onUserInfo = goUserInfo,
-                    onAdmin = goAdmin
+                    onAdmin = goAdmin,
+                    onWorker = goWorker
                 )
             }
         ) { innerPadding ->
@@ -128,6 +132,22 @@ fun AppNavGraph(navController: NavHostController,
                         UserInfoScreen(
                             vm = authViewModel,
                             onLogout = goLogin
+                        )
+                    }
+
+                    composable(Route.AdminInfo.path) {
+                        AdminScreen(
+                            vm = authViewModel,
+                            onLogout = goLogin,
+                            adminVm = adminViewModel
+                        )
+                    }
+
+                    composable(Route.WorkerInfo.path) {
+                        WorkerScreen(
+                            vm = authViewModel,
+                            onLogout = goLogin,
+                            workerVm = workerViewModel
                         )
                     }
                 }

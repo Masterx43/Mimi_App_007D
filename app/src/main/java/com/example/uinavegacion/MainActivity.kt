@@ -18,7 +18,11 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.uinavegacion.data.local.database.AppDatabase
 import com.example.uinavegacion.data.local.storage.UserPreferences
+import com.example.uinavegacion.data.repository.CategoriaRepository
+import com.example.uinavegacion.data.repository.EstadoRepository
 import com.example.uinavegacion.data.repository.ReservaRepository
+import com.example.uinavegacion.data.repository.RolRepository
+import com.example.uinavegacion.data.repository.ServicioRepository
 import com.example.uinavegacion.data.repository.UserRepository
 import com.example.uinavegacion.navigation.AppNavGraph
 import com.example.uinavegacion.ui.theme.UINavegacionTheme
@@ -59,12 +63,17 @@ fun AppRoot() { // Raíz de la app para separar responsabilidades
     val userDao = db.userDao()
     val reservaDao = db.reservaDao()
     val servicioDao = db.servicioDao()
+    val rolDao = db.rolDao()
+    val categoriaDao = db.categoriaDao()
+    val estadoDao = db.estadoDao()
     // ^ Daos para viewModel.
 
     val userRepository = UserRepository(userDao)
     val reservaRepository = ReservaRepository(reservaDao)
-
-
+    val servicioRepository = ServicioRepository(servicioDao)
+    val estadoRepository = EstadoRepository(estadoDao)
+    val rolRepository = RolRepository(rolDao)
+    val categoriaRepository = CategoriaRepository(categoriaDao)
     // ^ Repositorios.
 
     val userPrefs = UserPreferences(context)
@@ -76,7 +85,7 @@ fun AppRoot() { // Raíz de la app para separar responsabilidades
     val userId = authState.userId ?: 1L
 
     val bookingViewModel : BookingViewModel = viewModel (
-        factory = BookingViewModelFactory(reservaRepository, servicioDao, userId)
+        factory = BookingViewModelFactory(reservaRepository, servicioRepository, userId)
     )
     // ^ Creamos el ViewModel con factory para inyectar el repositorio.
 

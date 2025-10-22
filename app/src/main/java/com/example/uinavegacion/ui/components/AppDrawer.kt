@@ -49,10 +49,12 @@ fun defaultDrawerItems(
     onHome: () -> Unit,   // Acción Home
     onLogin: () -> Unit,  // Acción Login
     onRegister: () -> Unit, // Acción Registro
-    onReserve:() -> Unit
+    onReserve:() -> Unit,
+    onUserInfo:()-> Unit
 ): List<DrawerItem> = listOf(
     DrawerItem("Home", Icons.Filled.Home, onHome),          // Ítem Home
     DrawerItem("Login", Icons.Filled.AccountCircle, onLogin),       // Ítem Login
     DrawerItem("Registro", Icons.Filled.Person, onRegister), // Ítem Registro
-    DrawerItem("Agendar", Icons.Filled.DateRange, onReserve)
+    DrawerItem("Agendar", Icons.Filled.DateRange, onReserve),
+    DrawerItem("Perfil", Icons.Filled.AccountCircle, onUserInfo)
 )

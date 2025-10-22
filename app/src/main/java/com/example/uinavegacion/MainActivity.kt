@@ -17,6 +17,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.uinavegacion.data.local.database.AppDatabase
+import com.example.uinavegacion.data.local.storage.UserPreferences
 import com.example.uinavegacion.data.repository.CategoriaRepository
 import com.example.uinavegacion.data.repository.EstadoRepository
 import com.example.uinavegacion.data.repository.ReservaRepository
@@ -75,8 +76,10 @@ fun AppRoot() { // Raíz de la app para separar responsabilidades
     val categoriaRepository = CategoriaRepository(categoriaDao)
     // ^ Repositorios.
 
+    val userPrefs = UserPreferences(context)
+
     val authViewModel: AuthViewModel = viewModel(
-        factory = AuthViewModelFactory(userRepository)
+        factory = AuthViewModelFactory(userRepository, userPrefs)
     )
     val authState by authViewModel.session.collectAsState()
     val userId = authState.userId ?: 1L

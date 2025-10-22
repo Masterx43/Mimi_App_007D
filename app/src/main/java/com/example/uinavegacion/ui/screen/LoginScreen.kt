@@ -40,8 +40,11 @@ import com.example.uinavegacion.viewmodel.AuthViewModel
 import kotlin.String
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import com.example.uinavegacion.data.local.storage.UserPreferences
 import com.example.uinavegacion.ui.theme.Blanco
 
 
@@ -53,10 +56,16 @@ fun LoginScreenVm(
 ){
     val state by vm.login.collectAsStateWithLifecycle()
 
-    if (state.success){
-        vm.clearLoginResults()
-        onLoginOkNavigateHome()
+    val context = LocalContext.current
+    val userPrefs = remember { UserPreferences(context) }
+
+    LaunchedEffect(state.success) {
+        if (state.success){
+            vm.clearLoginResults()
+            onLoginOkNavigateHome()
+        }
     }
+
     LoginScreen(
         email=state.email,
         contra=state.contra,

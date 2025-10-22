@@ -37,6 +37,7 @@ fun AppNavGraph(navController: NavHostController,
     val goLogin: () -> Unit   = { navController.navigate(Route.Login.path) }   // Ir a Login
     val goRegister: () -> Unit = { navController.navigate(Route.Register.path) } // Ir a Registro
     val goReserve: () -> Unit= {navController.navigate(Route.Booking.path)}
+    val goUserInfo:() -> Unit = {navController.navigate(Route.UserInfo.path)}
 
     ModalNavigationDrawer(
         drawerState = drawerState,
@@ -47,7 +48,8 @@ fun AppNavGraph(navController: NavHostController,
                     onHome = { scope.launch { drawerState.close() }; goHome() },
                     onLogin = { scope.launch { drawerState.close() }; goLogin() },
                     onRegister = { scope.launch { drawerState.close() }; goRegister() },
-                    onReserve = { scope.launch { drawerState.close() }; goReserve() }
+                    onReserve = { scope.launch { drawerState.close() }; goReserve() },
+                    onUserInfo = {scope.launch { drawerState.close(); goUserInfo() }}
                 )
             )
         }
@@ -71,7 +73,9 @@ fun AppNavGraph(navController: NavHostController,
                 AppBottomBar(
                     onLogin = goLogin,
                     onRegister = goRegister,
-                    onReserve = goReserve
+                    onReserve = goReserve,
+                    onUserInfo = goUserInfo
+
                 )
             }
         ) { innerPadding ->
@@ -114,6 +118,13 @@ fun AppNavGraph(navController: NavHostController,
                     composable(Route.Booking.path) {
                         BookingScreen(
                             vm = bookingViewModel
+                        )
+                    }
+
+                    composable(Route.UserInfo.path){
+                        UserInfoScreen(
+                            vm = authViewModel,
+                            onLogout = goLogin
                         )
                     }
                 }

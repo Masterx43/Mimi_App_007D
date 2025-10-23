@@ -73,6 +73,12 @@ dependencies {
     //Data Store Preferncias
     implementation("androidx.datastore:datastore-preferences:1.1.1")
 
+    //cargar imagenes (para mostrarlas en la ui)
+    implementation("io.coil-kt:coil-compose:2.7.0")
+
+    //cargar las animaciones
+
+
 
 
 

@@ -54,7 +54,9 @@ data class SessionUiState(
     val isLoggedIn: Boolean = false,
     val userId: Long? = null,
     val userName: String? = null,
+    val userLastName: String? = null,
     val userEmail: String? = null,
+    val userPhone: String? = null,
     val userRoleId: Long? = null
 )
 class AuthViewModel(

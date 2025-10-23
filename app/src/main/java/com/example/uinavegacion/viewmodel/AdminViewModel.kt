@@ -9,9 +9,11 @@ import com.example.uinavegacion.data.local.database.AppDatabase
 import com.example.uinavegacion.data.local.entities.categoria.CategoriaEntity
 import com.example.uinavegacion.data.local.entities.rol.RolEntity
 import com.example.uinavegacion.data.local.entities.servicio.ServicioEntity
+import com.example.uinavegacion.data.local.entities.user.UserEntity
 import com.example.uinavegacion.data.repository.CategoriaRepository
 import com.example.uinavegacion.data.repository.RolRepository
 import com.example.uinavegacion.data.repository.ServicioRepository
+import com.example.uinavegacion.data.repository.UserRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -22,13 +24,15 @@ data class AdminUiState(
     val errorMessage: String? = null,
     val servicios: List<ServicioEntity> = emptyList(),
     val categorias: List<CategoriaEntity> = emptyList(),
-    val roles: List<RolEntity> = emptyList()
+    val roles: List<RolEntity> = emptyList(),
+    val trbajadores: List<UserEntity> = emptyList()
 )
 
 class AdminViewModel(
     private val servicioRepository: ServicioRepository,
     private val categoriaRepository: CategoriaRepository,
-    private val rolRepository: RolRepository
+    private val rolRepository: RolRepository,
+    private val userRepository: UserRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(AdminUiState())
@@ -44,9 +48,10 @@ class AdminViewModel(
                 val servicios = servicioRepository.obtenerTodosServicios().getOrDefault(emptyList())
                 val categorias = categoriaRepository.obtenerTodasCategorias().getOrDefault(emptyList())
                 val roles = rolRepository.obtenerTodosRoles().getOrDefault(emptyList())
+                val trabajadores = userRepository.getAllWorkers(3L).getOrDefault(emptyList())
 
                 _uiState.update {
-                    it.copy(servicios = servicios, categorias = categorias, roles = roles)
+                    it.copy(servicios = servicios, categorias = categorias, roles = roles,)
                 }
             } catch (e: Exception) {
                 _uiState.update { it.copy(errorMessage = "Error al cargar datos: ${e.message}") }
@@ -89,6 +94,44 @@ class AdminViewModel(
                 cargarListas()
             } else {
                 _uiState.update { it.copy(errorMessage = "Error al crear rol") }
+            }
+        }
+    }
+
+    fun crearTrabajador(
+        nombre: String,
+        apellido: String,
+        correo: String,
+        telefono: String,
+        contrasena: String
+    ) {
+        viewModelScope.launch {
+            try {
+                val nuevo = UserEntity(
+                    nombre = nombre,
+                    apellido = apellido,
+                    correo = correo,
+                    phone = telefono,
+                    pass = contrasena,
+                    rolId = 3L,
+                    estadoId = 1L,
+                    categoriaId= 1L
+                    // rol trabajador
+                )
+                val result = userRepository.agregarTrabajador(
+                    nuevo
+
+                )
+
+
+                if (result.isSuccess) {
+                    _uiState.update { it.copy(successMessage = "Trabajador creado correctamente") }
+                    cargarListas()
+                } else {
+                    _uiState.update { it.copy(errorMessage = "Error al crear trabajador") }
+                }
+            } catch (e: Exception) {
+                _uiState.update { it.copy(errorMessage = "Error: ${e.message}") }
             }
         }
     }

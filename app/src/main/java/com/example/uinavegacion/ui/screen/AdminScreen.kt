@@ -6,6 +6,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AdminPanelSettings
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Logout
@@ -40,6 +41,7 @@ fun AdminScreen(
     var servicePrice by remember { mutableStateOf("") }
     var categoryName by remember { mutableStateOf("") }
     var roleName by remember { mutableStateOf("") }
+
 
     Box(
         modifier = Modifier
@@ -158,7 +160,102 @@ fun AdminScreen(
                 }
             }
 
+
             Spacer(Modifier.height(24.dp))
+
+            Card (
+                colors = CardDefaults.cardColors(containerColor = Blanco),
+                shape = RoundedCornerShape(16.dp),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+
+                var nombreTrabajador by remember { mutableStateOf("") }
+                var apellidoTrabajador by remember { mutableStateOf("") }
+                var correoTrabajador by remember { mutableStateOf("") }
+                var telefonoTrabajador by remember { mutableStateOf("") }
+                var contrasenaTrabajador by remember { mutableStateOf("") }
+
+
+                Spacer(Modifier.height(16.dp))
+                Text("Registrar Nuevo Trabajador", color = LilaPri)
+
+                OutlinedTextField(
+                    value = nombreTrabajador,
+                    onValueChange = { nombreTrabajador = it },
+                    label = { Text("Nombre") },
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Spacer(Modifier.height(8.dp))
+                OutlinedTextField(
+                    value = apellidoTrabajador,
+                    onValueChange = { apellidoTrabajador = it },
+                    label = { Text("Apellido") },
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Spacer(Modifier.height(8.dp))
+                OutlinedTextField(
+                    value = correoTrabajador,
+                    onValueChange = { correoTrabajador = it },
+                    label = { Text("Correo") },
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Spacer(Modifier.height(8.dp))
+                OutlinedTextField(
+                    value = telefonoTrabajador,
+                    onValueChange = { telefonoTrabajador = it.filter { c -> c.isDigit() } },
+                    label = { Text("Teléfono") },
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Spacer(Modifier.height(8.dp))
+                OutlinedTextField(
+                    value = contrasenaTrabajador,
+                    onValueChange = { contrasenaTrabajador = it },
+                    label = { Text("Contraseña") },
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                Spacer(Modifier.height(8.dp))
+                Button(
+                    onClick = {
+                        if (nombreTrabajador.isNotBlank() && apellidoTrabajador.isNotBlank()
+                            && correoTrabajador.isNotBlank() && telefonoTrabajador.isNotBlank()
+                            && contrasenaTrabajador.isNotBlank()
+                        ) {
+                            adminVm.crearTrabajador(
+                                nombreTrabajador.trim(),
+                                apellidoTrabajador.trim(),
+                                correoTrabajador.trim(),
+                                telefonoTrabajador.trim(),
+                                contrasenaTrabajador.trim()
+                            )
+                            nombreTrabajador = ""
+                            apellidoTrabajador = ""
+                            correoTrabajador = ""
+                            telefonoTrabajador = ""
+                            contrasenaTrabajador = ""
+                        }
+                    },
+                    colors = ButtonDefaults.buttonColors(containerColor = Rosado),
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(10.dp)
+                ) {
+                    Icon(Icons.Filled.Add, contentDescription = "Agregar", tint = Blanco)
+                    Spacer(Modifier.width(8.dp))
+                    Text("Registrar Trabajador", color = Blanco)
+                }
+
+                Spacer(Modifier.height(24.dp))
+                Text("Trabajadores registrados:", color = LilaPri)
+                if (uiState.trbajadores.isEmpty()) {
+                    Text("Aún no hay trabajadores registrados.", color = Color.Gray)
+                } else {
+                    uiState.trbajadores.forEach { t ->
+                        Text("• ${t.nombre} ${t.apellido} — ${t.correo}", color = Color.DarkGray)
+                    }
+                }
+
+                Spacer(Modifier.height(32.dp))
+            }
 
             // Mensajes de resultado
             uiState.successMessage?.let {
@@ -199,6 +296,13 @@ fun AdminScreen(
                 Spacer(Modifier.width(8.dp))
                 Text("Cerrar sesión", color = Blanco)
             }
+
+            //creamos el trabajador
+            Spacer(Modifier.height(24.dp))
+
+
+
+
         }
     }
 }

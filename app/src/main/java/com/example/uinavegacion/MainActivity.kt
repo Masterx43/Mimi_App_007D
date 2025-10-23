@@ -85,7 +85,7 @@ fun AppRoot() { // Raíz de la app para separar responsabilidades
     )
     val adminVm: AdminViewModel = viewModel(
         factory = AdminViewModelFactory(
-            servicioRepository,categoriaRepository,rolRepository)
+            servicioRepository,categoriaRepository,rolRepository,userRepository)
     )
 
     val workervm: WorkerViewModel = viewModel(

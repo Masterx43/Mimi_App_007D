@@ -40,4 +40,21 @@ class UserRepository(
         )
         return Result.success(id)                                    // Devuelve ID generado
     }
+    suspend fun agregarTrabajador(user : UserEntity) : Result<Long>{
+        val exists = userDao.getByEmail(user.correo) != null
+        if (exists) {
+            return Result.failure(IllegalStateException("El correo ya está registrado"))
+        }
+        val id = userDao.insert(user)
+        return Result.success(id)
+    }
+    suspend fun getAllWorkers(
+        rolId: Long
+    ): Result<List<UserEntity>>{
+        val trabajadores= userDao.getUsersByRolId(rolId)
+        if(trabajadores.isNullOrEmpty()){
+            return Result.failure(IllegalStateException("No hay trabajadores"))
+        }
+        return Result.success(trabajadores)
+    }
 }

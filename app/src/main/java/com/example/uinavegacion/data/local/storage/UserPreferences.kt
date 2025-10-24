@@ -20,9 +20,9 @@ class UserPreferences(private val context: Context){
     suspend fun saveLoginState(isLoggedIn: Boolean, roleId: Long?, userId : Long?){
         context.dataStore.edit { prefs->
             prefs[isLoggedInKey]= isLoggedIn
-            if (roleId !=null) prefs[roleIdKey]=roleId
+            if (roleId !=null) prefs[roleIdKey]= roleId
             else prefs.remove(roleIdKey)
-            if (userId != null) prefs[userIdKey] = userId
+            if (userId != null) prefs[userIdKey]= userId
             else prefs.remove(userIdKey)
         }
     }

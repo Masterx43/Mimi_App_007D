@@ -3,7 +3,9 @@ package com.example.uinavegacion.navigation
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -88,7 +90,10 @@ fun AppNavGraph(navController: NavHostController,
                     onAdmin = goAdmin,
                     onWorker = goWorker
                 )
-            }
+            },
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(WindowInsets.navigationBars.asPaddingValues())
         ) { innerPadding ->
 
             // 👇 El contenido principal NO debe pintar el fondo del BottomBar
@@ -128,7 +133,8 @@ fun AppNavGraph(navController: NavHostController,
                     }
                     composable(Route.Booking.path) {
                         BookingScreen(
-                            vm = bookingViewModel
+                            vm = bookingViewModel,
+                            authVm = authViewModel
                         )
                     }
 

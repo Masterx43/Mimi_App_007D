@@ -39,7 +39,13 @@ fun LoginScreenVm(
     val context = LocalContext.current
     val userPrefs = remember { UserPreferences(context) }
 
-
+    LaunchedEffect(state.success) {
+        if (state.success){
+            userPrefs.setLoggedIn(true)
+            vm.clearLoginResults()
+            onLoginOkNavigateHome()
+        }
+    }
 
     LoginScreen(
         email=state.email,
@@ -81,6 +87,9 @@ private fun LoginScreen(
 ) {
     val Blanco = Blanco // Fondo distinto para contraste
     var showPass by remember { mutableStateOf(false) }
+
+
+
 
     Box(
         modifier = Modifier

@@ -219,8 +219,18 @@ class AuthViewModel(
     }
 
     fun logout() {
-        viewModelScope.launch { userPrefs.clear() }
-        _session.update { SessionUiState() } // reset
+        viewModelScope.launch {
+            userPrefs.setLoggedIn(false)
+            _session.update {
+                it.copy(
+                    isLoggedIn = false,
+                    userId = null,
+                    userEmail = null,
+                    userName = null,
+                    userRoleId = null
+                )
+            }
+        }
     }
 
 }

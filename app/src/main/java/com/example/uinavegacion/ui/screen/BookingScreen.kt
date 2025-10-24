@@ -1,6 +1,5 @@
 package com.example.uinavegacion.ui.screen
 
-import android.R
 import android.app.DatePickerDialog
 import android.widget.Toast
 import androidx.compose.foundation.background
@@ -21,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.uinavegacion.ui.theme.FondoClaro
 import com.example.uinavegacion.ui.theme.LilaPri
+import com.example.uinavegacion.viewmodel.AuthViewModel
 import com.example.uinavegacion.viewmodel.BookingViewModel
 import java.text.SimpleDateFormat
 import java.util.*
@@ -28,13 +28,20 @@ import java.util.*
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BookingScreen(
-    vm : BookingViewModel
+    vm : BookingViewModel,
+    authVm : AuthViewModel
 ) {
     val context = LocalContext.current
     val state by vm.uiState.collectAsState()
+    val session by authVm.session.collectAsState()
 
     //Lista de horas (que se actualizará cuando elijas una fecha)
     var horasDisponibles by remember { mutableStateOf<List<String>>(emptyList()) }
+
+    LaunchedEffect(session.userEmail) {
+        if (session.userName != null) vm.onNombreChange(session.userName!!)
+        if (session.userEmail != null) vm.onEmailChange(session.userEmail!!)
+    }
 
     //Abrir calendario
     fun abrirCalendario() {
@@ -96,6 +103,7 @@ fun BookingScreen(
             value = state.nombre,
             onValueChange = vm::onNombreChange,
             label = { Text("Nombre") },
+            readOnly = session.isLoggedIn,
             modifier = Modifier.fillMaxWidth(),
             colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = LilaPri,
@@ -109,6 +117,7 @@ fun BookingScreen(
             value = state.email,
             onValueChange = vm::onEmailChange,
             label = { Text("Correo") },
+            readOnly = session.isLoggedIn,
             modifier = Modifier.fillMaxWidth(),
             colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = LilaPri,
@@ -214,7 +223,7 @@ fun BookingScreen(
 
         //Botón "Agendar"
         Button(
-            onClick = { vm.registrarReserva() },
+            onClick = { vm.registrarReserva(session.userId ?: 0L) },
             modifier = Modifier.fillMaxWidth(),
             colors = ButtonDefaults.buttonColors(containerColor = LilaPri),
             enabled = !state.isLoading
@@ -222,7 +231,7 @@ fun BookingScreen(
             if (state.isLoading) {
                 CircularProgressIndicator(
                     color = Color.White,
-                    strokeWidth = 2.dp,
+                    strokeWidth = 2.dp,                   //hace el circulo de loader mas fino o grueso depende del valor
                     modifier = Modifier.size(20.dp)
                 )
                 Spacer(Modifier.width(8.dp))
@@ -254,6 +263,7 @@ fun BookingScreen(
                         color = Color.Black
                     )
                 },
+
                 containerColor = Color.White,
                 tonalElevation = 8.dp,
                 shape = RoundedCornerShape(16.dp)
@@ -263,4 +273,4 @@ fun BookingScreen(
     }
 }
 
-//hace el circulo de loader mas fino o grueso depende del valor
+

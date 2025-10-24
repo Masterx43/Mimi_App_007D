@@ -1,6 +1,7 @@
 package com.example.uinavegacion.ui.components
 
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
@@ -32,7 +33,7 @@ fun AppBottomBar(
     onWorker: ()-> Unit
 ) {
     val context = LocalContext.current
-    val userPrefs =remember { UserPreferences(context) }
+    val userPrefs = remember { UserPreferences(context) }
     val isLoggedIn by userPrefs.isLoogedIn.collectAsStateWithLifecycle(false)
     val roleId by userPrefs.userRoleId.collectAsStateWithLifecycle(null)
 
@@ -43,7 +44,7 @@ fun AppBottomBar(
         shape = RoundedCornerShape(
             topStart = 30.dp,
             topEnd = 30.dp
-        ), // 🔥 bordes curvos superiores
+        ), // bordes curvos superiores
         modifier = Modifier
             .fillMaxWidth()
             .height(85.dp)
@@ -91,13 +92,25 @@ fun AppBottomBar(
                 icon = { Icon(Icons.Filled.Person, contentDescription = "Registro", tint = Color.White) },
                 label = { Text("Registro", color = Color.White) },
                 selected = false,
-                onClick = onRegister
+                onClick = {
+                    if (!isLoggedIn){
+                        onRegister()
+                    } else {
+                        Toast.makeText(context, "Ya tiene una sesion activa, cierre sesion para continuar", Toast.LENGTH_SHORT).show()
+                    }
+                }
             )
             NavigationBarItem(
                 icon = { Icon(Icons.Filled.DateRange, contentDescription = "Agendar", tint = Color.White) },
                 label = { Text("Agendar", color = Color.White) },
                 selected = false,
-                onClick = onReserve
+                onClick = {
+                    if(isLoggedIn) {
+                        onReserve()
+                    } else {
+                        Toast.makeText(context, "Inicie sesion para continuar", Toast.LENGTH_SHORT).show()
+                    }
+                }
             )
         }
     }

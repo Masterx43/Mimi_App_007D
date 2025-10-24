@@ -102,7 +102,7 @@ fun AppRoot() { // Raíz de la app para separar responsabilidades
     val userId = authState.userId ?: 1L
 
     val bookingViewModel : BookingViewModel = viewModel (
-        factory = BookingViewModelFactory(reservaRepository, servicioRepository, userId)
+        factory = BookingViewModelFactory(reservaRepository, servicioRepository)
     )
     // ^ Creamos el ViewModel con factory para inyectar el repositorio.
 
@@ -128,5 +128,4 @@ fun AppRoot() { // Raíz de la app para separar responsabilidades
             // y luego pasar ese authViewModel a las pantallas Login/Register donde se use.
         }
     }
-
 }

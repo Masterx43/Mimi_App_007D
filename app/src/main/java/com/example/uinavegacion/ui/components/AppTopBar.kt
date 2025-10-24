@@ -1,6 +1,7 @@
 package com.example.uinavegacion.ui.components
 
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -29,14 +30,18 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.*
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.uinavegacion.ui.theme.LilaOscuro
 import com.example.uinavegacion.R
+import com.example.uinavegacion.data.local.storage.UserPreferences
 import com.example.uinavegacion.ui.theme.LilaPri
 
 
@@ -51,7 +56,10 @@ fun AppTopBar(
 ) {
     //lo que hace es crear una variable de estado recordada que le dice a la interfaz
     // si el menú desplegable de 3 puntitos debe estar visible (true) o oculto (false).
+    var context = LocalContext.current
     var showMenu by remember { mutableStateOf(false) } // Estado del menú overflow
+    val userPrefs = remember { UserPreferences(context) }
+    val isLoggedIn by userPrefs.isLoogedIn.collectAsStateWithLifecycle(false)
 
     Surface(
         color = LilaPri,
@@ -103,7 +111,15 @@ fun AppTopBar(
                         contentDescription = "Home",
                         tint = Color.White)// Ícono Home
                 }
-                IconButton(onClick = onReserve) {
+                IconButton(
+                    onClick = {
+                        if(isLoggedIn) {
+                            onReserve()
+                        } else {
+                            Toast.makeText(context, "Inicie sesion para continuar", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                ) {
                     Icon(Icons.Filled.DateRange,
                         contentDescription = "Agendar",
                         tint = Color.White)

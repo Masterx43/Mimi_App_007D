@@ -28,8 +28,7 @@ data class BookingUiState(
 
 class BookingViewModel(
     private val reservaRepository: ReservaRepository, // para guardar la reserva
-    private val servicioRepository: ServicioRepository, // para cargar los servicios
-    private val userId: Long
+    private val servicioRepository: ServicioRepository // para cargar los servicios
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(BookingUiState())
@@ -58,7 +57,7 @@ class BookingViewModel(
     fun onFechaChange(value: String) = _uiState.update { it.copy(fecha = value) }
     fun onHoraChange(value: String) = _uiState.update { it.copy(hora = value) }
 
-    fun registrarReserva() {
+    fun registrarReserva(userId : Long) {
         viewModelScope.launch {
             val s = _uiState.value
             if (s.nombre.isBlank() || s.email.isBlank() || s.servicio.isBlank() ||
@@ -85,7 +84,7 @@ class BookingViewModel(
                     _uiState.update {
                         it.copy(
                             isLoading=false,
-                            successMessage = "$userId Reserva agendada con éxito para ${s.fecha} a las ${s.hora} (${s.servicio})",
+                            successMessage = "Reserva agendada con éxito para ${s.fecha} a las ${s.hora} (${s.servicio})",
                             errorMessage = null
                         )
                     }

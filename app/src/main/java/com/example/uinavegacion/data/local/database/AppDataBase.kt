@@ -31,7 +31,7 @@ import kotlinx.coroutines.launch                                // Lanzar corrut
                 ServicioEntity::class,
                 CategoriaEntity::class
                 ],
-    version = 1,
+    version = 2,
     exportSchema = true // Mantener true para inspección de esquema (útil en educación)
 )
 abstract class AppDatabase : RoomDatabase() {

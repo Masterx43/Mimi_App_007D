@@ -40,13 +40,14 @@ class BookingViewModel(
 
     private fun cargarServicios() {
         viewModelScope.launch {
-            val result = servicioRepository.obtenerTodosServicios()
 
-            if (result.isSuccess) {
-                val lista = result.getOrNull().orEmpty()
+            val result = servicioRepository.obtenerTodosServicios()
+            result.onSuccess { lista ->
+
                 _uiState.update { it.copy(serviciosDisponibles = lista) }
-            } else {
-                _uiState.update { it.copy(errorMessage = "Error al cargar servicios") }
+            }.onFailure { e ->
+
+                _uiState.update { it.copy(errorMessage = e.message) }
             }
         }
     }

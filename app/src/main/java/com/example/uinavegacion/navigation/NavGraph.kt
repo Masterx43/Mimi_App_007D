@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
@@ -70,7 +71,7 @@ fun AppNavGraph(navController: NavHostController,
             //  Fondo transparente (para que se vean las curvas)
             containerColor = Color.Transparent,
             // Elimina paddings automáticos del sistema
-            contentWindowInsets = WindowInsets(0, 0, 0, 0),
+            contentWindowInsets = WindowInsets.safeDrawing,
 
             topBar = {
                 AppTopBar(
@@ -93,7 +94,7 @@ fun AppNavGraph(navController: NavHostController,
             },
             modifier = Modifier
                 .fillMaxSize()
-                .padding(WindowInsets.navigationBars.asPaddingValues())
+
         ) { innerPadding ->
 
             // 👇 El contenido principal NO debe pintar el fondo del BottomBar

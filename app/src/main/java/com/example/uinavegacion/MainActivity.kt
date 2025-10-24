@@ -32,6 +32,8 @@ import com.example.uinavegacion.viewmodel.AuthViewModel
 import com.example.uinavegacion.viewmodel.AuthViewModelFactory
 import com.example.uinavegacion.viewmodel.BookingViewModel
 import com.example.uinavegacion.viewmodel.BookingViewModelFactory
+import com.example.uinavegacion.viewmodel.UserInfoViewModel
+import com.example.uinavegacion.viewmodel.UserInfoViewModelFactory
 import com.example.uinavegacion.viewmodel.WorkerViewModel
 import com.example.uinavegacion.viewmodel.WorkerViewModelFactory
 
@@ -92,6 +94,10 @@ fun AppRoot() { // Raíz de la app para separar responsabilidades
         factory = WorkerViewModelFactory(reservaRepository)
     )
 
+    val userInfoVm : UserInfoViewModel = viewModel(
+        factory = UserInfoViewModelFactory(userRepository)
+    )
+
     val authState by authViewModel.session.collectAsState()
     val userId = authState.userId ?: 1L
 
@@ -113,8 +119,9 @@ fun AppRoot() { // Raíz de la app para separar responsabilidades
                 authViewModel=  authViewModel,
                 bookingViewModel = bookingViewModel,// <-- NUEVO parámetro
                 adminViewModel = adminVm,
-                workerViewModel = workervm
-
+                workerViewModel = workervm,
+                userInfoViewModel = userInfoVm,
+                userPreferences = userPrefs
             )
             // NOTA: Si tu AppNavGraph no tiene este parámetro aún, basta con agregarlo:
             // fun AppNavGraph(navController: NavHostController, authViewModel: AuthViewModel) { ... }

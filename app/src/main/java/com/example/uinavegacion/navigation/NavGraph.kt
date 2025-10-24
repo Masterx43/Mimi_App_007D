@@ -13,6 +13,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.uinavegacion.data.local.storage.UserPreferences
 import com.example.uinavegacion.ui.components.*
 import com.example.uinavegacion.ui.screen.*
 import com.example.uinavegacion.ui.theme.LilaPri
@@ -20,6 +21,7 @@ import com.example.uinavegacion.viewmodel.AdminViewModel
 
 import com.example.uinavegacion.viewmodel.AuthViewModel
 import com.example.uinavegacion.viewmodel.BookingViewModel
+import com.example.uinavegacion.viewmodel.UserInfoViewModel
 import com.example.uinavegacion.viewmodel.WorkerViewModel
 import kotlinx.coroutines.launch
 
@@ -28,7 +30,9 @@ fun AppNavGraph(navController: NavHostController,
                 authViewModel: AuthViewModel,
                 bookingViewModel: BookingViewModel,
                 adminViewModel: AdminViewModel,
-                workerViewModel: WorkerViewModel
+                workerViewModel: WorkerViewModel,
+                userInfoViewModel: UserInfoViewModel,
+                userPreferences: UserPreferences
 ) { // Recibe el controlador
 
 
@@ -131,7 +135,9 @@ fun AppNavGraph(navController: NavHostController,
                     composable(Route.UserInfo.path){
                         UserInfoScreen(
                             vm = authViewModel,
-                            onLogout = goLogin
+                            onLogout = goLogin,
+                            userInfoVm = userInfoViewModel,
+                            userPrefs = userPreferences
                         )
                     }
 

@@ -33,8 +33,11 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.FileProvider
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.example.uinavegacion.data.local.entities.user.UserEntity
+import com.example.uinavegacion.data.local.storage.UserPreferences
 import com.example.uinavegacion.viewmodel.AuthViewModel
 import com.example.uinavegacion.ui.theme.*
+import com.example.uinavegacion.viewmodel.UserInfoViewModel
 import java.io.File
 import java.net.URI
 import java.text.SimpleDateFormat
@@ -55,18 +58,47 @@ private fun getImageUriFile(context: Context, file: File): Uri{
 
 @Composable
 fun UserInfoScreen(
-    vm: AuthViewModel,            // Recibimos el ViewModel global
-    onLogout: () -> Unit          // Acción para cerrar sesión
+    vm: AuthViewModel,                  // Recibimos el ViewModel global
+    onLogout: () -> Unit,               // Acción para cerrar sesión
+    userInfoVm: UserInfoViewModel,
+    userPrefs: UserPreferences
 ) {
     val session by vm.session.collectAsState()
     val context= LocalContext.current
-
     val scrollState = rememberScrollState()
-
     var photoUriString by rememberSaveable { mutableStateOf<String?>(null) }
     var pendingCaptureUri by remember {mutableStateOf<Uri?>(null)}
-
     var isEditing by remember { mutableStateOf(false) }
+
+    val userId by userPrefs.userId.collectAsState(initial = null)
+    val state by userInfoVm.uiState.collectAsState()
+
+
+    LaunchedEffect(userId) {
+        if (userId != null) {
+            userInfoVm.cargarUsuario(userId!!)
+        }
+    }
+
+
+    if (state.loading) {
+        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            CircularProgressIndicator(color = Color.White)
+        }
+        return
+    }
+
+    if (state.user == null) {
+        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            Text(
+                text = "Cargando información del usuario...",
+                color = Color.White,
+                style = MaterialTheme.typography.bodyLarge
+            )
+        }
+        return
+    }
+
 
     val takePictureLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.TakePicture()
@@ -146,7 +178,7 @@ fun UserInfoScreen(
             // 🧾 DATOS DE USUARIO
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Text(
-                    text = "${session.userName ?: "Nombre no disponible"} , ${session.userLastName ?: "Apellido no disponible"}",
+                    text = "${state.user?.nombre ?: "Nombre no disponible"} , ${state.user?.apellido ?: "Apellido no disponible"}",
                     style = MaterialTheme.typography.titleLarge.copy(
                         color = Blanco,
                         fontWeight = FontWeight.Bold
@@ -157,7 +189,7 @@ fun UserInfoScreen(
                 Spacer(Modifier.height(6.dp))
 
                 Text(
-                    text = session.userEmail ?: "Correo no disponible",
+                    text = state.user?.correo ?: "Correo no disponible",
                     style = MaterialTheme.typography.bodyLarge.copy(
                         color = Blanco.copy(alpha = 0.9f)
                     ),
@@ -165,7 +197,7 @@ fun UserInfoScreen(
                 )
                 Spacer(Modifier.height(4.dp))
                 Text(
-                    text = session.userPhone ?: "Numero de Celular no disponible",
+                    text = state.user?.phone ?: "Numero de Celular no disponible",
                     style = MaterialTheme.typography.bodyLarge.copy(
                         color = Blanco.copy(alpha = 0.9f)
                     ),
@@ -177,7 +209,7 @@ fun UserInfoScreen(
                 Spacer(Modifier.height(4.dp))
 
                 Text(
-                    text = when (session.userRoleId) {
+                    text = when (state.user?.rolId) {
                         2L -> "Administrador"
                         3L -> "Trabajador"
                         1L -> "Cliente"
@@ -194,7 +226,17 @@ fun UserInfoScreen(
 
             // Botón Editar
             OutlinedButton(
-                onClick = { isEditing = !isEditing },
+                onClick = {
+                    isEditing = !isEditing
+                    if (isEditing) {
+
+                        nombre = ""
+                        apellido = ""
+                        correo = ""
+                        telefono = ""
+                        contra = ""
+                    }
+                },
                 modifier = Modifier.fillMaxWidth(0.7f),
                 colors = ButtonDefaults.buttonColors(containerColor = Color.White.copy(alpha = 0.2f))
             ) {
@@ -268,8 +310,18 @@ fun UserInfoScreen(
                     Spacer(Modifier.height(16.dp))
                     Button(
                         onClick = {
-                            Toast.makeText(context, "Datos actualizados (demo)", Toast.LENGTH_SHORT).show()
-                            isEditing = false
+                            state.user?.let { currentUser -> //  Solo si el usuario está cargado
+                                val updatedUser = currentUser.copy( //  Creamos una copia modificada
+                                    nombre = nombre.ifEmpty { currentUser.nombre },
+                                    apellido = apellido.ifEmpty { currentUser.apellido },
+                                    correo = correo.ifEmpty { currentUser.correo },
+                                    phone = telefono.ifEmpty { currentUser.phone },
+                                    pass = contra.ifEmpty { currentUser.pass } // mantiene la anterior si no cambia
+                                )
+                                userInfoVm.actualizarUsuario(updatedUser) //  Llama al metodo del VM
+                                Toast.makeText(context, "Datos actualizados correctamente", Toast.LENGTH_SHORT).show()
+                                isEditing = false
+                            } ?: Toast.makeText(context, "Error: usuario no cargado", Toast.LENGTH_SHORT).show()
                         },
                         colors = ButtonDefaults.buttonColors(containerColor = Rosado),
                         modifier = Modifier.fillMaxWidth()

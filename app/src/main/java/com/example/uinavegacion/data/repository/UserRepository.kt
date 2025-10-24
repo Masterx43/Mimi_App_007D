@@ -48,6 +48,12 @@ class UserRepository(
         val id = userDao.insert(user)
         return Result.success(id)
     }
+
+    suspend fun getUserById(userId: Long): Result<UserEntity> = runCatching {
+        val user = userDao.getUserById(userId)
+            ?: throw IllegalArgumentException("Usuario con ID $userId no encontrado")
+        user
+    }
     suspend fun getAllWorkers(
         rolId: Long
     ): Result<List<UserEntity>>{
@@ -56,5 +62,11 @@ class UserRepository(
             return Result.failure(IllegalStateException("No hay trabajadores"))
         }
         return Result.success(trabajadores)
+    }
+
+    suspend fun updateUser(user: UserEntity): Result<Int> = runCatching {
+        val rows = userDao.updateUser(user)
+        if (rows == 0) throw IllegalStateException("No se encontró el usuario para actualizar")
+        rows
     }
 }

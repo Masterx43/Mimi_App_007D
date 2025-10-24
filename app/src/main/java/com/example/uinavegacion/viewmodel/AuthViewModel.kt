@@ -109,12 +109,14 @@ class AuthViewModel(
                                 isLoggedIn = true,
                                 userId = user.idUser,
                                 userName = user.nombre,
+                                userLastName = user.apellido,
+                                userPhone = user.phone,
                                 userEmail = user.correo,
                                 userRoleId = user.rolId,
                             )
                         }
                         viewModelScope.launch {
-                            userPrefs.saveLoginState(true, user.rolId)
+                            userPrefs.saveLoginState(true, user.rolId, user.idUser)
                         }
 
                     }

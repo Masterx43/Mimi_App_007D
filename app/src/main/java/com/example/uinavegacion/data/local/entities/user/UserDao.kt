@@ -1,7 +1,6 @@
 package com.example.uinavegacion.data.local.entities.user
 
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
@@ -15,11 +14,15 @@ interface UserDao {
     @Query("select * from usuario where correo = :email LIMIT 1")
     suspend fun getByEmail(email: String): UserEntity?
 
+    @Query("select * from usuario where idUser = :userId LIMIT 1")
+    suspend fun getUserById(userId : Long) : UserEntity?
+
     @Query("select COUNT(*) from usuario")
     suspend fun count(): Int
 
     @Query("select * from usuario order by nombre ASC")
     suspend fun getAll() : List<UserEntity>
+
 
     @Update(onConflict = OnConflictStrategy.ABORT)
     suspend fun updateUser(user: UserEntity) : Int

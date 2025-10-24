@@ -76,7 +76,7 @@ dependencies {
     //cargar imagenes (para mostrarlas en la ui)
     implementation("io.coil-kt:coil-compose:2.7.0")
 
-    //cargar las animaciones
+
 
 
 

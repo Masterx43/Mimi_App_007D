@@ -19,6 +19,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.uinavegacion.data.local.entities.reservas.ReservaDetalle
 import com.example.uinavegacion.viewmodel.WorkerViewModel
 import com.example.uinavegacion.viewmodel.AuthViewModel
 import com.example.uinavegacion.ui.theme.*
@@ -34,7 +35,7 @@ fun WorkerScreen(
     val uiState by workerVm.uiState.collectAsState()
 
     LaunchedEffect(Unit) {
-        session.userId?.let { workerVm.cargarReservas(it) }
+        session.userId?.let { workerVm.cargarTodasLasReservas() }
     }
 
     Box(
@@ -70,7 +71,7 @@ fun WorkerScreen(
 
             Spacer(Modifier.height(24.dp))
 
-            // 🗓 Lista de reservas asignadas
+            //Lista de reservas asignadas
             Text(
                 "Reservas asignadas:",
                 color = Blanco,
@@ -100,13 +101,20 @@ fun WorkerScreen(
                                 color = LilaOscuro
                             )
                             Text("Fecha: ${reserva.fechaReserva}")
-                            Text("Servicio ID: ${reserva.servicioId}")
-                            Text("Estado: ${if (reserva.estadoId == 1L) "Pendiente" else "Completada"}")
+                            Text("Cliente: ${reserva.nombreCliente?:"Desconocido"}")
+                            Text("Servicio: ${reserva.nombreServicio?:"No especificado"}")
+
+                            val estadoTexto = when (reserva.estadoId){
+                                1L -> "Pendiente"
+                                2L -> "Activo"
+                                else -> "Completada"
+                            }
+                            Text("Estado: $estadoTexto")
 
                             Spacer(Modifier.height(8.dp))
                             if (reserva.estadoId == 1L) {
                                 Button(
-                                    onClick = { workerVm.marcarCompletada(reserva) },
+                                    onClick = { workerVm.marcarCompletada(reserva.idReserva) },
                                     colors = ButtonDefaults.buttonColors(containerColor = Rosado),
                                     modifier = Modifier.fillMaxWidth()
                                 ) {

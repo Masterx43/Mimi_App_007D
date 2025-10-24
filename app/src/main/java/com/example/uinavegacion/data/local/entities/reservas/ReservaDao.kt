@@ -26,4 +26,21 @@ interface ReservaDao {
 
     @Query("DELETE FROM reservas WHERE idReserva = :reservaId")
     suspend fun deleteReservaById(reservaId: Long): Int
+
+    @Query("""
+    SELECT 
+        r.idReserva, 
+        r.fechaReserva, 
+        u.nombre AS nombreCliente, 
+        s.nombre AS nombreServicio, 
+        r.estadoId
+    FROM reservas AS r
+    INNER JOIN usuario AS u ON u.idUser = r.userId
+    INNER JOIN servicios AS s ON s.idServicio = r.servicioId
+    ORDER BY r.fechaReserva ASC
+""")
+    suspend fun getTodasLasReservasConDetalles(): List<ReservaDetalle>
+
+    @Query("UPDATE reservas SET estadoId = :nuevoEstado WHERE idReserva = :reservaId")
+    suspend fun updateEstadoReservaPorId(reservaId: Long, nuevoEstado: Long): Int
 }

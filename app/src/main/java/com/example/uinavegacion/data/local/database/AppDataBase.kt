@@ -72,6 +72,7 @@ abstract class AppDatabase : RoomDatabase() {
 
                                 val estadosSeed = listOf(
                                     EstadoEntity(nombre = "Activo"),
+                                    EstadoEntity(nombre = "Pendiente"),
                                     EstadoEntity(nombre = "Inactivo")
                                 )
                                 if (estadoDao.getTotalEstado() == 0) {

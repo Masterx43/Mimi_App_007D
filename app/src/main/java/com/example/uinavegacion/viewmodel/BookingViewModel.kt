@@ -20,6 +20,7 @@ data class BookingUiState(
     val precioServicio: Int? = null,
     val fecha: String = "",
     val hora: String = "",
+    val isLoading: Boolean= false,
     val successMessage: String? = null,
     val errorMessage: String? = null,
     val serviciosDisponibles: List<ServicioEntity> = emptyList()
@@ -83,6 +84,7 @@ class BookingViewModel(
 
                     _uiState.update {
                         it.copy(
+                            isLoading=false,
                             successMessage = "$userId Reserva agendada con éxito para ${s.fecha} a las ${s.hora} (${s.servicio})",
                             errorMessage = null
                         )
@@ -90,6 +92,7 @@ class BookingViewModel(
                 } catch (e: Exception) {
                     _uiState.update {
                         it.copy(
+                            isLoading = false,
                             errorMessage = "Error al registrar la reserva: ${e.message}",
                             successMessage = null
                         )
@@ -98,4 +101,8 @@ class BookingViewModel(
             }
         }
     }
+    fun clearMessages() {
+        _uiState.update { it.copy(successMessage = null, errorMessage = null) }
+    }
+
 }

@@ -36,7 +36,7 @@ class UserInfoViewModel(
         }
     }
 
-    // 🔹 Actualizar datos del usuario
+    //Actualizar datos del usuario
     fun actualizarUsuario(user: UserEntity) {
         viewModelScope.launch {
             val result = userRepository.updateUser(user)

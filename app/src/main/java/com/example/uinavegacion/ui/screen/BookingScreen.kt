@@ -1,11 +1,13 @@
 package com.example.uinavegacion.ui.screen
 
+import android.R
 import android.app.DatePickerDialog
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarMonth
@@ -212,17 +214,53 @@ fun BookingScreen(
 
         //Botón "Agendar"
         Button(
-            onClick = {
-                vm.registrarReserva()
-                if (state.successMessage != null)
-                    Toast.makeText(context, state.successMessage, Toast.LENGTH_LONG).show()
-                else if (state.errorMessage != null)
-                    Toast.makeText(context, state.errorMessage, Toast.LENGTH_SHORT).show()
-            },
+            onClick = { vm.registrarReserva() },
             modifier = Modifier.fillMaxWidth(),
-            colors = ButtonDefaults.buttonColors(containerColor = LilaPri)
+            colors = ButtonDefaults.buttonColors(containerColor = LilaPri),
+            enabled = !state.isLoading
         ) {
-            Text("Agendar")
+            if (state.isLoading) {
+                CircularProgressIndicator(
+                    color = Color.White,
+                    strokeWidth = 2.dp,
+                    modifier = Modifier.size(20.dp)
+                )
+                Spacer(Modifier.width(8.dp))
+                Text("Agendando...")
+            } else {
+                Text("Agendar")
+            }
         }
+
+        // --- ALERTA INTRUSIVA ---
+        if (state.successMessage != null || state.errorMessage != null) {
+            val isSuccess = state.successMessage != null
+            AlertDialog(
+                onDismissRequest = { vm.clearMessages() },
+                confirmButton = {
+                    TextButton(onClick = { vm.clearMessages() }) {
+                        Text("Aceptar", color = LilaPri)
+                    }
+                },
+                title = {
+                    Text(
+                        text = if (isSuccess) "¡Reserva Exitosa!" else "Error al Agendar",
+                        color = if (isSuccess) LilaPri else Color.Red
+                    )
+                },
+                text = {
+                    Text(
+                        text = state.successMessage ?: state.errorMessage ?: "",
+                        color = Color.Black
+                    )
+                },
+                containerColor = Color.White,
+                tonalElevation = 8.dp,
+                shape = RoundedCornerShape(16.dp)
+            )
+        }
+
     }
 }
+
+//hace el circulo de loader mas fino o grueso depende del valor

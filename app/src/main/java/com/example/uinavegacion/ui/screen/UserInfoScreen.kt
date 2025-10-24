@@ -1,6 +1,5 @@
 package com.example.uinavegacion.ui.screen
 
-
 import android.content.Context
 import android.net.Uri
 import android.widget.Toast
@@ -18,7 +17,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.*
-import androidx.compose.material3.ExposedDropdownMenuDefaults.outlinedTextFieldColors
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -35,86 +33,105 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.uinavegacion.data.local.entities.user.UserEntity
 import com.example.uinavegacion.data.local.storage.UserPreferences
-import com.example.uinavegacion.viewmodel.AuthViewModel
 import com.example.uinavegacion.ui.theme.*
+import com.example.uinavegacion.viewmodel.AuthViewModel
 import com.example.uinavegacion.viewmodel.UserInfoViewModel
 import java.io.File
-import java.net.URI
 import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
+import java.util.*
 
-private fun createTempImageFile(context: Context): File{
-    val timeStamp= SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
+private fun createTempImageFile(context: Context): File {
+    val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
     val storageDir = File(context.cacheDir, "images").apply {
-        if(!exists()) mkdirs()//crea la carpeta si no existe
+        if (!exists()) mkdirs()
     }
     return File(storageDir, "IMG_$timeStamp.jpg")
 }
-private fun getImageUriFile(context: Context, file: File): Uri{
+
+private fun getImageUriFile(context: Context, file: File): Uri {
     val authority = "${context.packageName}.fileprovider"
-    return FileProvider.getUriForFile(context,authority,file)
+    return FileProvider.getUriForFile(context, authority, file)
 }
 
 @Composable
 fun UserInfoScreen(
-    vm: AuthViewModel,                  // Recibimos el ViewModel global
-    onLogout: () -> Unit,               // Acción para cerrar sesión
+    vm: AuthViewModel,
+    onLogout: () -> Unit,
     userInfoVm: UserInfoViewModel,
     userPrefs: UserPreferences
 ) {
+    val context = LocalContext.current
     val session by vm.session.collectAsState()
-    val context= LocalContext.current
-    val scrollState = rememberScrollState()
-    var photoUriString by rememberSaveable { mutableStateOf<String?>(null) }
-    var pendingCaptureUri by remember {mutableStateOf<Uri?>(null)}
-    var isEditing by remember { mutableStateOf(false) }
-
-    val userId by userPrefs.userId.collectAsState(initial = null)
+    val userIdPref by userPrefs.userId.collectAsState(initial = null)
     val state by userInfoVm.uiState.collectAsState()
 
+    val scrollState = rememberScrollState()
+    val effectiveUserId: Long? = userIdPref ?: session.userId
 
-    LaunchedEffect(userId) {
-        if (userId != null) {
-            userInfoVm.cargarUsuario(userId!!)
+    var photoUriString by rememberSaveable { mutableStateOf<String?>(null) }
+    var pendingCaptureUri by remember { mutableStateOf<Uri?>(null) }
+    var isEditing by remember { mutableStateOf(false) }
+
+    // --- Cargar usuario ---
+    LaunchedEffect(effectiveUserId) {
+        if (effectiveUserId != null) {
+            userInfoVm.cargarUsuario(effectiveUserId)
         }
     }
 
-
+    // --- Loading ---
     if (state.loading) {
         Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            CircularProgressIndicator(color = Color.White)
+            CircularProgressIndicator(color = Blanco)
         }
         return
     }
 
+    // --- Error ---
+    state.error?.let { msg ->
+        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Text(text = msg, color = Color.Red)
+                Spacer(Modifier.height(8.dp))
+                Button(onClick = { effectiveUserId?.let { userInfoVm.cargarUsuario(it) } }) {
+                    Text("Reintentar")
+                }
+            }
+        }
+        return
+    }
+
+    // --- Sin usuario ---
     if (state.user == null) {
         Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            Text(
-                text = "Cargando información del usuario...",
-                color = Color.White,
-                style = MaterialTheme.typography.bodyLarge
-            )
+            Text("Esperando ID de usuario...", color = Blanco)
         }
         return
     }
 
-
+    // --- Lanzadores para cámara y galería ---
     val takePictureLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.TakePicture()
-    ) { success->
-        if (success){
-            photoUriString=pendingCaptureUri.toString()
-            Toast.makeText(context, "Foto guartdada exitosamente", Toast.LENGTH_SHORT).show()
-
-        }else{
-            pendingCaptureUri=null
-            Toast.makeText(context, "No se logro capturar la imagen", Toast.LENGTH_SHORT).show()
+    ) { success ->
+        if (success) {
+            photoUriString = pendingCaptureUri.toString()
+            Toast.makeText(context, "Foto guardada exitosamente", Toast.LENGTH_SHORT).show()
+        } else {
+            pendingCaptureUri = null
+            Toast.makeText(context, "No se logró capturar la imagen", Toast.LENGTH_SHORT).show()
         }
-
     }
 
-    //campos editables del usuario
+    val pickFromGalleryLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        uri?.let {
+            photoUriString = it.toString()
+            Toast.makeText(context, "Imagen seleccionada desde galería", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    // --- Campos editables ---
     var nombre by remember { mutableStateOf(session.userName ?: "") }
     var apellido by remember { mutableStateOf("") }
     var correo by remember { mutableStateOf(session.userEmail ?: "") }
@@ -129,20 +146,17 @@ fun UserInfoScreen(
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(scrollState)
-
-        ) {  //FOTO DE PERFIL
+        ) {
+            // --- Foto de perfil ---
             if (photoUriString.isNullOrEmpty()) {
                 Icon(
                     imageVector = Icons.Filled.AccountCircle,
                     contentDescription = "Perfil",
                     tint = Color.White,
-                    modifier = Modifier
-                        .size(150.dp)
-                        .padding(8.dp)
+                    modifier = Modifier.size(150.dp)
                 )
             } else {
                 AsyncImage(
@@ -154,82 +168,104 @@ fun UserInfoScreen(
                     modifier = Modifier
                         .size(150.dp)
                         .clip(CircleShape)
-                        .border(3.dp, Rosado, CircleShape)
-                        .padding(4.dp),
+                        .border(3.dp, Rosado, CircleShape),
                     contentScale = ContentScale.Crop
                 )
             }
 
             Spacer(Modifier.height(16.dp))
 
-            // Botón de cámara
-            Button(
-                onClick = {
-                    val file = createTempImageFile(context)
-                    val uri = getImageUriFile(context, file)
-                    pendingCaptureUri = uri
-                    takePictureLauncher.launch(uri)
-                },
-                colors = ButtonDefaults.buttonColors(containerColor = Rosado)
+            // --- Botones de imagen ---
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(if (photoUriString.isNullOrEmpty()) "Tomar foto" else "Volver a tomar")
-            }
-
-            // 🧾 DATOS DE USUARIO
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(
-                    text = "${state.user?.nombre ?: "Nombre no disponible"} , ${state.user?.apellido ?: "Apellido no disponible"}",
-                    style = MaterialTheme.typography.titleLarge.copy(
-                        color = Blanco,
-                        fontWeight = FontWeight.Bold
-                    ),
-                    textAlign = TextAlign.Center
-                )
-
-                Spacer(Modifier.height(6.dp))
-
-                Text(
-                    text = state.user?.correo ?: "Correo no disponible",
-                    style = MaterialTheme.typography.bodyLarge.copy(
-                        color = Blanco.copy(alpha = 0.9f)
-                    ),
-                    textAlign = TextAlign.Center
-                )
-                Spacer(Modifier.height(4.dp))
-                Text(
-                    text = state.user?.phone ?: "Numero de Celular no disponible",
-                    style = MaterialTheme.typography.bodyLarge.copy(
-                        color = Blanco.copy(alpha = 0.9f)
-                    ),
-                    textAlign = TextAlign.Center
-                )
-
-
-
-                Spacer(Modifier.height(4.dp))
-
-                Text(
-                    text = when (state.user?.rolId) {
-                        2L -> "Administrador"
-                        3L -> "Trabajador"
-                        1L -> "Cliente"
-                        else -> "Rol desconocido"
+                Button(
+                    onClick = {
+                        val file = createTempImageFile(context)
+                        val uri = getImageUriFile(context, file)
+                        pendingCaptureUri = uri
+                        takePictureLauncher.launch(uri)
                     },
-                    style = MaterialTheme.typography.bodyMedium.copy(color = Blanco.copy(alpha = 0.8f)),
-                    textAlign = TextAlign.Center
-                )
+                    colors = ButtonDefaults.buttonColors(containerColor = Rosado)
+                ) {
+                    Text("Tomar foto", color = Blanco)
+                }
+
+                OutlinedButton(
+                    onClick = { pickFromGalleryLauncher.launch("image/*") },
+                    colors = ButtonDefaults.buttonColors(containerColor = Color.White.copy(alpha = 0.2f))
+                ) {
+                    Text("Desde galería", color = Blanco)
+                }
             }
 
-            Spacer(Modifier.height(8.dp))
+            Spacer(Modifier.height(20.dp))
 
+            // --- CARD de información ---
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 8.dp),
+                colors = CardDefaults.cardColors(containerColor = Color.White.copy(alpha = 0.15f)),
+                shape = RoundedCornerShape(16.dp),
+                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+            ) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.padding(16.dp)
+                ) {
+                    Text(
+                        text = "${state.user?.nombre ?: ""} ${state.user?.apellido ?: ""}",
+                        style = MaterialTheme.typography.titleLarge.copy(
+                            color = Blanco,
+                            fontWeight = FontWeight.Bold
+                        ),
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth()
+                    )
 
+                    Spacer(Modifier.height(6.dp))
 
-            // Botón Editar
+                    Text(
+                        text = state.user?.correo ?: "Correo no disponible",
+                        style = MaterialTheme.typography.bodyLarge.copy(color = Blanco),
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+
+                    Spacer(Modifier.height(4.dp))
+
+                    Text(
+                        text = state.user?.phone ?: "Número no disponible",
+                        style = MaterialTheme.typography.bodyLarge.copy(color = Blanco),
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+
+                    Spacer(Modifier.height(4.dp))
+
+                    Text(
+                        text = when (state.user?.rolId) {
+                            1L -> "Cliente"
+                            2L -> "Administrador"
+                            3L -> "Trabajador"
+                            else -> "Rol desconocido"
+                        },
+                        style = MaterialTheme.typography.bodyMedium.copy(color = Blanco.copy(alpha = 0.9f)),
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+            }
+
+            Spacer(Modifier.height(16.dp))
+
+            // --- Botón editar ---
             OutlinedButton(
                 onClick = {
                     isEditing = !isEditing
                     if (isEditing) {
-
                         nombre = ""
                         apellido = ""
                         correo = ""
@@ -237,7 +273,7 @@ fun UserInfoScreen(
                         contra = ""
                     }
                 },
-                modifier = Modifier.fillMaxWidth(0.7f),
+                modifier = Modifier.fillMaxWidth(0.8f),
                 colors = ButtonDefaults.buttonColors(containerColor = Color.White.copy(alpha = 0.2f))
             ) {
                 Icon(Icons.Filled.Edit, contentDescription = "Editar", tint = Blanco)
@@ -247,79 +283,53 @@ fun UserInfoScreen(
 
             Spacer(Modifier.height(12.dp))
 
+            // --- Campos editables (animados) ---
             AnimatedVisibility(visible = isEditing) {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 8.dp)
                 ) {
-                    OutlinedTextField(
-                        value = nombre,
-                        onValueChange = { nombre = it },
-                        label = { Text("Nombre") },
-                        modifier = Modifier.fillMaxWidth(),
-                        colors = OutlinedTextFieldDefaults.colors(
-                            focusedBorderColor = Rosado,
-                            focusedLabelColor = Rosado
+                    listOf(
+                        "Nombre" to nombre,
+                        "Apellido" to apellido,
+                        "Correo" to correo,
+                        "Teléfono" to telefono,
+                        "Contraseña" to contra
+                    ).forEach { (label, value) ->
+                        OutlinedTextField(
+                            value = value,
+                            onValueChange = {
+                                when (label) {
+                                    "Nombre" -> nombre = it
+                                    "Apellido" -> apellido = it
+                                    "Correo" -> correo = it
+                                    "Teléfono" -> telefono = it
+                                    "Contraseña" -> contra = it
+                                }
+                            },
+                            label = { Text(label) },
+                            modifier = Modifier.fillMaxWidth(),
+                            colors = OutlinedTextFieldDefaults.colors(
+                                focusedBorderColor = Rosado,
+                                focusedLabelColor = Rosado
+                            )
                         )
-                    )
-                    Spacer(Modifier.height(8.dp))
-                    OutlinedTextField(
-                        value = apellido,
-                        onValueChange = { apellido = it },
-                        label = { Text("Apellido") },
-                        modifier = Modifier.fillMaxWidth(),
-                        colors = OutlinedTextFieldDefaults.colors(
-                            focusedBorderColor = Rosado,
-                            focusedLabelColor = Rosado
-                        )
-                    )
-                    Spacer(Modifier.height(8.dp))
-                    OutlinedTextField(
-                        value = correo,
-                        onValueChange = { correo = it },
-                        label = { Text("Correo") },
-                        modifier = Modifier.fillMaxWidth(),
-                        colors = OutlinedTextFieldDefaults.colors(
-                            focusedBorderColor = Rosado,
-                            focusedLabelColor = Rosado
-                        )
-                    )
-                    Spacer(Modifier.height(8.dp))
-                    OutlinedTextField(
-                        value = telefono,
-                        onValueChange = { telefono = it },
-                        label = { Text("Teléfono") },
-                        modifier = Modifier.fillMaxWidth(),
-                        colors = OutlinedTextFieldDefaults.colors(
-                            focusedBorderColor = Rosado,
-                            focusedLabelColor = Rosado
-                        )
-                    )
-                    Spacer(Modifier.height(8.dp))
-                    OutlinedTextField(
-                        value = contra,
-                        onValueChange = { contra = it },
-                        label = { Text("Contraseña") },
-                        modifier = Modifier.fillMaxWidth(),
-                        colors = OutlinedTextFieldDefaults.colors(
-                            focusedBorderColor = Rosado,
-                            focusedLabelColor = Rosado
-                        )
-                    )
-                    Spacer(Modifier.height(16.dp))
+                        Spacer(Modifier.height(8.dp))
+                    }
+
                     Button(
                         onClick = {
-                            state.user?.let { currentUser -> //  Solo si el usuario está cargado
-                                val updatedUser = currentUser.copy( //  Creamos una copia modificada
+                            state.user?.let { currentUser ->
+                                val updatedUser = currentUser.copy(
                                     nombre = nombre.ifEmpty { currentUser.nombre },
                                     apellido = apellido.ifEmpty { currentUser.apellido },
                                     correo = correo.ifEmpty { currentUser.correo },
                                     phone = telefono.ifEmpty { currentUser.phone },
-                                    pass = contra.ifEmpty { currentUser.pass } // mantiene la anterior si no cambia
+                                    pass = contra.ifEmpty { currentUser.pass }
                                 )
-                                userInfoVm.actualizarUsuario(updatedUser) //  Llama al metodo del VM
-                                Toast.makeText(context, "Datos actualizados correctamente", Toast.LENGTH_SHORT).show()
+                                userInfoVm.actualizarUsuario(updatedUser)
+                                Toast.makeText(context, "Datos actualizados", Toast.LENGTH_SHORT).show()
                                 isEditing = false
                             } ?: Toast.makeText(context, "Error: usuario no cargado", Toast.LENGTH_SHORT).show()
                         },
@@ -333,6 +343,7 @@ fun UserInfoScreen(
 
             Spacer(Modifier.height(32.dp))
 
+            // --- Botón cerrar sesión ---
             Button(
                 onClick = {
                     vm.logout()
@@ -340,10 +351,11 @@ fun UserInfoScreen(
                 },
                 colors = ButtonDefaults.buttonColors(containerColor = Rosado),
                 shape = RoundedCornerShape(12.dp),
-                modifier = Modifier.fillMaxWidth(0.6f)
+                modifier = Modifier.fillMaxWidth(0.7f)
             ) {
                 Text("Cerrar Sesión", color = Blanco)
             }
+
         }
     }
 }

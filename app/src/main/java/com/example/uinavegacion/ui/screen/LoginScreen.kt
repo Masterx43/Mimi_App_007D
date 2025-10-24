@@ -1,51 +1,31 @@
 package com.example.uinavegacion.ui.screen
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Error
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.pointer.HistoricalChange
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.uinavegacion.viewmodel.AuthViewModel
-import kotlin.String
-import androidx.compose.material.icons.filled.Visibility
-import androidx.compose.material.icons.filled.VisibilityOff
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import com.example.uinavegacion.data.local.storage.UserPreferences
 import com.example.uinavegacion.ui.theme.Blanco
+import com.example.uinavegacion.ui.theme.LilaPri
+import com.example.uinavegacion.viewmodel.AuthViewModel
+import kotlinx.coroutines.delay
 
 
 @Composable
@@ -55,16 +35,11 @@ fun LoginScreenVm(
     vm : AuthViewModel
 ){
     val state by vm.login.collectAsStateWithLifecycle()
-
+    val session by vm.session.collectAsStateWithLifecycle()
     val context = LocalContext.current
     val userPrefs = remember { UserPreferences(context) }
 
-    LaunchedEffect(state.success) {
-        if (state.success){
-            vm.clearLoginResults()
-            onLoginOkNavigateHome()
-        }
-    }
+
 
     LoginScreen(
         email=state.email,
@@ -74,10 +49,15 @@ fun LoginScreenVm(
         isSubmitting=state.isSubmitting,
         canSubmit=state.canSubmit,
         errorMsg=state.errorMsg,
+        success = state.success,
+        userName = session.userName,
+        useRoleId= session.userRoleId,
         onEmailChange= vm::onLoginEmailChange,
         onPassChange= vm::onLoginContraChange,
         onSubmit= vm::submitLogin,
-        onGoRegister= onGoRegister
+        onGoRegister= onGoRegister,
+        onClear= vm::clearLoginResults,
+        onNavigateHome= onLoginOkNavigateHome
     )
 }
 @Composable // Pantalla Login (solo navegación, sin formularios)
@@ -89,10 +69,15 @@ private fun LoginScreen(
     isSubmitting: Boolean,
     canSubmit: Boolean,
     errorMsg: String?,
+    success: Boolean,
+    userName: String?,
+    useRoleId: Long?,
     onEmailChange: (String)-> Unit,
     onPassChange: (String)-> Unit,
     onSubmit: ()->Unit,
-    onGoRegister: () -> Unit // Acción para ir a Registro
+    onGoRegister: () -> Unit,// Acción para ir a Registro
+    onClear: ()-> Unit,
+    onNavigateHome: ()->Unit
 ) {
     val Blanco = Blanco // Fondo distinto para contraste
     var showPass by remember { mutableStateOf(false) }
@@ -187,5 +172,57 @@ private fun LoginScreen(
             }
             //fin modificacion de formulario
         }
+
+        //ALERTA INTRUSIVA (éxito / error)
+        if (success || errorMsg != null) {
+            val isSuccess = success
+            val userRole = when (useRoleId) {
+                1L -> "Cliente"
+                2L -> "Administrador"
+                3L -> "Trabajador"
+                else -> "Rol desconocido"
+            }
+
+            AlertDialog(
+                onDismissRequest = {
+                    onClear()
+                    if (isSuccess) onNavigateHome()
+                },
+                confirmButton = {
+                    TextButton(onClick = {
+                        onClear()
+                        if (isSuccess) onNavigateHome()
+                    }) {
+                        Text("Aceptar", color = LilaPri)
+                    }
+                },
+                icon = {
+                    Icon(
+                        imageVector = if (isSuccess) Icons.Default.CheckCircle else Icons.Default.Error,
+                        contentDescription = null,
+                        tint = if (isSuccess) LilaPri else Color.Red,
+                        modifier = Modifier.size(48.dp)
+                    )
+                },
+                title = {
+                    Text(
+                        text = if (isSuccess) "¡Inicio de sesión exitoso!" else "Error de autenticación",
+                        color = if (isSuccess) LilaPri else Color.Red
+                    )
+                },
+                text = {
+                    Text(
+                        text = if (isSuccess)
+                            "Bienvenido/a ${userName ?: ""}.\nTu rol es: $userRole."
+                        else
+                            errorMsg ?: "Error desconocido. Verifica tus credenciales.",
+                        color = Color.Black
+                    )
+                },
+                containerColor = Color.White,
+                tonalElevation = 8.dp,
+                shape = RoundedCornerShape(16.dp)
+            )
         }
     }
+}

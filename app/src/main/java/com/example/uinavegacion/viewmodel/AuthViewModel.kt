@@ -89,21 +89,23 @@ class AuthViewModel(
         _login.update { it.copy(canSubmit = can) }
     }
 
-    fun submitLogin(){
-        val s= _login.value
+    fun submitLogin() {
+        val s = _login.value
         if (!s.canSubmit || s.isSubmitting) return
 
         viewModelScope.launch {
-            _login.update { it.copy(isSubmitting = true, errorMsg = null, success = false)}
-            delay(600)
+            _login.update { it.copy(isSubmitting = true, errorMsg = null, success = false) }
+
 
             val result = repository.login(s.email.trim(), s.contra)
 
             _login.update {
                 if (result.isSuccess) {
                     val user = result.getOrNull()
-                    // se guarda la sesion si el usuario existe
+
+                    //Solo si se encuentra usuario
                     if (user != null) {
+                        // Guardamos la sesión en memoria
                         _session.update {
                             SessionUiState(
                                 isLoggedIn = true,
@@ -112,13 +114,17 @@ class AuthViewModel(
                                 userLastName = user.apellido,
                                 userPhone = user.phone,
                                 userEmail = user.correo,
-                                userRoleId = user.rolId,
+                                userRoleId = user.rolId
                             )
                         }
+
+                        // Guardamos los datos también en DataStore
                         viewModelScope.launch {
                             userPrefs.saveLoginState(true, user.rolId, user.idUser)
-                        }
 
+                            //Log de depuración — verás esto en Logcat
+                            println("LOGIN GUARDADO -> idUser=${user.idUser}, rol=${user.rolId}, email=${user.correo}")
+                        }
                     }
 
                     it.copy(isSubmitting = false, success = true, errorMsg = null)
@@ -132,6 +138,7 @@ class AuthViewModel(
             }
         }
     }
+
 
     fun clearLoginResults(){
         _login.update { it.copy(success = false, errorMsg = null) }

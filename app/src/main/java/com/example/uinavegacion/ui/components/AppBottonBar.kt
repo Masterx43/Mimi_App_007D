@@ -2,9 +2,14 @@ package com.example.uinavegacion.ui.components
 
 
 import android.widget.Toast
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.windowInsetsBottomHeight
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
@@ -47,8 +52,8 @@ fun AppBottomBar(
         ), // bordes curvos superiores
         modifier = Modifier
             .fillMaxWidth()
-            .height(85.dp)
-            .navigationBarsPadding()
+            .windowInsetsPadding(WindowInsets.navigationBars)
+            .padding(bottom = 8.dp)
     ) {
         NavigationBar(containerColor = Color.Transparent,
                         tonalElevation = 0.dp) {

@@ -9,6 +9,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AdminPanelSettings
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -20,6 +22,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.uinavegacion.data.local.entities.categoria.CategoriaEntity
+import com.example.uinavegacion.data.local.entities.rol.RolEntity
+import com.example.uinavegacion.data.local.entities.servicio.ServicioEntity
 import com.example.uinavegacion.viewmodel.AdminViewModel
 import com.example.uinavegacion.viewmodel.AuthViewModel
 import com.example.uinavegacion.ui.theme.Blanco
@@ -149,7 +154,7 @@ fun AdminScreen(
 
             Spacer(Modifier.height(16.dp))
 
-            // 👥 CREAR ROL
+            //CREAR ROL
             Card(
                 colors = CardDefaults.cardColors(containerColor = Blanco),
                 shape = RoundedCornerShape(16.dp),
@@ -179,11 +184,13 @@ fun AdminScreen(
 
 
             Spacer(Modifier.height(24.dp))
-
+            //Listados  y estidar /eliminar
             Card (
                 colors = CardDefaults.cardColors(containerColor = Blanco),
-                shape = RoundedCornerShape(16.dp),
-                modifier = Modifier.fillMaxWidth()
+                shape = RoundedCornerShape(8.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 20.dp)
             ) {
 
                 var nombreTrabajador by remember { mutableStateOf("") }
@@ -308,7 +315,7 @@ fun AdminScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 20.dp),
-                colors = CardDefaults.cardColors(containerColor =LilaPri.copy(alpha = 0.15f)),
+                colors = CardDefaults.cardColors(containerColor = LilaPri.copy(alpha = 0.15f)),
                 shape = RoundedCornerShape(5.dp),
                 elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
             ) {
@@ -318,50 +325,86 @@ fun AdminScreen(
                         .padding(horizontal = 16.dp, vertical = 12.dp),
                     horizontalAlignment = Alignment.Start
                 ) {
-                    // 🔍 Listados
+                    // 🔹 SERVICIOS
                     Text(
-                        "Servicios registrados:", color = textoNegro, fontWeight = FontWeight.Bold,
-                        textAlign = TextAlign.Center
-                    )
-                    uiState.servicios.forEach {
-                        Text(
-                            "- ${it.nombre} ($${it.precio})",
-                            color = textoNegro,
-                            textAlign = TextAlign.Center
-                        )
-                    }
-
-                    Spacer(Modifier.height(8.dp))
-                    Text(
-                        "Categorías:",
+                        "Servicios registrados:",
                         color = textoNegro,
                         fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.Center
                     )
-                    uiState.categorias.forEach {
-                        Text(
-                            "- ${it.nombreCategoria}",
-                            color = textoNegro,
-                            textAlign = TextAlign.Center
-                        )
+
+                    uiState.servicios.forEach { servicio ->
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 4.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text("- ${servicio.nombre} ($${servicio.precio})", color = textoNegro)
+                            Row {
+                                IconButton(onClick = { adminVm.abrirDialogoEditarServicio(servicio) }) {
+                                    Icon(Icons.Default.Edit, contentDescription = "Editar", tint = LilaPri)
+                                }
+                                IconButton(onClick = { adminVm.eliminarServicio(servicio.idServicio) }) {
+                                    Icon(Icons.Default.Delete, contentDescription = "Eliminar", tint = Color.Red)
+                                }
+                            }
+                        }
                     }
 
-                    Spacer(Modifier.height(8.dp))
-                    Text(
-                        "Roles:",
-                        color = textoNegro,
-                        fontWeight = FontWeight.Bold,
-                        textAlign = TextAlign.Center
-                    )
-                    uiState.roles.forEach {
-                        Text(
-                            "- ${it.descripcion}",
-                            color = textoNegro,
-                            textAlign = TextAlign.Center
-                        )
+                    Spacer(Modifier.height(12.dp))
+
+                    //CATEGORÍAS
+                    Text("Categorías:", color = textoNegro, fontWeight = FontWeight.Bold)
+                    uiState.categorias.forEach { categoria ->
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 4.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text("- ${categoria.nombreCategoria}", color = textoNegro)
+                            Row {
+                                IconButton(onClick = { adminVm.abrirDialogoEditarCategoria(categoria) }) {
+                                    Icon(Icons.Default.Edit, contentDescription = "Editar", tint = LilaPri)
+                                }
+                                IconButton(onClick = { adminVm.eliminarCategoria(categoria.idCategoria) }) {
+                                    Icon(Icons.Default.Delete, contentDescription = "Eliminar", tint = Color.Red)
+                                }
+                            }
+                        }
+                    }
+
+                    Spacer(Modifier.height(12.dp))
+
+                    //ROLES
+                    Text("Roles:", color = textoNegro, fontWeight = FontWeight.Bold)
+                    uiState.roles.forEach { rol ->
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 4.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text("- ${rol.descripcion}", color = textoNegro)
+                            Row {
+                                IconButton(onClick = { adminVm.abrirDialogoEditarRol(rol) }) {
+                                    Icon(Icons.Default.Edit, contentDescription = "Editar", tint = LilaPri)
+                                }
+                                IconButton(onClick = { adminVm.eliminarRol(rol.idRol) }) {
+                                    Icon(Icons.Default.Delete, contentDescription = "Eliminar", tint = Color.Red)
+                                }
+                            }
+                        }
                     }
                 }
             }
+
+
+
 
             Spacer(Modifier.height(24.dp))
             Button(
@@ -380,7 +423,148 @@ fun AdminScreen(
 
 
 
-
         }
     }
+
+    // llama las funciones si es que cambian los valores
+    if (uiState.servicioAEditar != null) {
+        EditarServicioDialog(
+            servicio = uiState.servicioAEditar!!,
+            onDismiss = { adminVm.cerrarDialogoEditarServicio() },
+            onGuardar = { nombre, desc, precio ->
+                adminVm.actualizarServicio(
+                    uiState.servicioAEditar!!.idServicio,
+                    nombre, desc, precio
+                )
+            }
+        )
+    }
+
+    if (uiState.categoriaAEditar != null) {
+        EditarCategoriaDialog(
+            categoria = uiState.categoriaAEditar!!,
+            onDismiss = { adminVm.cerrarDialogoEditarCategoria() },
+            onGuardar = { nuevoNombre ->
+                adminVm.actualizarCategoria(uiState.categoriaAEditar!!.idCategoria, nuevoNombre)
+            }
+        )
+    }
+
+    if (uiState.rolAEditar != null) {
+        EditarRolDialog(
+            rol = uiState.rolAEditar!!,
+            onDismiss = { adminVm.cerrarDialogoEditarRol() },
+            onGuardar = { nuevoNombre ->
+                adminVm.actualizarRol(uiState.rolAEditar!!.idRol, nuevoNombre)
+            }
+        )
+    }
+
+
+
 }
+
+//editar los servcicios que existen
+@Composable
+fun EditarServicioDialog(
+    servicio: ServicioEntity,
+    onDismiss: () -> Unit,
+    onGuardar: (String, String, Int) -> Unit
+) {
+    var nombre by remember { mutableStateOf(servicio.nombre) }
+    var desc by remember { mutableStateOf(servicio.descripcion) }
+    var precio by remember { mutableStateOf(servicio.precio.toString()) }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Editar servicio", color = LilaPri) },
+        text = {
+            Column {
+                OutlinedTextField(value = nombre, onValueChange = { nombre = it }, label = { Text("Nombre") }, modifier = Modifier.fillMaxWidth(),colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = LilaPri,
+                    focusedLabelColor = LilaPri
+                ))
+                Spacer(Modifier.height(8.dp))
+                OutlinedTextField(value = desc, onValueChange = { desc = it }, label = { Text("Descripción") }, modifier = Modifier.fillMaxWidth(),colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = LilaPri,
+                    focusedLabelColor = LilaPri
+                ))
+                Spacer(Modifier.height(8.dp))
+                OutlinedTextField(value = precio, onValueChange = { precio = it }, label = { Text("Precio") }, modifier = Modifier.fillMaxWidth(),colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = LilaPri,
+                    focusedLabelColor = LilaPri
+                ))
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = {
+                onGuardar(nombre, desc, precio.toIntOrNull() ?: 0)
+                onDismiss()
+            }) { Text("Guardar", color = LilaPri) }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) { Text("Cancelar", color = Color.Gray) }
+        }
+    )
+}
+
+//Editar las categorias que existen
+@Composable
+fun EditarCategoriaDialog(
+    categoria: CategoriaEntity,
+    onDismiss: () -> Unit,
+    onGuardar: (String) -> Unit
+) {
+    var nombre by remember { mutableStateOf(categoria.nombreCategoria) }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Editar categoría", color = LilaPri) },
+        text = {
+            OutlinedTextField(value = nombre, onValueChange = { nombre = it }, label = { Text("Nombre") }, modifier = Modifier.fillMaxWidth(),colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = LilaPri,
+                focusedLabelColor = LilaPri
+            ))
+        },
+        confirmButton = {
+            TextButton(onClick = {
+                onGuardar(nombre)
+                onDismiss()
+            }) { Text("Guardar", color = LilaPri) }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) { Text("Cancelar", color = Color.Gray) }
+        }
+    )
+}
+
+//editar los roles que existen
+@Composable
+fun EditarRolDialog(
+    rol: RolEntity,
+    onDismiss: () -> Unit,
+    onGuardar: (String) -> Unit
+) {
+    var nombre by remember { mutableStateOf(rol.descripcion) }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Editar rol", color = LilaPri) },
+        text = {
+            OutlinedTextField(value = nombre, onValueChange = { nombre = it }, label = { Text("Nombre") }, modifier = Modifier.fillMaxWidth(),colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = LilaPri,
+                focusedLabelColor = LilaPri
+            ))
+        },
+        confirmButton = {
+            TextButton(onClick = {
+                onGuardar(nombre)
+                onDismiss()
+            }) { Text("Guardar", color = LilaPri) }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) { Text("Cancelar", color = Color.Gray) }
+        }
+    )
+}
+

@@ -25,7 +25,12 @@ data class AdminUiState(
     val servicios: List<ServicioEntity> = emptyList(),
     val categorias: List<CategoriaEntity> = emptyList(),
     val roles: List<RolEntity> = emptyList(),
-    val trbajadores: List<UserEntity> = emptyList()
+    val trbajadores: List<UserEntity> = emptyList(),
+
+    val servicioAEditar: ServicioEntity? = null,
+    val categoriaAEditar: CategoriaEntity? = null,
+    val rolAEditar: RolEntity? = null,
+
 )
 
 class AdminViewModel(
@@ -135,4 +140,112 @@ class AdminViewModel(
             }
         }
     }
+
+    fun abrirDialogoEditarServicio (servicio: ServicioEntity){
+        _uiState.update { it.copy(servicioAEditar = servicio) }
+    }
+
+    fun cerrarDialogoEditarServicio(){
+        _uiState.update { it.copy(servicioAEditar = null) }
+    }
+
+    fun actualizarServicio(id: Long, nombre: String, desc: String, precio: Int) {
+        viewModelScope.launch {
+            val actualizado = ServicioEntity(idServicio = id, nombre = nombre, descripcion = desc, precio = precio, categoriaId = 1L)
+            val result = servicioRepository.actualizarServicio(actualizado)
+            result.onSuccess {
+                _uiState.update { it.copy(successMessage = "Servicio actualizado correctamente") }
+                cerrarDialogoEditarServicio()
+                cargarListas()
+            }.onFailure {
+                _uiState.update { it.copy(errorMessage = "Error al actualizar servicio: ${it.errorMessage}") }
+            }
+        }
+    }
+
+    //Eliminar servicio
+    fun eliminarServicio(id: Long) {
+        viewModelScope.launch {
+            val result = servicioRepository.eliminarServicio(id)
+            result.onSuccess {
+                _uiState.update { it.copy(successMessage = "Servicio eliminado correctamente") }
+                cargarListas()
+            }.onFailure {
+                _uiState.update { it.copy(errorMessage = "Error al eliminar servicio: ${it.errorMessage}") }
+            }
+        }
+    }
+
+    //Editar categoría
+    fun abrirDialogoEditarCategoria(categoria: CategoriaEntity) {
+        _uiState.update { it.copy(categoriaAEditar = categoria) }
+    }
+
+    fun cerrarDialogoEditarCategoria() {
+        _uiState.update { it.copy(categoriaAEditar = null) }
+    }
+
+    fun actualizarCategoria(id: Long, nuevoNombre: String) {
+        viewModelScope.launch {
+            val actualizado = CategoriaEntity(idCategoria = id, nombreCategoria = nuevoNombre)
+            val result = categoriaRepository.actualizarCategoria(actualizado)
+            result.onSuccess {
+                _uiState.update { it.copy(successMessage = "Categoría actualizada correctamente") }
+                cerrarDialogoEditarCategoria()
+                cargarListas()
+            }.onFailure {
+                _uiState.update { it.copy(errorMessage = "Error al actualizar categoría: ${it.errorMessage}") }
+            }
+        }
+    }
+
+    //Eliminar categoría
+    fun eliminarCategoria(id: Long) {
+        viewModelScope.launch {
+            val result = categoriaRepository.eliminarCategoria(id)
+            result.onSuccess {
+                _uiState.update { it.copy(successMessage = "Categoría eliminada correctamente") }
+                cargarListas()
+            }.onFailure {
+                _uiState.update { it.copy(errorMessage = "Error al eliminar categoría: ${it.errorMessage}") }
+            }
+        }
+    }
+
+    //Editar rol
+    fun abrirDialogoEditarRol(rol: RolEntity) {
+        _uiState.update { it.copy(rolAEditar = rol) }
+    }
+
+    fun cerrarDialogoEditarRol() {
+        _uiState.update { it.copy(rolAEditar = null) }
+    }
+
+    fun actualizarRol(id: Long, nuevoNombre: String) {
+        viewModelScope.launch {
+            val actualizado = RolEntity(idRol = id, descripcion = nuevoNombre)
+            val result = rolRepository.actualizarRol(actualizado)
+            result.onSuccess {
+                _uiState.update { it.copy(successMessage = "Rol actualizado correctamente") }
+                cerrarDialogoEditarRol()
+                cargarListas()
+            }.onFailure {
+                _uiState.update { it.copy(errorMessage = "Error al actualizar rol: ${it.errorMessage}") }
+            }
+        }
+    }
+
+    //Eliminar rol
+    fun eliminarRol(id: Long) {
+        viewModelScope.launch {
+            val result = rolRepository.eliminarRol(id)
+            result.onSuccess {
+                _uiState.update { it.copy(successMessage = "Rol eliminado correctamente") }
+                cargarListas()
+            }.onFailure {
+                _uiState.update { it.copy(errorMessage = "Error al eliminar rol: ${it.errorMessage}") }
+            }
+        }
+    }
+
 }

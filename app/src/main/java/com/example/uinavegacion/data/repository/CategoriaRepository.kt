@@ -5,7 +5,7 @@ import com.example.uinavegacion.data.local.entities.categoria.CategoriaEntity
 
 class CategoriaRepository(private val dao: CategoriaDao) {
 
-    suspend fun insertarCategoria(categoria: CategoriaEntity): Result<Long> = runCatching {
+    suspend fun insertarCategoria(categoria: CategoriaEntity): Result<Long> = runCatching{ //rincatching es = al trychatch pero este simplifica el codigo
         dao.insert(categoria)
     }
 

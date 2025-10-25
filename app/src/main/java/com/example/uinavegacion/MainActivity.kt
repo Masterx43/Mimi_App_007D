@@ -98,8 +98,6 @@ fun AppRoot() { // Raíz de la app para separar responsabilidades
         factory = UserInfoViewModelFactory(userRepository)
     )
 
-    val authState by authViewModel.session.collectAsState()
-    val userId = authState.userId ?: 1L
 
     val bookingViewModel : BookingViewModel = viewModel (
         factory = BookingViewModelFactory(reservaRepository, servicioRepository)

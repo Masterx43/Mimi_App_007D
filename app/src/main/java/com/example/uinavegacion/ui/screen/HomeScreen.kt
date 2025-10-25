@@ -204,25 +204,9 @@ fun HomeScreen(
                 }
             }
 
-            /*Spacer(Modifier.height(24.dp)) // Separación*/
+            Spacer(Modifier.height(24.dp)) // Separación
 
-            // Botones de navegación principales
- /*           Row( // Dos botones en fila
-                horizontalArrangement = Arrangement.spacedBy(12.dp) // Espacio entre botones
-            ) {
-                Button(onClick = onGoLogin,
-                    colors= ButtonDefaults.buttonColors(
-                        containerColor = Rosado)) { Text("Ir a Login") } // Navega a Login
-                OutlinedButton(onClick = onGoRegister,
-                    colors= ButtonDefaults.buttonColors(
-                        containerColor = Rosado)) { Text("Ir a Registro") } // A Registro
-            }
-            Spacer(Modifier.height(12.dp))
 
-            Button(onClick = onGoReserve,
-            colors= ButtonDefaults.buttonColors(
-                containerColor = Rosado
-            )) {Text("Ir a Agendar") }*/
         }
     }
 }

@@ -85,7 +85,8 @@ class BookingViewModel(
                     _uiState.update {
                         it.copy(
                             isLoading=false,
-                            successMessage = "Reserva agendada con éxito para ${s.fecha} a las ${s.hora} (${s.servicio})",
+                            successMessage = "Reserva agendada con éxito para ${s.fecha} a las ${s.hora} (${s.servicio})\n" +
+                                    "Le llegara un correo cuando un trabajador tome su reserva",
                             errorMessage = null
                         )
                     }

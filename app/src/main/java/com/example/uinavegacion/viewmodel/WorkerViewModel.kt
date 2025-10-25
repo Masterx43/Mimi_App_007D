@@ -40,11 +40,16 @@ class WorkerViewModel(
         viewModelScope.launch {
             val result = reservaRepository.actualizarEstadoReservaPorId(reservaId, nuevoEstado = 2L)
             result.onSuccess {
-                _uiState.update { it.copy(successMessage = " Reserva $reservaId marcada como completada") }
+                _uiState.update { it.copy(successMessage ="Reserva $reservaId marcada como completada\n" +
+                        "Se enviara un correo al cliente con la confirmacion de la reserva") }
                 cargarTodasLasReservas() //recargar la lista
             }.onFailure { e ->
                 _uiState.update { it.copy(errorMessage = "Error al actualizar: ${e.message}") }
             }
         }
+    }
+
+    fun clearMessages() {
+        _uiState.update { it.copy(successMessage = null, errorMessage = null) }
     }
 }

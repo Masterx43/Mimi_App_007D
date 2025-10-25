@@ -34,6 +34,8 @@ fun WorkerScreen(
 ) {
     val session by vm.session.collectAsState()
     val uiState by workerVm.uiState.collectAsState()
+    var showConfirmDialog by remember { mutableStateOf(false) }
+    var selectedReservaId by remember { mutableStateOf<Long?>(null) }
 
     //LaunchedEffect(Unit) {
     //    session.userId?.let { workerVm.cargarTodasLasReservas() }
@@ -123,7 +125,10 @@ fun WorkerScreen(
                             Spacer(Modifier.height(8.dp))
                             if (reserva.estadoId == 1L) {
                                 Button(
-                                    onClick = { workerVm.marcarCompletada(reserva.idReserva) },
+                                    onClick = {
+                                        selectedReservaId = reserva.idReserva
+                                        showConfirmDialog = true
+                                              },
                                     colors = ButtonDefaults.buttonColors(containerColor = LilaPri),
                                     modifier = Modifier.fillMaxWidth()
                                 ) {
@@ -160,6 +165,67 @@ fun WorkerScreen(
                 Icon(Icons.Filled.Logout, contentDescription = "Cerrar sesión", tint = Blanco)
                 Spacer(Modifier.width(8.dp))
                 Text("Cerrar sesión", color = Blanco)
+            }
+
+            //Alerta instrusiva para confirmar
+            if (showConfirmDialog && selectedReservaId != null) {
+                AlertDialog(
+                    onDismissRequest = { showConfirmDialog = false },
+                    title = {
+                        Text("Confirmar acción", color = LilaPri, fontWeight = FontWeight.Bold)
+                    },
+                    text = {
+                        Text(
+                            "¿Deseas marcar la reserva #$selectedReservaId como completada?",
+                            color = Color.Black
+                        )
+                    },
+                    confirmButton = {
+                        TextButton(onClick = {
+                            workerVm.marcarCompletada(selectedReservaId!!)
+                            showConfirmDialog = false
+                        }) {
+                            Text("Confirmar", color = LilaPri)
+                        }
+                    },
+                    dismissButton = {
+                        TextButton(onClick = { showConfirmDialog = false }) {
+                            Text("Cancelar", color = Color.Gray)
+                        }
+                    },
+                    containerColor = Color.White,
+                    tonalElevation = 8.dp,
+                    shape = RoundedCornerShape(16.dp)
+                )
+            }
+
+            //Alerta instrusiva
+            if (uiState.successMessage != null || uiState.errorMessage != null) {
+                val isSuccess = uiState.successMessage != null
+                AlertDialog(
+                    onDismissRequest = { workerVm.clearMessages() },
+                    confirmButton = {
+                        TextButton(onClick = { workerVm.clearMessages() }) {
+                            Text("Aceptar", color = LilaPri)
+                        }
+                    },
+                    title = {
+                        Text(
+                            text = if (isSuccess) "¡Éxito!" else "Error",
+                            color = if (isSuccess) LilaPri else Color.Red,
+                            fontWeight = FontWeight.Bold
+                        )
+                    },
+                    text = {
+                        Text(
+                            text = uiState.successMessage ?: uiState.errorMessage ?: "",
+                            color = Color.Black
+                        )
+                    },
+                    containerColor = Color.White,
+                    tonalElevation = 8.dp,
+                    shape = RoundedCornerShape(16.dp)
+                )
             }
         }
     }

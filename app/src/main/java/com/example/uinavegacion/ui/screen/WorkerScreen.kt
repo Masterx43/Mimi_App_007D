@@ -7,6 +7,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AssignmentInd
 import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Logout
@@ -34,14 +35,22 @@ fun WorkerScreen(
     val session by vm.session.collectAsState()
     val uiState by workerVm.uiState.collectAsState()
 
-    LaunchedEffect(Unit) {
-        session.userId?.let { workerVm.cargarTodasLasReservas() }
+    //LaunchedEffect(Unit) {
+    //    session.userId?.let { workerVm.cargarTodasLasReservas() }
+    //}
+
+    LaunchedEffect(session.userId) {
+        if (session.userId != null) {
+            workerVm.cargarTodasLasReservas()
+        }
     }
+
+
 
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(LilaPri)
+            .background(Blanco)
             .padding(16.dp)
     ) {
         Column(
@@ -52,21 +61,21 @@ fun WorkerScreen(
         ) {
             // Encabezado
             Icon(
-                imageVector = Icons.Filled.Build,
+                imageVector = Icons.Filled.AssignmentInd,
                 contentDescription = "Trabajador",
-                tint = Color.White,
+                tint = LilaPri,
                 modifier = Modifier.size(120.dp)
             )
             Text(
                 text = session.userName ?: "Trabajador",
                 style = MaterialTheme.typography.headlineSmall.copy(
-                    color = Blanco,
+                    color = LilaPri,
                     fontWeight = FontWeight.Bold
                 )
             )
             Text(
                 text = session.userEmail ?: "Sin correo registrado",
-                style = MaterialTheme.typography.bodyLarge.copy(color = Blanco)
+                style = MaterialTheme.typography.bodyLarge.copy(color = LilaPri)
             )
 
             Spacer(Modifier.height(24.dp))
@@ -74,15 +83,15 @@ fun WorkerScreen(
             //Lista de reservas asignadas
             Text(
                 "Reservas asignadas:",
-                color = Blanco,
+                color = LilaPri,
                 fontWeight = FontWeight.Bold,
                 style = MaterialTheme.typography.titleMedium
             )
 
             if (uiState.reservas.isEmpty()) {
                 Text(
-                    "No tienes reservas asignadas.",
-                    color = Blanco,
+                    uiState.errorMessage.toString(),
+                    color = textoNegro,
                     modifier = Modifier.padding(8.dp)
                 )
             } else {
@@ -115,7 +124,7 @@ fun WorkerScreen(
                             if (reserva.estadoId == 1L) {
                                 Button(
                                     onClick = { workerVm.marcarCompletada(reserva.idReserva) },
-                                    colors = ButtonDefaults.buttonColors(containerColor = Rosado),
+                                    colors = ButtonDefaults.buttonColors(containerColor = LilaPri),
                                     modifier = Modifier.fillMaxWidth()
                                 ) {
                                     Icon(Icons.Filled.Check, contentDescription = "Completar", tint = Blanco)
@@ -129,12 +138,12 @@ fun WorkerScreen(
             }
 
             // Mensajes de estado
-            uiState.successMessage?.let {
-                Text(it, color = Color.Green, textAlign = TextAlign.Center)
-            }
-            uiState.errorMessage?.let {
-                Text(it, color = Color.Red, textAlign = TextAlign.Center)
-            }
+//            uiState.successMessage?.let {
+//                Text(it, color = Color.Green, textAlign = TextAlign.Center)
+//            }
+//            uiState.errorMessage?.let {
+//                Text(it, color = Color.Red, textAlign = TextAlign.Center)
+//            }
 
             Spacer(Modifier.height(32.dp))
 
@@ -144,7 +153,7 @@ fun WorkerScreen(
                     vm.logout()
                     onLogout()
                 },
-                colors = ButtonDefaults.buttonColors(containerColor = Rosado),
+                colors = ButtonDefaults.buttonColors(containerColor = LilaPri),
                 shape = RoundedCornerShape(12.dp),
                 modifier = Modifier.fillMaxWidth(0.8f)
             ) {

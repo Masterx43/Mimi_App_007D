@@ -1,15 +1,18 @@
 package com.example.uinavegacion.ui.screen
 
+import android.R
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Error
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.*
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -101,9 +104,16 @@ private fun LoginScreen(
         Column(
             horizontalAlignment = Alignment.CenterHorizontally // Centrado horizontal
         ) {
+            Icon(
+                imageVector = Icons.Filled.AccountCircle,
+                contentDescription = "Perfil",
+                tint = LilaPri,  ///
+                modifier = Modifier.size(150.dp)
+            )
+            Spacer(Modifier.height(20.dp))
             Text(
                 text = "Login",
-                style = MaterialTheme.typography.headlineSmall // Título
+                style = MaterialTheme.typography.headlineSmall.copy(color = LilaPri)// Título
             )
             Spacer(Modifier.height(12.dp)) // Separación
             Text(
@@ -114,14 +124,18 @@ private fun LoginScreen(
 
             OutlinedTextField(
                 value = email,                               // Valor actual
-                onValueChange = onEmailChange,               // Notifica VM (valida email)
-                label = { Text("Email") },                   // Etiqueta
+                onValueChange = onEmailChange, // Notifica VM (valida email)
+                label = { Text("Email")},                   // Etiqueta
                 singleLine = true,                           // Una línea
                 isError = emailError != null,                // Marca error si corresponde
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Email        // Teclado de email
                 ),
-                modifier = Modifier.fillMaxWidth()           // Ancho completo
+                modifier = Modifier.fillMaxWidth(),// Ancho completo
+                colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = LilaPri,
+                        focusedLabelColor = LilaPri
+            )
             )
             if (emailError != null) {                        // Muestra mensaje si hay error
                 Text(emailError, color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.labelSmall)
@@ -145,7 +159,11 @@ private fun LoginScreen(
                     }
                 },
                 isError = contraError != null,                 // (Opcional) marcar error
-                modifier = Modifier.fillMaxWidth()           // Ancho completo
+                modifier = Modifier.fillMaxWidth() , // Ancho completo
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = LilaPri,
+                    focusedLabelColor = LilaPri
+                )
             )
             if (contraError != null) {                         // (Opcional) mostrar error
                 Text(contraError, color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.labelSmall)
@@ -155,7 +173,8 @@ private fun LoginScreen(
 
             // ---------- BOTÓN ENTRAR ----------
             Button(
-                onClick = onSubmit,                          // Envía login
+                onClick = onSubmit, // Envía login
+                colors = ButtonDefaults.buttonColors(containerColor = LilaPri),
                 enabled = canSubmit && !isSubmitting,        // Solo si válido y no cargando
                 modifier = Modifier.fillMaxWidth()           // Ancho completo
             ) {
@@ -176,7 +195,9 @@ private fun LoginScreen(
             Spacer(Modifier.height(12.dp))                   // Espacio
 
             // ---------- BOTÓN IR A REGISTRO ----------
-            OutlinedButton(onClick = onGoRegister, modifier = Modifier.fillMaxWidth()) {
+            OutlinedButton(onClick = onGoRegister,
+                colors = ButtonDefaults.buttonColors(containerColor = LilaPri),
+                modifier = Modifier.fillMaxWidth()) {
                 Text("Crear cuenta")
             }
             //fin modificacion de formulario

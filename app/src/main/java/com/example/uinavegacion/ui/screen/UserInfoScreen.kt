@@ -1,5 +1,6 @@
 package com.example.uinavegacion.ui.screen
 
+import android.R
 import android.content.Context
 import android.net.Uri
 import android.widget.Toast
@@ -141,7 +142,7 @@ fun UserInfoScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(LilaPri)
+            .background(Blanco)
             .padding(24.dp)
     ) {
         Column(
@@ -155,7 +156,7 @@ fun UserInfoScreen(
                 Icon(
                     imageVector = Icons.Filled.AccountCircle,
                     contentDescription = "Perfil",
-                    tint = Color.White,
+                    tint = LilaPri,  ///
                     modifier = Modifier.size(150.dp)
                 )
             } else {
@@ -168,10 +169,21 @@ fun UserInfoScreen(
                     modifier = Modifier
                         .size(150.dp)
                         .clip(CircleShape)
-                        .border(3.dp, Rosado, CircleShape),
+                        .border(3.dp, LilaPri, CircleShape),
                     contentScale = ContentScale.Crop
                 )
             }
+            Spacer(Modifier.height(8.dp))
+
+            Text(
+                text = "${state.user?.nombre ?: ""} ${state.user?.apellido ?: ""}",
+                style = MaterialTheme.typography.titleLarge.copy(
+                    color = LilaPri,
+                    fontWeight = FontWeight.Bold
+                ),
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
+            )
 
             Spacer(Modifier.height(16.dp))
 
@@ -187,16 +199,16 @@ fun UserInfoScreen(
                         pendingCaptureUri = uri
                         takePictureLauncher.launch(uri)
                     },
-                    colors = ButtonDefaults.buttonColors(containerColor = Rosado)
+                    colors = ButtonDefaults.buttonColors(containerColor = LilaPri)
                 ) {
                     Text("Tomar foto", color = Blanco)
                 }
 
                 OutlinedButton(
                     onClick = { pickFromGalleryLauncher.launch("image/*") },
-                    colors = ButtonDefaults.buttonColors(containerColor = Color.White.copy(alpha = 0.2f))
+                    colors = ButtonDefaults.buttonColors(containerColor = LilaPri.copy(alpha = 0.2f))
                 ) {
-                    Text("Desde galería", color = Blanco)
+                    Text("Desde galería", color = LilaPri)
                 }
             }
 
@@ -206,9 +218,9 @@ fun UserInfoScreen(
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 8.dp),
-                colors = CardDefaults.cardColors(containerColor = Color.White.copy(alpha = 0.15f)),
-                shape = RoundedCornerShape(16.dp),
+                    .padding(horizontal = 4.dp),
+                colors = CardDefaults.cardColors(containerColor =LilaPri.copy(alpha = 0.15f)),
+                shape = RoundedCornerShape(5.dp),
                 elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
             ) {
                 Column(
@@ -216,9 +228,9 @@ fun UserInfoScreen(
                     modifier = Modifier.padding(16.dp)
                 ) {
                     Text(
-                        text = "${state.user?.nombre ?: ""} ${state.user?.apellido ?: ""}",
+                        text = "Su informacion",
                         style = MaterialTheme.typography.titleLarge.copy(
-                            color = Blanco,
+                            color = LilaPri,
                             fontWeight = FontWeight.Bold
                         ),
                         textAlign = TextAlign.Center,
@@ -229,7 +241,7 @@ fun UserInfoScreen(
 
                     Text(
                         text = state.user?.correo ?: "Correo no disponible",
-                        style = MaterialTheme.typography.bodyLarge.copy(color = Blanco),
+                        style = MaterialTheme.typography.bodyLarge.copy(color = LilaPri),
                         textAlign = TextAlign.Center,
                         modifier = Modifier.fillMaxWidth()
                     )
@@ -238,7 +250,7 @@ fun UserInfoScreen(
 
                     Text(
                         text = state.user?.phone ?: "Número no disponible",
-                        style = MaterialTheme.typography.bodyLarge.copy(color = Blanco),
+                        style = MaterialTheme.typography.bodyLarge.copy(color = LilaPri),
                         textAlign = TextAlign.Center,
                         modifier = Modifier.fillMaxWidth()
                     )
@@ -252,7 +264,7 @@ fun UserInfoScreen(
                             3L -> "Trabajador"
                             else -> "Rol desconocido"
                         },
-                        style = MaterialTheme.typography.bodyMedium.copy(color = Blanco.copy(alpha = 0.9f)),
+                        style = MaterialTheme.typography.bodyMedium.copy(color = LilaPri.copy(alpha = 0.9f)),
                         textAlign = TextAlign.Center,
                         modifier = Modifier.fillMaxWidth()
                     )
@@ -276,9 +288,9 @@ fun UserInfoScreen(
                 modifier = Modifier.fillMaxWidth(0.8f),
                 colors = ButtonDefaults.buttonColors(containerColor = Color.White.copy(alpha = 0.2f))
             ) {
-                Icon(Icons.Filled.Edit, contentDescription = "Editar", tint = Blanco)
+                Icon(Icons.Filled.Edit, contentDescription = "Editar", tint = LilaPri)
                 Spacer(Modifier.width(8.dp))
-                Text(if (isEditing) "Cancelar" else "Editar información", color = Blanco)
+                Text(if (isEditing) "Cancelar" else "Editar información", color = LilaPri)
             }
 
             Spacer(Modifier.height(12.dp))
@@ -311,8 +323,8 @@ fun UserInfoScreen(
                             label = { Text(label) },
                             modifier = Modifier.fillMaxWidth(),
                             colors = OutlinedTextFieldDefaults.colors(
-                                focusedBorderColor = Rosado,
-                                focusedLabelColor = Rosado
+                                focusedBorderColor = LilaPri,
+                                focusedLabelColor = LilaPri
                             )
                         )
                         Spacer(Modifier.height(8.dp))
@@ -333,7 +345,7 @@ fun UserInfoScreen(
                                 isEditing = false
                             } ?: Toast.makeText(context, "Error: usuario no cargado", Toast.LENGTH_SHORT).show()
                         },
-                        colors = ButtonDefaults.buttonColors(containerColor = Rosado),
+                        colors = ButtonDefaults.buttonColors(containerColor = LilaPri),
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Text("Guardar cambios", color = Blanco)
@@ -349,7 +361,7 @@ fun UserInfoScreen(
                     vm.logout()
                     onLogout()
                 },
-                colors = ButtonDefaults.buttonColors(containerColor = Rosado),
+                colors = ButtonDefaults.buttonColors(containerColor = LilaPri),
                 shape = RoundedCornerShape(12.dp),
                 modifier = Modifier.fillMaxWidth(0.7f)
             ) {

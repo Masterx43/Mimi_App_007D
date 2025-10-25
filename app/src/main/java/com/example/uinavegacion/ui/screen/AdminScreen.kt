@@ -15,6 +15,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ModifierLocalBeyondBoundsLayout
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -23,7 +24,7 @@ import com.example.uinavegacion.viewmodel.AdminViewModel
 import com.example.uinavegacion.viewmodel.AuthViewModel
 import com.example.uinavegacion.ui.theme.Blanco
 import com.example.uinavegacion.ui.theme.LilaPri
-import com.example.uinavegacion.ui.theme.Rosado
+import com.example.uinavegacion.ui.theme.textoNegro
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -46,7 +47,7 @@ fun AdminScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(LilaPri)
+            .background(Blanco)
             .padding(16.dp)
     ) {
         Column(
@@ -59,34 +60,43 @@ fun AdminScreen(
             Icon(
                 imageVector = Icons.Filled.AdminPanelSettings,
                 contentDescription = "Administrador",
-                tint = Color.White,
+                tint = LilaPri,
                 modifier = Modifier.size(120.dp)
             )
             Text(
                 text = session.userName ?: "Administrador",
                 style = MaterialTheme.typography.headlineSmall.copy(
-                    color = Blanco,
+                    color = LilaPri,
                     fontWeight = FontWeight.Bold
                 )
             )
             Text(
                 text = session.userEmail ?: "admin@mimiapp.cl",
-                style = MaterialTheme.typography.bodyLarge.copy(color = Blanco)
+                style = MaterialTheme.typography.bodyLarge.copy(color = textoNegro)
             )
 
             Spacer(Modifier.height(24.dp))
 
-            // 🔧 CREAR SERVICIO
+            // CREAR SERVICIO
             Card(
                 colors = CardDefaults.cardColors(containerColor = Blanco),
                 shape = RoundedCornerShape(16.dp),
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Column(Modifier.padding(16.dp)) {
-                    Text("Crear servicio", fontWeight = FontWeight.Bold)
-                    OutlinedTextField(value = serviceName, onValueChange = { serviceName = it }, label = { Text("Nombre") }, modifier = Modifier.fillMaxWidth())
-                    OutlinedTextField(value = serviceDesc, onValueChange = { serviceDesc = it }, label = { Text("Descripción") }, modifier = Modifier.fillMaxWidth())
-                    OutlinedTextField(value = servicePrice, onValueChange = { servicePrice = it }, label = { Text("Precio") }, modifier = Modifier.fillMaxWidth())
+                    Text("Crear servicio", fontWeight = FontWeight.Bold, color = LilaPri)
+                    OutlinedTextField(value = serviceName, onValueChange = { serviceName = it }, label = { Text("Nombre") }, modifier = Modifier.fillMaxWidth(),colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = LilaPri,
+                        focusedLabelColor = LilaPri
+                    ))
+                    OutlinedTextField(value = serviceDesc, onValueChange = { serviceDesc = it }, label = { Text("Descripción") }, modifier = Modifier.fillMaxWidth(),colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = LilaPri,
+                        focusedLabelColor = LilaPri
+                    ))
+                    OutlinedTextField(value = servicePrice, onValueChange = { servicePrice = it }, label = { Text("Precio") }, modifier = Modifier.fillMaxWidth(),colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = LilaPri,
+                        focusedLabelColor = LilaPri
+                    ))
                     Spacer(Modifier.height(8.dp))
                     Button(
                         onClick = {
@@ -96,8 +106,9 @@ fun AdminScreen(
                             serviceDesc = ""
                             servicePrice = ""
                         },
-                        colors = ButtonDefaults.buttonColors(containerColor = Rosado),
-                        modifier = Modifier.fillMaxWidth()
+                        colors = ButtonDefaults.buttonColors(containerColor = LilaPri),
+                        modifier = Modifier.fillMaxWidth(),
+
                     ) {
                         Icon(Icons.Filled.Check, contentDescription = "Guardar", tint = Blanco)
                         Spacer(Modifier.width(8.dp))
@@ -108,7 +119,7 @@ fun AdminScreen(
 
             Spacer(Modifier.height(16.dp))
 
-            // 🧾 CREAR CATEGORÍA
+            // CREAR CATEGORÍA
             Card(
                 colors = CardDefaults.cardColors(containerColor = Blanco),
                 shape = RoundedCornerShape(16.dp),
@@ -116,14 +127,17 @@ fun AdminScreen(
             ) {
                 Column(Modifier.padding(16.dp)) {
                     Text("Crear categoría", fontWeight = FontWeight.Bold)
-                    OutlinedTextField(value = categoryName, onValueChange = { categoryName = it }, label = { Text("Nombre de categoría") }, modifier = Modifier.fillMaxWidth())
+                    OutlinedTextField(value = categoryName, onValueChange = { categoryName = it }, label = { Text("Nombre de categoría") }, modifier = Modifier.fillMaxWidth(),colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = LilaPri,
+                        focusedLabelColor = LilaPri
+                    ))
                     Spacer(Modifier.height(8.dp))
                     Button(
                         onClick = {
                             adminVm.crearCategoria(categoryName)
                             categoryName = ""
                         },
-                        colors = ButtonDefaults.buttonColors(containerColor = Rosado),
+                        colors = ButtonDefaults.buttonColors(containerColor = LilaPri),
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Icon(Icons.Filled.Check, contentDescription = "Guardar", tint = Blanco)
@@ -143,14 +157,17 @@ fun AdminScreen(
             ) {
                 Column(Modifier.padding(16.dp)) {
                     Text("Crear rol", fontWeight = FontWeight.Bold)
-                    OutlinedTextField(value = roleName, onValueChange = { roleName = it }, label = { Text("Nombre del rol") }, modifier = Modifier.fillMaxWidth())
+                    OutlinedTextField(value = roleName, onValueChange = { roleName = it }, label = { Text("Nombre del rol") }, modifier = Modifier.fillMaxWidth(),colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = LilaPri,
+                        focusedLabelColor = LilaPri
+                    ))
                     Spacer(Modifier.height(8.dp))
                     Button(
                         onClick = {
                             adminVm.crearRol(roleName)
                             roleName = ""
                         },
-                        colors = ButtonDefaults.buttonColors(containerColor = Rosado),
+                        colors = ButtonDefaults.buttonColors(containerColor = LilaPri),
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Icon(Icons.Filled.Check, contentDescription = "Guardar", tint = Blanco)
@@ -183,35 +200,55 @@ fun AdminScreen(
                     value = nombreTrabajador,
                     onValueChange = { nombreTrabajador = it },
                     label = { Text("Nombre") },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = LilaPri,
+                        focusedLabelColor = LilaPri
+                    )
                 )
                 Spacer(Modifier.height(8.dp))
                 OutlinedTextField(
                     value = apellidoTrabajador,
                     onValueChange = { apellidoTrabajador = it },
                     label = { Text("Apellido") },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = LilaPri,
+                        focusedLabelColor = LilaPri
+                    )
                 )
                 Spacer(Modifier.height(8.dp))
                 OutlinedTextField(
                     value = correoTrabajador,
                     onValueChange = { correoTrabajador = it },
                     label = { Text("Correo") },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = LilaPri,
+                        focusedLabelColor = LilaPri
+                    )
                 )
                 Spacer(Modifier.height(8.dp))
                 OutlinedTextField(
                     value = telefonoTrabajador,
                     onValueChange = { telefonoTrabajador = it.filter { c -> c.isDigit() } },
                     label = { Text("Teléfono") },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = LilaPri,
+                        focusedLabelColor = LilaPri
+                    )
                 )
                 Spacer(Modifier.height(8.dp))
                 OutlinedTextField(
                     value = contrasenaTrabajador,
                     onValueChange = { contrasenaTrabajador = it },
                     label = { Text("Contraseña") },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = LilaPri,
+                        focusedLabelColor = LilaPri
+                    )
                 )
 
                 Spacer(Modifier.height(8.dp))
@@ -235,7 +272,7 @@ fun AdminScreen(
                             contrasenaTrabajador = ""
                         }
                     },
-                    colors = ButtonDefaults.buttonColors(containerColor = Rosado),
+                    colors = ButtonDefaults.buttonColors(containerColor = LilaPri),
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(10.dp)
                 ) {
@@ -267,28 +304,69 @@ fun AdminScreen(
 
             Spacer(Modifier.height(16.dp))
 
-            // 🔍 Listados
-            Text("Servicios registrados:", color = Blanco, fontWeight = FontWeight.Bold)
-            uiState.servicios.forEach {
-                Text("- ${it.nombre} ($${it.precio})", color = Blanco)
-            }
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 20.dp),
+                colors = CardDefaults.cardColors(containerColor =LilaPri.copy(alpha = 0.15f)),
+                shape = RoundedCornerShape(5.dp),
+                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 12.dp),
+                    horizontalAlignment = Alignment.Start
+                ) {
+                    // 🔍 Listados
+                    Text(
+                        "Servicios registrados:", color = textoNegro, fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center
+                    )
+                    uiState.servicios.forEach {
+                        Text(
+                            "- ${it.nombre} ($${it.precio})",
+                            color = textoNegro,
+                            textAlign = TextAlign.Center
+                        )
+                    }
 
-            Spacer(Modifier.height(8.dp))
-            Text("Categorías:", color = Blanco, fontWeight = FontWeight.Bold)
-            uiState.categorias.forEach {
-                Text("- ${it.nombreCategoria}", color = Blanco)
-            }
+                    Spacer(Modifier.height(8.dp))
+                    Text(
+                        "Categorías:",
+                        color = textoNegro,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center
+                    )
+                    uiState.categorias.forEach {
+                        Text(
+                            "- ${it.nombreCategoria}",
+                            color = textoNegro,
+                            textAlign = TextAlign.Center
+                        )
+                    }
 
-            Spacer(Modifier.height(8.dp))
-            Text("Roles:", color = Blanco, fontWeight = FontWeight.Bold)
-            uiState.roles.forEach {
-                Text("- ${it.descripcion}", color = Blanco)
+                    Spacer(Modifier.height(8.dp))
+                    Text(
+                        "Roles:",
+                        color = textoNegro,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center
+                    )
+                    uiState.roles.forEach {
+                        Text(
+                            "- ${it.descripcion}",
+                            color = textoNegro,
+                            textAlign = TextAlign.Center
+                        )
+                    }
+                }
             }
 
             Spacer(Modifier.height(24.dp))
             Button(
                 onClick = { vm.logout(); onLogout() },
-                colors = ButtonDefaults.buttonColors(containerColor = Rosado),
+                colors = ButtonDefaults.buttonColors(containerColor = LilaPri),
                 shape = RoundedCornerShape(12.dp),
                 modifier = Modifier.fillMaxWidth(0.8f)
             ) {

@@ -51,7 +51,7 @@ class AdminViewModel(
                 val trabajadores = userRepository.getAllWorkers(3L).getOrDefault(emptyList())
 
                 _uiState.update {
-                    it.copy(servicios = servicios, categorias = categorias, roles = roles,)
+                    it.copy(servicios = servicios, categorias = categorias, roles = roles, trbajadores = trabajadores)
                 }
             } catch (e: Exception) {
                 _uiState.update { it.copy(errorMessage = "Error al cargar datos: ${e.message}") }

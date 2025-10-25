@@ -12,6 +12,7 @@ import com.example.uinavegacion.domain.validation.validateStrongPassword
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -72,6 +73,36 @@ class AuthViewModel(
 
     private val _session = MutableStateFlow(SessionUiState())
     val session: StateFlow<SessionUiState> = _session
+
+    init {
+        viewModelScope.launch {
+            userPrefs.isLoogedIn.collect { loggedIn ->
+                if (loggedIn) {
+                    val userId = userPrefs.userId.firstOrNull()
+                    if (userId != null) {
+                        val result = repository.getUserById(userId)
+                        result.onSuccess { user ->
+                            _session.update {
+                                SessionUiState(
+                                    isLoggedIn = true,
+                                    userId = user.idUser,
+                                    userName = user.nombre,
+                                    userLastName = user.apellido,
+                                    userEmail = user.correo,
+                                    userPhone = user.phone,
+                                    userRoleId = user.rolId
+                                )
+                            }
+                            println(" Sesión restaurada correctamente -> ${user.correo}")
+                        }
+                        result.onFailure {
+                            println(" Error al restaurar sesión: ${it.message}")
+                        }
+                    }
+                }
+            }
+        }
+    }
 
 
     fun onLoginEmailChange(value: String){
@@ -220,7 +251,7 @@ class AuthViewModel(
 
     fun logout() {
         viewModelScope.launch {
-            userPrefs.setLoggedIn(false)
+            userPrefs.clear()
             _session.update {
                 it.copy(
                     isLoggedIn = false,

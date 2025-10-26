@@ -33,6 +33,7 @@ data class ReservaEntity (
     @PrimaryKey(autoGenerate = true)
     val idReserva : Long = 0L,
     val fechaReserva : String,  //campo cambiado temporalmente para probar
+    val horaReserva : String?,
     val subtotal : Int,
     val userId : Long,
     val estadoId : Long,

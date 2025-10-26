@@ -23,7 +23,8 @@ data class BookingUiState(
     val isLoading: Boolean= false,
     val successMessage: String? = null,
     val errorMessage: String? = null,
-    val serviciosDisponibles: List<ServicioEntity> = emptyList()
+    val serviciosDisponibles: List<ServicioEntity> = emptyList(),
+    val reservaUsuario: List<BookingViewModel.ReservaUsuario> = emptyList()
 )
 
 class BookingViewModel(
@@ -38,6 +39,8 @@ class BookingViewModel(
         cargarServicios() // cargamos los servicios de la base
     }
 
+
+    //carga todos los servicios disponibles
     private fun cargarServicios() {
         viewModelScope.launch {
 
@@ -75,6 +78,7 @@ class BookingViewModel(
                     // Crear y guardar la reserva en la base de datos
                     val reserva = ReservaEntity(
                         fechaReserva = s.fecha,
+                        horaReserva = s.hora,
                         subtotal = s.precioServicio ?: 0, // ejemplo, puedes calcular con el precio del servicio
                         userId = userId,
                         estadoId = 1L,
@@ -102,8 +106,57 @@ class BookingViewModel(
             }
         }
     }
+
+    //Listar y cargar las reservas
     fun clearMessages() {
         _uiState.update { it.copy(successMessage = null, errorMessage = null) }
     }
+    //DATA CLASS para el listado de reservas
+    data class ReservaUsuario(
+        val id: Long,
+        val fecha: String,
+        val hora: String,
+        val servicio: String,
+        val estado: String
+    )
+
+    //Función para cargar reservas del usuario logueado
+    fun cargarReservasUsuario(userId: Long) {
+        viewModelScope.launch {
+            try {
+                val resultado = reservaRepository.obtenerReservasPorUsuario(userId)
+                resultado.onSuccess { lista ->
+                    val reservas = lista.map {
+                        ReservaUsuario(
+                            id = it.idReserva,
+                            fecha = it.fechaReserva,
+                            hora = it.horaReserva ?: "Sin hora",
+                            servicio = it.nombreServicio,
+                            estado = when (it.estadoId) {
+                                1L -> "Pendiente"
+                                2L -> "Confirmada"
+                                3L -> "Completada"
+                                else -> "Desconocido"
+                            }
+                        )
+                    }
+
+                    _uiState.update {
+                        it.copy(
+                            reservaUsuario = reservas,
+                            successMessage = null,
+                            errorMessage = null
+                        )
+                    }
+                }.onFailure { e ->
+                    _uiState.update { it.copy(errorMessage = e.message) }
+                }
+            } catch (e: Exception) {
+                _uiState.update { it.copy(errorMessage = "Error al cargar reservas: ${e.message}") }
+            }
+        }
+    }
+
+
 
 }

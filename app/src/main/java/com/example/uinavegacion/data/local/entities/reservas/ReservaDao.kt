@@ -43,4 +43,23 @@ interface ReservaDao {
 
     @Query("UPDATE reservas SET estadoId = :nuevoEstado WHERE idReserva = :reservaId")
     suspend fun updateEstadoReservaPorId(reservaId: Long, nuevoEstado: Long): Int
+
+    //query para obtener todas las reservas
+    @Query("""
+    SELECT 
+        r.idReserva,
+        r.fechaReserva,
+        u.nombre AS nombreCliente,
+        s.nombre AS nombreServicio,
+        r.estadoId
+    FROM reservas AS r
+    INNER JOIN usuario AS u ON u.idUser = r.userId
+    INNER JOIN servicios AS s ON s.idServicio = r.servicioId
+    WHERE r.userId = :userId
+    ORDER BY r.fechaReserva ASC
+""")
+    suspend fun getReservasPorUsuario(userId: Long): List<ReservaDetalle>
+
+
+
 }

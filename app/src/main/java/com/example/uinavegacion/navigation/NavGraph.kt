@@ -144,6 +144,7 @@ fun AppNavGraph(navController: NavHostController,
                             vm = authViewModel,
                             onLogout = goLogin,
                             userInfoVm = userInfoViewModel,
+                            bookingVm = bookingViewModel,
                             userPrefs = userPreferences
                         )
                     }

@@ -60,4 +60,16 @@ class ReservaRepository(
     } catch (e: Exception) {
         Result.failure(e)
     }
+
+    suspend fun obtenerReservasPorUsuario(userId: Long): Result<List<ReservaDetalle>> = try {
+        val reservas = reservaDao.getReservasPorUsuario(userId)
+        if (reservas.isEmpty()) {
+            Result.failure(IllegalStateException("No hay reservas registradas para este usuario"))
+        } else {
+            Result.success(reservas)
+        }
+    } catch (e: Exception) {
+        Result.failure(e)
+    }
+
 }

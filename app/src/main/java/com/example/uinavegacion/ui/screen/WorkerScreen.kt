@@ -112,6 +112,7 @@ fun WorkerScreen(
                                 color = LilaOscuro
                             )
                             Text("Fecha: ${reserva.fechaReserva}")
+                            Text("Hora: ${reserva.horaReserva}")
                             Text("Cliente: ${reserva.nombreCliente?:"Desconocido"}")
                             Text("Servicio: ${reserva.nombreServicio?:"No especificado"}")
 

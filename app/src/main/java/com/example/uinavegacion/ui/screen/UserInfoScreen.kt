@@ -36,6 +36,7 @@ import com.example.uinavegacion.data.local.entities.user.UserEntity
 import com.example.uinavegacion.data.local.storage.UserPreferences
 import com.example.uinavegacion.ui.theme.*
 import com.example.uinavegacion.viewmodel.AuthViewModel
+import com.example.uinavegacion.viewmodel.BookingViewModel
 import com.example.uinavegacion.viewmodel.UserInfoViewModel
 import java.io.File
 import java.text.SimpleDateFormat
@@ -59,12 +60,14 @@ fun UserInfoScreen(
     vm: AuthViewModel,
     onLogout: () -> Unit,
     userInfoVm: UserInfoViewModel,
-    userPrefs: UserPreferences
+    userPrefs: UserPreferences,
+    bookingVm: BookingViewModel
 ) {
     val context = LocalContext.current
     val session by vm.session.collectAsState()
     val userIdPref by userPrefs.userId.collectAsState(initial = null)
     val state by userInfoVm.uiState.collectAsState()
+    val bookingState by bookingVm.uiState.collectAsState() //muestra reservas
 
     val scrollState = rememberScrollState()
     val effectiveUserId: Long? = userIdPref ?: session.userId
@@ -352,6 +355,41 @@ fun UserInfoScreen(
                     }
                 }
             }
+
+
+            //seccion para ver las reservas
+            Spacer(Modifier.height(24.dp))
+            Text("Mis Reservas", style = MaterialTheme.typography.titleMedium, color = LilaPri)
+
+            if (bookingState.reservaUsuario.isEmpty()) {
+                Text("Aún no tienes reservas registradas.", color = Color.Gray)
+            } else {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp)
+                        .verticalScroll(rememberScrollState())
+                ) {
+                    bookingState.reservaUsuario.forEach { reserva ->
+                        Card(
+                            colors = CardDefaults.cardColors(containerColor = Color.White),
+                            shape = RoundedCornerShape(12.dp),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 6.dp)
+                        ) {
+                            Column(Modifier.padding(16.dp)) {
+                                Text("Servicio: ${reserva.servicio}", fontWeight = FontWeight.Bold, color = LilaPri)
+                                Text("Fecha: ${reserva.fecha}")
+                                Text("Hora: ${reserva.hora}")
+                                Text("Estado: ${reserva.estado}")
+                            }
+                        }
+                    }
+                }
+            }
+
+
 
             Spacer(Modifier.height(32.dp))
 

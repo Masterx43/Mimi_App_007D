@@ -26,7 +26,7 @@ import com.example.uinavegacion.viewmodel.BookingViewModel
 import java.text.SimpleDateFormat
 import java.util.*
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class)  //para autorizar uso de apis experimentales
 @Composable
 fun BookingScreen(
     vm : BookingViewModel,
@@ -188,7 +188,7 @@ fun BookingScreen(
 
         Spacer(Modifier.height(12.dp))
 
-        //Campo de fecha
+        //Campo de la fecha
         OutlinedTextField(
             value = state.fecha,
             onValueChange = {},
@@ -212,7 +212,7 @@ fun BookingScreen(
 
         Spacer(Modifier.height(16.dp))
 
-        //Mostrar horas solo si hay fecha válida
+        //Muestra horas solo si hay fecha válida
         if (horasDisponibles.isNotEmpty()) {
             Text("Selecciona una hora:", style = MaterialTheme.typography.titleMedium)
             Spacer(Modifier.height(8.dp))
@@ -257,7 +257,7 @@ fun BookingScreen(
             }
         }
 
-        // --- ALERTA INTRUSIVA ---
+        // Alerta intrusiva para la reserva
         if (state.successMessage != null || state.errorMessage != null) {
             val isSuccess = state.successMessage != null
             AlertDialog(

@@ -88,10 +88,8 @@ private fun LoginScreen(
     onClear: ()-> Unit,
     onNavigateHome: ()->Unit
 ) {
-    val Blanco = Blanco // Fondo distinto para contraste
+    val Blanco = Blanco //fondo
     var showPass by remember { mutableStateOf(false) }
-
-
 
 
     Box(
@@ -143,7 +141,7 @@ private fun LoginScreen(
 
             Spacer(Modifier.height(8.dp))                    // Espacio
 
-            // ---------- PASSWORD (oculta por defecto) ----------
+            // ---------- Contraseña (oculta por defecto) ----------
             OutlinedTextField(
                 value = contra,                                // Valor actual
                 onValueChange = onPassChange,                // Notifica VM
@@ -171,7 +169,7 @@ private fun LoginScreen(
 
             Spacer(Modifier.height(16.dp))                   // Espacio
 
-            // ---------- BOTÓN ENTRAR ----------
+            // ---------- Boton para entrar ----------
             Button(
                 onClick = onSubmit, // Envía login
                 colors = ButtonDefaults.buttonColors(containerColor = LilaPri),
@@ -194,7 +192,7 @@ private fun LoginScreen(
 
             Spacer(Modifier.height(12.dp))                   // Espacio
 
-            // ---------- BOTÓN IR A REGISTRO ----------
+            // ---------- Boton para ir al registro ----------
             OutlinedButton(onClick = onGoRegister,
                 colors = ButtonDefaults.buttonColors(containerColor = LilaPri),
                 modifier = Modifier.fillMaxWidth()) {
@@ -203,7 +201,7 @@ private fun LoginScreen(
             //fin modificacion de formulario
         }
 
-        //ALERTA INTRUSIVA (éxito / error)
+        //Alerta intrusiva (éxito / error)
         if (success || errorMsg != null) {
             val isSuccess = success
             val userRole = when (useRoleId) {

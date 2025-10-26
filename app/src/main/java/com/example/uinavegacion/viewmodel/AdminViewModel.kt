@@ -26,7 +26,6 @@ data class AdminUiState(
     val categorias: List<CategoriaEntity> = emptyList(),
     val roles: List<RolEntity> = emptyList(),
     val trbajadores: List<UserEntity> = emptyList(),
-
     val servicioAEditar: ServicioEntity? = null,
     val categoriaAEditar: CategoriaEntity? = null,
     val rolAEditar: RolEntity? = null,
@@ -47,6 +46,7 @@ class AdminViewModel(
         cargarListas()
     }
 
+    //para que se puedan cargar todas las listas
     private fun cargarListas() {
         viewModelScope.launch {
             try {
@@ -64,6 +64,7 @@ class AdminViewModel(
         }
     }
 
+    //para que admin pueda crear un servicio
     fun crearServicio(nombre: String, descripcion: String, precio: Int, categoriaId: Long) {
         viewModelScope.launch {
             val result = servicioRepository.insertarServicio(
@@ -79,6 +80,7 @@ class AdminViewModel(
         }
     }
 
+    //para que admin pueda crear una categoria
     fun crearCategoria(nombre: String) {
         viewModelScope.launch {
             val result = categoriaRepository.insertarCategoria(CategoriaEntity(nombreCategoria = nombre))
@@ -91,6 +93,7 @@ class AdminViewModel(
         }
     }
 
+    //para que admin pueda crear un rol
     fun crearRol(descripcion: String) {
         viewModelScope.launch {
             val result = rolRepository.insertarRol(RolEntity(descripcion = descripcion))
@@ -103,6 +106,8 @@ class AdminViewModel(
         }
     }
 
+
+    //para que admin pueda crear trabajadores
     fun crearTrabajador(
         nombre: String,
         apellido: String,
@@ -128,7 +133,6 @@ class AdminViewModel(
 
                 )
 
-
                 if (result.isSuccess) {
                     _uiState.update { it.copy(successMessage = "Trabajador creado correctamente") }
                     cargarListas()
@@ -148,7 +152,7 @@ class AdminViewModel(
     fun cerrarDialogoEditarServicio(){
         _uiState.update { it.copy(servicioAEditar = null) }
     }
-
+    //actualizar los servicios en admin
     fun actualizarServicio(id: Long, nombre: String, desc: String, precio: Int) {
         viewModelScope.launch {
             val actualizado = ServicioEntity(idServicio = id, nombre = nombre, descripcion = desc, precio = precio, categoriaId = 1L)

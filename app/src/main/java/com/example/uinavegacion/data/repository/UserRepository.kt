@@ -22,7 +22,7 @@ class UserRepository(
         phone: String,
         password: String
     ): Result<Long> {
-        val exists = userDao.getByEmail(email) != null               // ¿Correo ya usado?
+        val exists = userDao.getByEmail(email) != null               // ve si el correo ya fue usado
         if (exists) {
             return Result.failure(IllegalStateException("El correo ya está registrado"))
         }

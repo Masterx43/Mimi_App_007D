@@ -326,7 +326,7 @@ fun AdminScreen(
                         .padding(horizontal = 16.dp, vertical = 12.dp),
                     horizontalAlignment = Alignment.Start
                 ) {
-                    // 🔹 SERVICIOS
+                    //SERVICIOS
                     Text(
                         "Servicios registrados:",
                         color = textoNegro,
@@ -345,10 +345,10 @@ fun AdminScreen(
                             Text("- ${servicio.nombre} ($${servicio.precio})", color = textoNegro)
                             Row {
                                 IconButton(onClick = { adminVm.abrirDialogoEditarServicio(servicio) }) {
-                                    Icon(Icons.Default.Edit, contentDescription = "Editar", tint = LilaPri)
+                                    Icon(Icons.Default.Edit, contentDescription = "Editar", tint = LilaPri)// boton para modificar
                                 }
                                 IconButton(onClick = { adminVm.eliminarServicio(servicio.idServicio) }) {
-                                    Icon(Icons.Default.Delete, contentDescription = "Eliminar", tint = Color.Red)
+                                    Icon(Icons.Default.Delete, contentDescription = "Eliminar", tint = Color.Red) //boton para eliminar
                                 }
                             }
                         }
@@ -369,10 +369,10 @@ fun AdminScreen(
                             Text("- ${categoria.nombreCategoria}", color = textoNegro)
                             Row {
                                 IconButton(onClick = { adminVm.abrirDialogoEditarCategoria(categoria) }) {
-                                    Icon(Icons.Default.Edit, contentDescription = "Editar", tint = LilaPri)
+                                    Icon(Icons.Default.Edit, contentDescription = "Editar", tint = LilaPri) // boton para modificar
                                 }
                                 IconButton(onClick = { adminVm.eliminarCategoria(categoria.idCategoria) }) {
-                                    Icon(Icons.Default.Delete, contentDescription = "Eliminar", tint = Color.Red)
+                                    Icon(Icons.Default.Delete, contentDescription = "Eliminar", tint = Color.Red) //boton para eliminar
                                 }
                             }
                         }
@@ -393,10 +393,10 @@ fun AdminScreen(
                             Text("- ${rol.descripcion}", color = textoNegro)
                             Row {
                                 IconButton(onClick = { adminVm.abrirDialogoEditarRol(rol) }) {
-                                    Icon(Icons.Default.Edit, contentDescription = "Editar", tint = LilaPri)
+                                    Icon(Icons.Default.Edit, contentDescription = "Editar", tint = LilaPri) // boton para modificar
                                 }
                                 IconButton(onClick = { adminVm.eliminarRol(rol.idRol) }) {
-                                    Icon(Icons.Default.Delete, contentDescription = "Eliminar", tint = Color.Red)
+                                    Icon(Icons.Default.Delete, contentDescription = "Eliminar", tint = Color.Red) //boton para eliminar
                                 }
                             }
                         }
@@ -419,7 +419,7 @@ fun AdminScreen(
                 Text("Cerrar sesión", color = Blanco)
             }
 
-            //creamos el trabajador
+
             Spacer(Modifier.height(24.dp))
 
 

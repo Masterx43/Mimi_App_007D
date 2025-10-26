@@ -100,7 +100,7 @@ fun HomeScreen(
 
             Spacer(Modifier.height(20.dp)) // Separación
 
-            // Tarjeta con un mini “hero”
+            // Tarjetas
             ElevatedCard(
                 modifier = Modifier.fillMaxWidth()
             ) {

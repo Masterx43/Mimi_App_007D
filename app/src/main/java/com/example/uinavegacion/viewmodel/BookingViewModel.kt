@@ -174,6 +174,4 @@ class BookingViewModel(
         }
     }
 
-
-
 }

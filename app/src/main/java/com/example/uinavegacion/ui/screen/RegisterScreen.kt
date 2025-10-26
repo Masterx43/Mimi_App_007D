@@ -210,7 +210,7 @@ private fun RegisterScreen(
 
             Spacer(Modifier.height(8.dp))                    // Espacio
 
-            // ---------- TELÉFONO (solo números). El VM ya filtra a dígitos ----------
+            // ---------- Celular (solo números). El VM ya filtra a dígitos ----------
             OutlinedTextField(
                 value = cel,                               // Valor actual (solo dígitos)
                 onValueChange = onCelChange,               // Notifica VM (filtra y valida)
@@ -276,7 +276,7 @@ private fun RegisterScreen(
 
             Spacer(Modifier.height(16.dp))                   // Espacio
 
-            // ---------- BOTÓN REGISTRAR ----------
+            // ---------- Boton para registrar ----------
             Button(
                 onClick = onSubmit,                          // Intenta registrar (inserta en la colección)
                 enabled = canSubmit && !isSubmitting,        // Solo si todo es válido y no cargando
@@ -298,7 +298,7 @@ private fun RegisterScreen(
 
             Spacer(Modifier.height(12.dp))                   // Espacio
 
-            // ---------- BOTÓN IR A LOGIN ----------
+            // ---------- Boton para ir al login ----------
             OutlinedButton(onClick = onGoLogin, modifier = Modifier.fillMaxWidth()) {
                 Text("Ir a Login")
             }

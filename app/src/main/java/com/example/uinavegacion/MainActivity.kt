@@ -48,15 +48,6 @@ class MainActivity : ComponentActivity() {
 }
 
 
-/*
-* En Compose, Surface es un contenedor visual que viene de Material 3.Crea un bloque
-*  que puedes personalizar con color, forma, sombra (elevación).
-Sirve para aplicar un fondo (color, borde, elevación, forma) siguiendo las guías de diseño
-* de Material.
-Piensa en él como una “lona base” sobre la cual vas a pintar tu UI.
-* Si cambias el tema a dark mode, colorScheme.background
-* cambia automáticamente y el Surface pinta la pantalla con el nuevo color.
-* */
 @Composable // Indica que esta función dibuja UI
 fun AppRoot() { // Raíz de la app para separar responsabilidades
     // ====== NUEVO: construcción de dependencias (Composition Root) ======

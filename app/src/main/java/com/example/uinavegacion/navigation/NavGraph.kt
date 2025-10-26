@@ -38,9 +38,6 @@ fun AppNavGraph(navController: NavHostController,
                 userPreferences: UserPreferences
 ) { // Recibe el controlador
 
-
-
-
     // Helpers de navegación (reutilizamos en topbar/drawer/botones)
     val goHome: () -> Unit    = { navController.navigate(Route.Home.path) {launchSingleTop = true} }    // Ir a Home
     val goLogin: () -> Unit   = { navController.navigate(Route.Login.path) {launchSingleTop = true} }   // Ir a Login

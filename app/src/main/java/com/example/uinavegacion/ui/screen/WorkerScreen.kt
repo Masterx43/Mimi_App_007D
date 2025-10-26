@@ -37,16 +37,13 @@ fun WorkerScreen(
     var showConfirmDialog by remember { mutableStateOf(false) }
     var selectedReservaId by remember { mutableStateOf<Long?>(null) }
 
-    //LaunchedEffect(Unit) {
-    //    session.userId?.let { workerVm.cargarTodasLasReservas() }
-    //}
+
 
     LaunchedEffect(session.userId) {
         if (session.userId != null) {
             workerVm.cargarTodasLasReservas()
         }
     }
-
 
 
     Box(

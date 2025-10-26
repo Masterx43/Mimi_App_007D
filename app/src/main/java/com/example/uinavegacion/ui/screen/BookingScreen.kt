@@ -43,6 +43,11 @@ fun BookingScreen(
         if (session.userName != null) vm.onNombreChange(session.userName!!)
         if (session.userEmail != null) vm.onEmailChange(session.userEmail!!)
     }
+    LaunchedEffect(Unit) {
+        vm.clearMessages()
+        vm.recargarServicios()
+    }
+
 
     //Abrir calendario
     fun abrirCalendario() {

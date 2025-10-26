@@ -39,8 +39,6 @@ fun AppNavGraph(navController: NavHostController,
 ) { // Recibe el controlador
 
 
-    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
-    val scope = rememberCoroutineScope()
 
 
     // Helpers de navegación (reutilizamos en topbar/drawer/botones)
@@ -52,34 +50,14 @@ fun AppNavGraph(navController: NavHostController,
     val goAdmin: () -> Unit = {navController.navigate(Route.AdminInfo.path) {launchSingleTop = true} }
     val goWorker: () -> Unit = {navController.navigate(Route.WorkerInfo.path) {launchSingleTop = true} }
 
-    ModalNavigationDrawer(
-        drawerState = drawerState,
-        drawerContent = {
-            AppDrawer(
-                currentRoute = null,
-                items = defaultDrawerItems(
-                    onHome = { scope.launch { drawerState.close() }; goHome() },
-                    onLogin = { scope.launch { drawerState.close() }; goLogin() },
-                    onRegister = { scope.launch { drawerState.close() }; goRegister() },
-                    onReserve = { scope.launch { drawerState.close() }; goReserve() },
-                    onUserInfo = {scope.launch { drawerState.close(); goUserInfo() }}
-                )
-            )
-        }
-    ) {
         Scaffold(
             //  Fondo transparente (para que se vean las curvas)
             containerColor = Color.Transparent,
             // Elimina paddings automáticos del sistema
             contentWindowInsets = WindowInsets.safeDrawing,
-
             topBar = {
                 AppTopBar(
-                    onOpenDrawer = { scope.launch { drawerState.open() } },
-                    onHome = goHome,
-                    onLogin = goLogin,
-                    onRegister = goRegister,
-                    onReserve = goReserve
+                    onHome = goHome
                 )
             },
             bottomBar = {
@@ -97,7 +75,7 @@ fun AppNavGraph(navController: NavHostController,
 
         ) { innerPadding ->
 
-            // 👇 El contenido principal NO debe pintar el fondo del BottomBar
+
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -168,4 +146,3 @@ fun AppNavGraph(navController: NavHostController,
             }
         }
     }
-}

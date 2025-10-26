@@ -30,7 +30,8 @@ interface ReservaDao {
     @Query("""
     SELECT 
         r.idReserva, 
-        r.fechaReserva, 
+        r.fechaReserva,
+        r.horaReserva,
         u.nombre AS nombreCliente, 
         s.nombre AS nombreServicio, 
         r.estadoId
@@ -49,6 +50,7 @@ interface ReservaDao {
     SELECT 
         r.idReserva,
         r.fechaReserva,
+        r.horaReserva,
         u.nombre AS nombreCliente,
         s.nombre AS nombreServicio,
         r.estadoId

@@ -4,16 +4,12 @@ import android.content.Context                                  // Contexto para
 import androidx.room.Database                                   // Anotación @Database
 import androidx.room.Room                                       // Builder de DB
 import androidx.room.RoomDatabase                               // Clase base de DB
-import androidx.room.TypeConverter
-import androidx.room.TypeConverters
 import androidx.sqlite.db.SupportSQLiteDatabase // Tipo del callback onCreate
-import com.example.uinavegacion.data.local.converters.DateConverters
 import com.example.uinavegacion.data.local.entities.categoria.*
 import com.example.uinavegacion.data.local.entities.estado.*
 import com.example.uinavegacion.data.local.entities.reservas.*
 import com.example.uinavegacion.data.local.entities.rol.*
 import com.example.uinavegacion.data.local.entities.servicio.*
-import com.example.uinavegacion.data.local.entities.estado.*
 import com.example.uinavegacion.data.local.entities.user.*// Import del DAO de usuario // Import de la entidad de usuario
 import kotlinx.coroutines.CoroutineScope                        // Para corrutinas en callback
 import kotlinx.coroutines.Dispatchers                           // Dispatcher IO

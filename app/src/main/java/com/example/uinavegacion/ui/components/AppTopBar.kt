@@ -48,18 +48,9 @@ import com.example.uinavegacion.ui.theme.LilaPri
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable // Composable reutilizable: barra superior
 fun AppTopBar(
-    onOpenDrawer: () -> Unit, // Abre el drawer (hamburguesa)
-    onHome: () -> Unit,       // Navega a Home
-    onLogin: () -> Unit,      // Navega a Login
-    onRegister: () -> Unit,    // Navega a Registro
-    onReserve: () -> Unit
+    onHome: () -> Unit       // Navega a Home
 ) {
-    //lo que hace es crear una variable de estado recordada que le dice a la interfaz
-    // si el menú desplegable de 3 puntitos debe estar visible (true) o oculto (false).
-    var context = LocalContext.current
-    var showMenu by remember { mutableStateOf(false) } // Estado del menú overflow
-    val userPrefs = remember { UserPreferences(context) }
-    val isLoggedIn by userPrefs.isLoogedIn.collectAsStateWithLifecycle(false)
+
 
     Surface(
         color = LilaPri,
@@ -98,53 +89,12 @@ fun AppTopBar(
                     )
                 }
             },
-            navigationIcon = { // Ícono a la izquierda (hamburguesa)
-                IconButton(onClick = onOpenDrawer) { // Al presionar, abre drawer
-                    Icon(imageVector = Icons.Filled.Menu,
-                        contentDescription = "Menú",
-                        tint = Color.White) // Ícono
-                }
-            },
             actions = { // Acciones a la derecha (íconos + overflow)
                 IconButton(onClick = onHome) { // Ir a Home
                     Icon(Icons.Filled.Home,
                         contentDescription = "Home",
                         tint = Color.White)// Ícono Home
                 }
-                IconButton(
-                    onClick = {
-                        if(isLoggedIn) {
-                            onReserve()
-                        } else {
-                            Toast.makeText(context, "Inicie sesion para continuar", Toast.LENGTH_SHORT).show()
-                        }
-                    }
-                ) {
-                    Icon(Icons.Filled.DateRange,
-                        contentDescription = "Agendar",
-                        tint = Color.White)
-                }
-                DropdownMenu(
-                    expanded = showMenu, // Si está abierto
-                    onDismissRequest = { showMenu = false } // Cierra al tocar fuera
-                ) {
-                    DropdownMenuItem( // Opción Home
-                        text = { Text("Home") }, // Texto opción
-                        onClick = { showMenu = false; onHome() } // Navega y cierra
-                    )
-                    DropdownMenuItem( // Opción Login
-                        text = { Text("Login") },
-                        onClick = { showMenu = false; onLogin() }
-                    )
-                    DropdownMenuItem( // Opción Registro
-                        text = { Text("Registro") },
-                        onClick = { showMenu = false; onRegister() }
-                    )
-                    DropdownMenuItem(
-                        text = { Text("Agendar") },
-                        onClick = { showMenu = false; onReserve() }
-                    )
-                    }
             }
         )
     }

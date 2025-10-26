@@ -3,6 +3,7 @@ package com.example.uinavegacion.ui.screen
 import android.R
 import android.content.Context
 import android.net.Uri
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -76,10 +77,30 @@ fun UserInfoScreen(
     var pendingCaptureUri by remember { mutableStateOf<Uri?>(null) }
     var isEditing by remember { mutableStateOf(false) }
 
-    // --- Cargar usuario ---
-    LaunchedEffect(effectiveUserId) {
-        if (effectiveUserId != null) {
-            userInfoVm.cargarUsuario(effectiveUserId)
+    // --- Cargar usuario son sus reservas ---
+    val currentUserId = remember(effectiveUserId, session.userId) {
+        effectiveUserId ?: session.userId
+    }
+
+// --- Efecto 1: carga la info del usuario ---
+    LaunchedEffect(currentUserId) {
+        if (currentUserId != null && currentUserId > 0) {
+            try {
+                userInfoVm.cargarUsuario(currentUserId)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
+// --- Efecto 2: carga las reservas ---
+    LaunchedEffect(currentUserId) {
+        if (currentUserId != null && currentUserId > 0) {
+            try {
+                bookingVm.cargarReservasUsuario(currentUserId)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
     }
 
@@ -357,6 +378,7 @@ fun UserInfoScreen(
             }
 
 
+
             //seccion para ver las reservas
             Spacer(Modifier.height(24.dp))
             Text("Mis Reservas", style = MaterialTheme.typography.titleMedium, color = LilaPri)
@@ -368,7 +390,6 @@ fun UserInfoScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(8.dp)
-                        .verticalScroll(rememberScrollState())
                 ) {
                     bookingState.reservaUsuario.forEach { reserva ->
                         Card(

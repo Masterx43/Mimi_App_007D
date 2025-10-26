@@ -39,7 +39,9 @@ import com.example.uinavegacion.ui.theme.UINavegacionTheme
 import com.example.uinavegacion.R
 import com.example.uinavegacion.data.local.storage.UserPreferences
 import com.example.uinavegacion.ui.theme.Blanco
+import com.example.uinavegacion.ui.theme.LilaOscuro
 import com.example.uinavegacion.ui.theme.LilaPri
+import com.example.uinavegacion.ui.theme.textoNegro
 
 @Composable // Pantalla Home (sin formularios, solo navegación/diseño)
 fun HomeScreen(
@@ -76,22 +78,22 @@ fun HomeScreen(
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ){
                     Text( // Título Home
-                        text = "Bienvenidos a nuestra nueva aplicacion",
-                        style = MaterialTheme.typography.headlineSmall, // Estilo título
-                        fontWeight = FontWeight.SemiBold // Seminegrita
+                        text = "¡Bienvenidos a MiMi!",
+                        style = MaterialTheme.typography.titleLarge, // Estilo título
+                        fontWeight = FontWeight.SemiBold,
+                        textAlign = TextAlign.Center, // Seminegrita
+                        color = LilaPri
                     )
-                    Spacer(Modifier.width(8.dp))
+                    Spacer(Modifier.width(16.dp))
                     Text(
                         text = "Descubre todos nuestros servicios de belleza",
                         style = MaterialTheme.typography.bodyMedium,
-                        textAlign = TextAlign.Center
+                        textAlign = TextAlign.Center,
+                        color = textoNegro
 
                     )
                     Spacer(Modifier.width(8.dp)) // Separación horizontal
-                    //    AssistChip( // Chip decorativo (Material 3)
-                    //        onClick = {}, // Sin acción (demo)
-                    //        label = { Text("Navega desde arriba o aquí") } // Texto chip
-                    //    )
+
                 }
 
             }
@@ -122,7 +124,8 @@ fun HomeScreen(
                     Text(
                         "Servicio de Manicure y Pedicure",
                         style = MaterialTheme.typography.titleLarge,
-                        textAlign = TextAlign.Center
+                        textAlign = TextAlign.Center,
+                        color = LilaOscuro
                     )
                     Spacer(Modifier.height(8.dp))
                     Text(
@@ -158,7 +161,8 @@ fun HomeScreen(
                     Text(
                         "Servicio de Coloracion y tratamientos capilares",
                         style = MaterialTheme.typography.titleLarge,
-                        textAlign = TextAlign.Center
+                        textAlign = TextAlign.Center,
+                        color = LilaOscuro
                     )
                     Spacer(Modifier.height(8.dp))
                     Text(
@@ -193,7 +197,8 @@ fun HomeScreen(
                     Text(
                         "Servicio de Brushing y styling",
                         style = MaterialTheme.typography.titleLarge,
-                        textAlign = TextAlign.Center
+                        textAlign = TextAlign.Center,
+                        color = LilaOscuro
                     )
                     Spacer(Modifier.height(8.dp))
                     Text(
@@ -206,7 +211,12 @@ fun HomeScreen(
 
             Spacer(Modifier.height(24.dp)) // Separación
 
-
+            Text(
+                "¡Reserve nuestros servicios en Agendar!",
+                style = MaterialTheme.typography.bodyLarge,
+                textAlign = TextAlign.Center,
+                color = LilaOscuro
+            )
         }
     }
 }

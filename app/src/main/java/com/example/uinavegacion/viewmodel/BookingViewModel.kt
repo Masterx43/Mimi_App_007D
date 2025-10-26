@@ -1,5 +1,6 @@
 package com.example.uinavegacion.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.uinavegacion.data.local.entities.reservas.ReservaEntity
@@ -125,6 +126,7 @@ class BookingViewModel(
         viewModelScope.launch {
             try {
                 val resultado = reservaRepository.obtenerReservasPorUsuario(userId)
+
                 resultado.onSuccess { lista ->
                     val reservas = lista.map {
                         ReservaUsuario(
@@ -153,6 +155,21 @@ class BookingViewModel(
                 }
             } catch (e: Exception) {
                 _uiState.update { it.copy(errorMessage = "Error al cargar reservas: ${e.message}") }
+            }
+        }
+    }
+    //funcion para recargar servicios
+    fun recargarServicios() {
+        viewModelScope.launch {
+            try {
+                val result = servicioRepository.obtenerTodosServicios()
+                result.onSuccess { lista ->
+                    _uiState.update { it.copy(serviciosDisponibles = lista) }
+                }.onFailure { e ->
+                    _uiState.update { it.copy(errorMessage = e.message) }
+                }
+            } catch (e: Exception) {
+                _uiState.update { it.copy(errorMessage = "Error al recargar servicios: ${e.message}") }
             }
         }
     }

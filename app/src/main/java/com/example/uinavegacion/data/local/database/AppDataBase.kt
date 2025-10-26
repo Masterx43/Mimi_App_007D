@@ -31,7 +31,7 @@ import kotlinx.coroutines.launch                                // Lanzar corrut
                 ServicioEntity::class,
                 CategoriaEntity::class
                 ],
-    version = 2,  //cambiar de version la base de datos cada vez que se cambie algun campo
+    version = 3,  //cambiar de version la base de datos cada vez que se cambie algun campo
     exportSchema = true // Mantener true para inspección de esquema (útil en educación)
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -96,8 +96,8 @@ abstract class AppDatabase : RoomDatabase() {
                                 val seedUser = listOf(
                                     UserEntity(
                                         nombre = "Demo",
-                                        apellido = "Usuario",
-                                        correo = "demo@duoc.cl",
+                                        apellido = "Cliente",
+                                        correo = "demo@gmail.com",
                                         pass = "Demo123!",          // en producción se debería encriptar
                                         phone = "987654321",
                                         rolId = 1L,                 // Cliente
@@ -106,8 +106,8 @@ abstract class AppDatabase : RoomDatabase() {
                                     ),
                                     UserEntity(
                                         nombre = "Demo2",
-                                        apellido = "Usuario",
-                                        correo = "demo2@duoc.cl",
+                                        apellido = "Admin",
+                                        correo = "demo2@gmail.com",
                                         pass = "Demo12!",          // en producción se debería encriptar
                                         phone = "987654321",
                                         rolId = 2L,                 // Administrador
@@ -117,7 +117,7 @@ abstract class AppDatabase : RoomDatabase() {
                                     UserEntity(
                                         nombre = "Demo3",
                                         apellido = "Trabajador",
-                                        correo = "demo3@duoc.cl",
+                                        correo = "demo3@gmail.com",
                                         pass = "Demo12!",          // en producción se debería encriptar
                                         phone = "9876543212",
                                         rolId = 3L,                 // Trabajador

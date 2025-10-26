@@ -1,5 +1,6 @@
 package com.example.uinavegacion.ui.screen
 
+import android.R
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -131,7 +132,7 @@ fun AdminScreen(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Column(Modifier.padding(16.dp)) {
-                    Text("Crear categoría", fontWeight = FontWeight.Bold)
+                    Text("Crear categoría", fontWeight = FontWeight.Bold, color = LilaPri)
                     OutlinedTextField(value = categoryName, onValueChange = { categoryName = it }, label = { Text("Nombre de categoría") }, modifier = Modifier.fillMaxWidth(),colors = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor = LilaPri,
                         focusedLabelColor = LilaPri
@@ -161,7 +162,7 @@ fun AdminScreen(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Column(Modifier.padding(16.dp)) {
-                    Text("Crear rol", fontWeight = FontWeight.Bold)
+                    Text("Crear rol", fontWeight = FontWeight.Bold, color = LilaPri)
                     OutlinedTextField(value = roleName, onValueChange = { roleName = it }, label = { Text("Nombre del rol") }, modifier = Modifier.fillMaxWidth(),colors = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor = LilaPri,
                         focusedLabelColor = LilaPri
@@ -201,7 +202,7 @@ fun AdminScreen(
 
 
                 Spacer(Modifier.height(16.dp))
-                Text("Registrar Nuevo Trabajador", color = LilaPri)
+                Text("Registrar Nuevo Trabajador",fontWeight = FontWeight.Bold, color = LilaPri)
 
                 OutlinedTextField(
                     value = nombreTrabajador,
@@ -289,7 +290,7 @@ fun AdminScreen(
                 }
 
                 Spacer(Modifier.height(24.dp))
-                Text("Trabajadores registrados:", color = LilaPri)
+                Text("Trabajadores registrados:", fontWeight = FontWeight.Bold,color = LilaPri)
                 if (uiState.trbajadores.isEmpty()) {
                     Text("Aún no hay trabajadores registrados.", color = Color.Gray)
                 } else {

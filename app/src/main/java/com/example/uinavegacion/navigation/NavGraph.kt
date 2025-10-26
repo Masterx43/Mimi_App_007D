@@ -44,13 +44,13 @@ fun AppNavGraph(navController: NavHostController,
 
 
     // Helpers de navegación (reutilizamos en topbar/drawer/botones)
-    val goHome: () -> Unit    = { navController.navigate(Route.Home.path) }    // Ir a Home
-    val goLogin: () -> Unit   = { navController.navigate(Route.Login.path) }   // Ir a Login
-    val goRegister: () -> Unit = { navController.navigate(Route.Register.path) } // Ir a Registro
-    val goReserve: () -> Unit= {navController.navigate(Route.Booking.path)}
-    val goUserInfo:() -> Unit = {navController.navigate(Route.UserInfo.path)}
-    val goAdmin: () -> Unit = {navController.navigate(Route.AdminInfo.path)}
-    val goWorker: () -> Unit = {navController.navigate(Route.WorkerInfo.path)}
+    val goHome: () -> Unit    = { navController.navigate(Route.Home.path) {launchSingleTop = true} }    // Ir a Home
+    val goLogin: () -> Unit   = { navController.navigate(Route.Login.path) {launchSingleTop = true} }   // Ir a Login
+    val goRegister: () -> Unit = { navController.navigate(Route.Register.path) {launchSingleTop = true} } // Ir a Registro
+    val goReserve: () -> Unit= {navController.navigate(Route.Booking.path) {launchSingleTop = true} }
+    val goUserInfo:() -> Unit = {navController.navigate(Route.UserInfo.path) {launchSingleTop = true} }
+    val goAdmin: () -> Unit = {navController.navigate(Route.AdminInfo.path) {launchSingleTop = true} }
+    val goWorker: () -> Unit = {navController.navigate(Route.WorkerInfo.path) {launchSingleTop = true} }
 
     ModalNavigationDrawer(
         drawerState = drawerState,

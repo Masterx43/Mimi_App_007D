@@ -5,6 +5,7 @@ import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -129,11 +130,13 @@ fun BookingScreen(
 
 
         var expanded by remember { mutableStateOf(false) }
+        
 
         ExposedDropdownMenuBox(
             expanded = expanded,
             onExpandedChange = { expanded = !expanded }
         ) {
+            // Campo de texto que actúa como ancla del menú
             OutlinedTextField(
                 value = state.servicio,
                 onValueChange = {},
@@ -149,25 +152,33 @@ fun BookingScreen(
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = LilaPri,
                     focusedLabelColor = LilaPri
-
                 )
             )
 
+            // Menú desplegable con scroll
             ExposedDropdownMenu(
                 expanded = expanded,
                 onDismissRequest = { expanded = false }
             ) {
-                state.serviciosDisponibles.forEach { servicios ->
-                    DropdownMenuItem(
-                        text = {Text("${servicios.nombre} - $${servicios.precio}")},
-                        onClick = {
-                            vm.onServicioChange(servicios.nombre, servicios.idServicio)
-                            expanded= false
-                        }
-                    )
+                Column(
+                    modifier = Modifier
+                        .heightIn(max = 200.dp)
+                        .verticalScroll(rememberScrollState())
+                ) {
+                    state.serviciosDisponibles.forEach { servicio ->
+                        DropdownMenuItem(
+                            text = { Text("${servicio.nombre} - $${servicio.precio}") },
+                            onClick = {
+                                vm.onServicioChange(servicio.nombre, servicio.idServicio)
+                                expanded = false
+                            }
+                        )
+                    }
                 }
             }
         }
+
+
 
 
         Spacer(Modifier.height(12.dp))

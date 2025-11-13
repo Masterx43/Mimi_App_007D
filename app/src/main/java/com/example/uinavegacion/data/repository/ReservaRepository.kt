@@ -72,4 +72,19 @@ class ReservaRepository(
         Result.failure(e)
     }
 
+    suspend fun existeDuplicada(
+        fecha: String,
+        hora: String,
+        servicioId: Long,
+        userId: Long
+    ): Result<Boolean> {
+        return try {
+            val count = reservaDao.existeReservaDuplicada(fecha, hora, servicioId, userId)
+            Result.success(count > 0)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+
 }

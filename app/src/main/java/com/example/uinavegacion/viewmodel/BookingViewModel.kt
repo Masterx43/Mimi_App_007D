@@ -6,8 +6,10 @@ import androidx.lifecycle.viewModelScope
 import com.example.uinavegacion.data.local.entities.reservas.ReservaEntity
 import com.example.uinavegacion.data.local.entities.servicio.ServicioDao
 import com.example.uinavegacion.data.local.entities.servicio.ServicioEntity
+import com.example.uinavegacion.data.local.entities.user.UserEntity
 import com.example.uinavegacion.data.repository.ReservaRepository
 import com.example.uinavegacion.data.repository.ServicioRepository
+import com.example.uinavegacion.data.repository.UserRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -25,12 +27,16 @@ data class BookingUiState(
     val successMessage: String? = null,
     val errorMessage: String? = null,
     val serviciosDisponibles: List<ServicioEntity> = emptyList(),
-    val reservaUsuario: List<BookingViewModel.ReservaUsuario> = emptyList()
+    val reservaUsuario: List<BookingViewModel.ReservaUsuario> = emptyList(),
+    val trabajadores: List<UserEntity> = emptyList(),
+    val workerIdSeleccionado: Long?= null
+
 )
 
 class BookingViewModel(
     private val reservaRepository: ReservaRepository, // para guardar la reserva
-    private val servicioRepository: ServicioRepository // para cargar los servicios
+    private val servicioRepository: ServicioRepository, // para cargar los servicios
+    private val userRepository: UserRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(BookingUiState())
@@ -38,6 +44,7 @@ class BookingViewModel(
 
     init {
         cargarServicios() // cargamos los servicios de la base
+        cargarTrabajadores() // cargamos los trabajadores
     }
 
 
@@ -62,9 +69,15 @@ class BookingViewModel(
     fun onFechaChange(value: String) = _uiState.update { it.copy(fecha = value) }
     fun onHoraChange(value: String) = _uiState.update { it.copy(hora = value) }
 
-    fun registrarReserva(userId : Long) {
+    fun onWorkerSelected(id: Long) { _uiState.update { it.copy(workerIdSeleccionado = id) } }
+
+
+
+    fun registrarReserva(userId: Long) {
         viewModelScope.launch {
             val s = _uiState.value
+
+            // ✔ Validación de campos vacíos
             if (s.nombre.isBlank() || s.email.isBlank() || s.servicio.isBlank() ||
                 s.fecha.isBlank() || s.hora.isBlank()
             ) {
@@ -74,39 +87,63 @@ class BookingViewModel(
                         successMessage = null
                     )
                 }
-            } else {
-                try {
-                    // Crear y guardar la reserva en la base de datos
-                    val reserva = ReservaEntity(
-                        fechaReserva = s.fecha,
-                        horaReserva = s.hora,
-                        subtotal = s.precioServicio ?: 0, // ejemplo, puedes calcular con el precio del servicio
-                        userId = userId,
-                        estadoId = 1L,
-                        servicioId = s.servicioId ?: 1L
-                    )
-                    reservaRepository.crearReserva(reserva)
+                return@launch
+            }
 
+            try {
+                // VALIDACIÓN DE RESERVA DUPLICADA
+                val existeDuplicada = reservaRepository.existeDuplicada(
+                    fecha = s.fecha,
+                    hora = s.hora,
+                    servicioId = s.servicioId ?: 0L,
+                    userId = userId
+                )
+
+                if (existeDuplicada.getOrDefault(false)) {
                     _uiState.update {
                         it.copy(
-                            isLoading=false,
-                            successMessage = "Reserva agendada con éxito para ${s.fecha} a las ${s.hora} (${s.servicio})\n" +
-                                    "Le llegara un correo cuando un trabajador tome su reserva",
-                            errorMessage = null
-                        )
-                    }
-                } catch (e: Exception) {
-                    _uiState.update {
-                        it.copy(
-                            isLoading = false,
-                            errorMessage = "Error al registrar la reserva: ${e.message}",
+                            errorMessage = "Ya tienes una reserva para este servicio, fecha y hora.",
                             successMessage = null
                         )
                     }
+                    return@launch
+                }
+
+                // Si pasa la validación entonces crear reserva
+
+                val reserva = ReservaEntity(
+                    fechaReserva = s.fecha,
+                    horaReserva = s.hora,
+                    subtotal = s.precioServicio ?: 0,
+                    userId = userId,
+                    estadoId = 1L,
+                    servicioId = s.servicioId ?: 1L,
+                    workerId = s.workerIdSeleccionado
+                )
+
+                reservaRepository.crearReserva(reserva)
+
+                _uiState.update {
+                    it.copy(
+                        isLoading = false,
+                        successMessage = "Reserva agendada con éxito para ${s.fecha} a las ${s.hora} (${s.servicio}).\n" +
+                                "Le llegará un correo cuando un trabajador tome su reserva.",
+                        errorMessage = null
+                    )
+                }
+
+            } catch (e: Exception) {
+                _uiState.update {
+                    it.copy(
+                        isLoading = false,
+                        errorMessage = "Error al registrar la reserva: ${e.message}",
+                        successMessage = null
+                    )
                 }
             }
         }
     }
+
 
     //Listar y cargar las reservas
     fun clearMessages() {
@@ -173,5 +210,15 @@ class BookingViewModel(
             }
         }
     }
+    fun cargarTrabajadores() {
+        viewModelScope.launch {
+            val result = userRepository.getAllWorkers(3L) // 3L = Rol Trabajador
+            result.onSuccess { lista ->
+                _uiState.update { it.copy(trabajadores = lista) }
+            }
+        }
+    }
+
+
 
 }

@@ -27,6 +27,12 @@ import java.util.Date
             parentColumns = ["idServicio"],
             childColumns = ["servicioId"],
             onDelete = ForeignKey.CASCADE
+        ),
+        ForeignKey(
+            entity = UserEntity::class,
+            parentColumns = ["idUser"],
+            childColumns = ["workerId"],
+            onDelete = ForeignKey.SET_NULL
         )
     ])
 data class ReservaEntity (
@@ -37,5 +43,7 @@ data class ReservaEntity (
     val subtotal : Int,
     val userId : Long,
     val estadoId : Long,
-    val servicioId : Long
+    val servicioId : Long,
+
+    val workerId: Long?= null
 )

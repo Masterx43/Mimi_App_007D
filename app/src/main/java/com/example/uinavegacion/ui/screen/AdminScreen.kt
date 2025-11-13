@@ -60,6 +60,7 @@ fun AdminScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .fillMaxSize()
+                .padding(16.dp)
                 .verticalScroll(rememberScrollState())
         ) {
             // Cabecera

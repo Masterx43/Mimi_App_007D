@@ -27,7 +27,7 @@ import kotlinx.coroutines.launch                                // Lanzar corrut
                 ServicioEntity::class,
                 CategoriaEntity::class
                 ],
-    version = 3,  //cambiar de version la base de datos cada vez que se cambie algun campo
+    version = 4,  //cambiar de version la base de datos cada vez que se cambie algun campo
     exportSchema = true // Mantener true para inspección de esquema (útil en educación)
 )
 abstract class AppDatabase : RoomDatabase() {

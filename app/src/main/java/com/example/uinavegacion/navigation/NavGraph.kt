@@ -10,9 +10,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -114,7 +116,7 @@ fun AppNavGraph(navController: NavHostController,
                         )
                     }
 
-                    composable(Route.UserInfo.path){
+                    composable(Route.UserInfo.path) {
                         UserInfoScreen(
                             vm = authViewModel,
                             onLogout = goLogin,
@@ -139,7 +141,20 @@ fun AppNavGraph(navController: NavHostController,
                             workerVm = workerViewModel
                         )
                     }
+
+                    composable("historiaLReserva") {
+
+                        val session = authViewModel.session.value
+                        val userId = session.userId ?: 0L
+                        HistorialScreen(
+                            navController = navController,
+                            vm = bookingViewModel,
+                            userId = userId
+                        )
+                    }
+
+
                 }
-            }
+                }
         }
     }

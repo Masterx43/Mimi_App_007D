@@ -63,5 +63,21 @@ interface ReservaDao {
     suspend fun getReservasPorUsuario(userId: Long): List<ReservaDetalle>
 
 
+    @Query("""
+    SELECT COUNT(*) FROM reservas
+    WHERE fechaReserva = :fecha
+    AND horaReserva = :hora
+    AND servicioId = :servicioId
+    AND userId = :userId
+""")
+    suspend fun existeReservaDuplicada(
+        fecha: String,
+        hora: String,
+        servicioId: Long,
+        userId: Long
+    ): Int
+
+
+
 
 }

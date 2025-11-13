@@ -2,8 +2,10 @@ package com.example.uinavegacion.ui.screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Email
@@ -146,7 +148,8 @@ private fun RegisterScreen(
         modifier = Modifier
             .fillMaxSize() // Ocupa todo
             .background(Blanco) // Fondo
-            .padding(16.dp), // Margen
+            .padding(16.dp)// Margen
+            .verticalScroll(rememberScrollState()),
         contentAlignment = Alignment.Center // Centro
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) { //Estructura vertical
@@ -278,18 +281,34 @@ private fun RegisterScreen(
 
             // ---------- Boton para registrar ----------
             Button(
-                onClick = onSubmit,                          // Intenta registrar (inserta en la colección)
-                enabled = canSubmit && !isSubmitting,        // Solo si todo es válido y no cargando
-                modifier = Modifier.fillMaxWidth()
+                onClick = onSubmit,
+                enabled = canSubmit && !isSubmitting,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(55.dp)               //más grande y visible
+                    .padding(top = 10.dp),
+                shape = RoundedCornerShape(12.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = LilaPri,    // tu color principal
+                    contentColor = Color.White
+                )
             ) {
-                if (isSubmitting) {                          // Muestra loading mientras “procesa”
-                    CircularProgressIndicator(strokeWidth = 2.dp, modifier = Modifier.size(18.dp))
-                    Spacer(Modifier.width(8.dp))
-                    Text("Creando cuenta...")
+                if (isSubmitting) {
+                    CircularProgressIndicator(
+                        color = Color.White,
+                        strokeWidth = 2.dp,
+                        modifier = Modifier.size(20.dp)
+                    )
+                    Spacer(Modifier.width(10.dp))
+                    Text("Creando cuenta…")
                 } else {
-                    Text("Registrar")
+                    Text(
+                        "Registrar",
+                        style = MaterialTheme.typography.bodyLarge
+                    )
                 }
             }
+
 
             if (errorMsg != null) {                          // Error global (ej: usuario duplicado)
                 Spacer(Modifier.height(8.dp))

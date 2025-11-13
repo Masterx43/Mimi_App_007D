@@ -381,34 +381,15 @@ fun UserInfoScreen(
 
             //seccion para ver las reservas
             Spacer(Modifier.height(24.dp))
-            Text("Mis Reservas", style = MaterialTheme.typography.titleMedium, color = LilaPri)
-
-            if (bookingState.reservaUsuario.isEmpty()) {
-                Text("Aún no tienes reservas registradas.", color = Color.Gray)
-            } else {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(8.dp)
-                ) {
-                    bookingState.reservaUsuario.forEach { reserva ->
-                        Card(
-                            colors = CardDefaults.cardColors(containerColor = Color.White),
-                            shape = RoundedCornerShape(12.dp),
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(vertical = 6.dp)
-                        ) {
-                            Column(Modifier.padding(16.dp)) {
-                                Text("Servicio: ${reserva.servicio}", fontWeight = FontWeight.Bold, color = LilaPri)
-                                Text("Fecha: ${reserva.fecha}")
-                                Text("Hora: ${reserva.hora}")
-                                Text("Estado: ${reserva.estado}")
-                            }
-                        }
-                    }
-                }
+            Button(
+                onClick = { navController.navigate("historial") },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("Ver historial de reservas")
             }
+
+
+
 
 
 

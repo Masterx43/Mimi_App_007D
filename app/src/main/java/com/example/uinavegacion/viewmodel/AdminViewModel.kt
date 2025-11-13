@@ -67,8 +67,31 @@ class AdminViewModel(
     //para que admin pueda crear un servicio
     fun crearServicio(nombre: String, descripcion: String, precio: Int, categoriaId: Long) {
         viewModelScope.launch {
+
+            // 🔥 VALIDACIONES
+            if (nombre.isBlank() || descripcion.isBlank()) {
+                _uiState.update { it.copy(errorMessage = "Nombre y descripción son obligatorios") }
+                return@launch
+            }
+
+            if (precio <= 0) {
+                _uiState.update { it.copy(errorMessage = "El precio debe ser mayor a 0") }
+                return@launch
+            }
+
+            if (precio < 5000 || precio > 200000) {
+                _uiState.update { it.copy(errorMessage = "El precio debe estar entre 5.000 y 200.000") }
+                return@launch
+            }
+
+            // ✔ Si pasa validaciones → insertar
             val result = servicioRepository.insertarServicio(
-                ServicioEntity(nombre = nombre, descripcion = descripcion, precio = precio, categoriaId = categoriaId)
+                ServicioEntity(
+                    nombre = nombre,
+                    descripcion = descripcion,
+                    precio = precio,
+                    categoriaId = categoriaId
+                )
             )
 
             if (result.isSuccess) {
@@ -79,6 +102,7 @@ class AdminViewModel(
             }
         }
     }
+
 
     //para que admin pueda crear una categoria
     fun crearCategoria(nombre: String) {
@@ -155,17 +179,45 @@ class AdminViewModel(
     //actualizar los servicios en admin
     fun actualizarServicio(id: Long, nombre: String, desc: String, precio: Int) {
         viewModelScope.launch {
-            val actualizado = ServicioEntity(idServicio = id, nombre = nombre, descripcion = desc, precio = precio, categoriaId = 1L)
+
+            //VALIDACIONES
+            if (nombre.isBlank() || desc.isBlank()) {
+                _uiState.update { it.copy(errorMessage = "Nombre y descripción no pueden estar vacíos") }
+                return@launch
+            }
+
+            if (precio <= 0) {
+                _uiState.update { it.copy(errorMessage = "El precio debe ser mayor a 0") }
+                return@launch
+            }
+
+            if (precio < 5000 || precio > 200000) {
+                _uiState.update { it.copy(errorMessage = "El precio debe estar entre 5.000 y 200.000") }
+                return@launch
+            }
+
+            val actualizado = ServicioEntity(
+                idServicio = id,
+                nombre = nombre,
+                descripcion = desc,
+                precio = precio,
+                categoriaId = 1L
+            )
+
             val result = servicioRepository.actualizarServicio(actualizado)
+
             result.onSuccess {
                 _uiState.update { it.copy(successMessage = "Servicio actualizado correctamente") }
                 cerrarDialogoEditarServicio()
                 cargarListas()
-            }.onFailure {
-                _uiState.update { it.copy(errorMessage = "Error al actualizar servicio: ${it.errorMessage}") }
+            }.onFailure { throwable ->
+                val msg = throwable.message ?: "Error desconocido"
+                _uiState.update { it.copy(errorMessage = "Error al actualizar servicio: $msg") }
             }
+
         }
     }
+
 
     //Eliminar servicio
     fun eliminarServicio(id: Long) {

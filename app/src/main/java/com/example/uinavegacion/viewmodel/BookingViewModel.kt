@@ -90,6 +90,16 @@ class BookingViewModel(
                 return@launch
             }
 
+            if (s.workerIdSeleccionado == null) {
+                _uiState.update {
+                    it.copy(
+                        errorMessage = "Debe seleccionar un trabajador",
+                        successMessage = null
+                    )
+                }
+                return@launch
+            }
+
             try {
                 // VALIDACIÓN DE RESERVA DUPLICADA
                 val existeDuplicada = reservaRepository.existeDuplicada(

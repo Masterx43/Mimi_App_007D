@@ -62,7 +62,8 @@ fun UserInfoScreen(
     onLogout: () -> Unit,
     userInfoVm: UserInfoViewModel,
     userPrefs: UserPreferences,
-    bookingVm: BookingViewModel
+    bookingVm: BookingViewModel,
+    onHistorial : () -> Unit
 ) {
     val context = LocalContext.current
     val session by vm.session.collectAsState()
@@ -382,15 +383,11 @@ fun UserInfoScreen(
             //seccion para ver las reservas
             Spacer(Modifier.height(24.dp))
             Button(
-                onClick = { navController.navigate("historial") },
+                onClick = { onHistorial() },
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text("Ver historial de reservas")
             }
-
-
-
-
 
 
             Spacer(Modifier.height(32.dp))

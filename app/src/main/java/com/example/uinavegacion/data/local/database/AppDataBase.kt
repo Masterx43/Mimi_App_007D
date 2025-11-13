@@ -27,7 +27,7 @@ import kotlinx.coroutines.launch                                // Lanzar corrut
                 ServicioEntity::class,
                 CategoriaEntity::class
                 ],
-    version = 4,  //cambiar de version la base de datos cada vez que se cambie algun campo
+    version = 6,  //cambiar de version la base de datos cada vez que se cambie algun campo
     exportSchema = true // Mantener true para inspección de esquema (útil en educación)
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -37,8 +37,8 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun rolDao(): RolDao
     abstract fun servicioDao(): ServicioDao
     abstract fun categoriaDao(): CategoriaDao
-    abstract fun reservaDao() : ReservaDao
-    abstract fun estadoDao() : EstadoDao
+    abstract fun reservaDao(): ReservaDao
+    abstract fun estadoDao(): EstadoDao
 
     companion object {
         @Volatile

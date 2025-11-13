@@ -32,6 +32,8 @@ import com.example.uinavegacion.viewmodel.AuthViewModel
 import com.example.uinavegacion.viewmodel.AuthViewModelFactory
 import com.example.uinavegacion.viewmodel.BookingViewModel
 import com.example.uinavegacion.viewmodel.BookingViewModelFactory
+import com.example.uinavegacion.viewmodel.HistorialViewModel
+import com.example.uinavegacion.viewmodel.HistorialViewModelFactory
 import com.example.uinavegacion.viewmodel.UserInfoViewModel
 import com.example.uinavegacion.viewmodel.UserInfoViewModelFactory
 import com.example.uinavegacion.viewmodel.WorkerViewModel
@@ -91,7 +93,11 @@ fun AppRoot() { // Raíz de la app para separar responsabilidades
 
 
     val bookingViewModel : BookingViewModel = viewModel (
-        factory = BookingViewModelFactory(reservaRepository, servicioRepository)
+        factory = BookingViewModelFactory(reservaRepository, servicioRepository, userRepository)
+    )
+
+    val historialViewModel : HistorialViewModel = viewModel (
+        factory = HistorialViewModelFactory(reservaRepository)
     )
     // ^ Creamos el ViewModel con factory para inyectar el repositorio.
 
@@ -110,6 +116,7 @@ fun AppRoot() { // Raíz de la app para separar responsabilidades
                 adminViewModel = adminVm,
                 workerViewModel = workervm,
                 userInfoViewModel = userInfoVm,
+                historialViewModel = historialViewModel,
                 userPreferences = userPrefs
             )
             // NOTA: Si tu AppNavGraph no tiene este parámetro aún, basta con agregarlo:

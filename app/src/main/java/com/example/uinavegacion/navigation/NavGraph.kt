@@ -26,6 +26,7 @@ import com.example.uinavegacion.viewmodel.AdminViewModel
 
 import com.example.uinavegacion.viewmodel.AuthViewModel
 import com.example.uinavegacion.viewmodel.BookingViewModel
+import com.example.uinavegacion.viewmodel.HistorialViewModel
 import com.example.uinavegacion.viewmodel.UserInfoViewModel
 import com.example.uinavegacion.viewmodel.WorkerViewModel
 import kotlinx.coroutines.launch
@@ -37,7 +38,8 @@ fun AppNavGraph(navController: NavHostController,
                 adminViewModel: AdminViewModel,
                 workerViewModel: WorkerViewModel,
                 userInfoViewModel: UserInfoViewModel,
-                userPreferences: UserPreferences
+                userPreferences: UserPreferences,
+                historialViewModel: HistorialViewModel
 ) { // Recibe el controlador
 
     // Helpers de navegación (reutilizamos en topbar/drawer/botones)
@@ -48,6 +50,7 @@ fun AppNavGraph(navController: NavHostController,
     val goUserInfo:() -> Unit = {navController.navigate(Route.UserInfo.path) {launchSingleTop = true} }
     val goAdmin: () -> Unit = {navController.navigate(Route.AdminInfo.path) {launchSingleTop = true} }
     val goWorker: () -> Unit = {navController.navigate(Route.WorkerInfo.path) {launchSingleTop = true} }
+    val goHistorial : () -> Unit = {navController.navigate(Route.Historial.path){launchSingleTop = true} }
 
         Scaffold(
             //  Fondo transparente (para que se vean las curvas)
@@ -122,7 +125,8 @@ fun AppNavGraph(navController: NavHostController,
                             onLogout = goLogin,
                             userInfoVm = userInfoViewModel,
                             bookingVm = bookingViewModel,
-                            userPrefs = userPreferences
+                            userPrefs = userPreferences,
+                            onHistorial = goHistorial
                         )
                     }
 
@@ -142,14 +146,10 @@ fun AppNavGraph(navController: NavHostController,
                         )
                     }
 
-                    composable("historiaLReserva") {
-
-                        val session = authViewModel.session.value
-                        val userId = session.userId ?: 0L
+                    composable(Route.Historial.path) {
                         HistorialScreen(
-                            navController = navController,
-                            vm = bookingViewModel,
-                            userId = userId
+                            authVm = authViewModel,
+                            historialVm = historialViewModel
                         )
                     }
 

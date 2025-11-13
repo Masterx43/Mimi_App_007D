@@ -188,6 +188,55 @@ fun BookingScreen(
 
         Spacer(Modifier.height(12.dp))
 
+        // ⭐⭐⭐ SELECTOR DE TRABAJADOR ⭐⭐⭐
+
+        Text("Seleccionar trabajador", style = MaterialTheme.typography.titleMedium)
+        Spacer(Modifier.height(8.dp))
+
+        var expandedTrabajador by remember { mutableStateOf(false) }
+
+        ExposedDropdownMenuBox(
+            expanded = expandedTrabajador,
+            onExpandedChange = { expandedTrabajador = !expandedTrabajador }
+        ) {
+            OutlinedTextField(
+                value = state.trabajadores.firstOrNull { it.idUser == state.workerIdSeleccionado }?.nombre
+                    ?: "Seleccione un trabajador",
+                onValueChange = {},
+                readOnly = true,
+                label = { Text("Trabajador") },
+                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expandedTrabajador) },
+                modifier = Modifier
+                    .menuAnchor()
+                    .fillMaxWidth()
+                    .clickable { expandedTrabajador = true }
+            )
+
+            ExposedDropdownMenu(
+                expanded = expandedTrabajador,
+                onDismissRequest = { expandedTrabajador = false }
+            ) {
+                Column(
+                    modifier = Modifier
+                        .heightIn(max = 200.dp)
+                        .verticalScroll(rememberScrollState())
+                ) {
+                    state.trabajadores.forEach { trabajador ->
+                        DropdownMenuItem(
+                            text = { Text("${trabajador.nombre} ${trabajador.apellido}") },
+                            onClick = {
+                                vm.onWorkerSelected(trabajador.idUser)
+                                expandedTrabajador = false
+                            }
+                        )
+                    }
+                }
+            }
+        }
+
+        Spacer(Modifier.height(16.dp))
+
+
         //Campo de la fecha
         OutlinedTextField(
             value = state.fecha,

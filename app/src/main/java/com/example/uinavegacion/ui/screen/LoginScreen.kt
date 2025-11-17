@@ -1,6 +1,5 @@
 package com.example.uinavegacion.ui.screen
 
-import android.R
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -63,7 +62,7 @@ fun LoginScreenVm(
         useRoleId= session.userRoleId,
         onEmailChange= vm::onLoginEmailChange,
         onPassChange= vm::onLoginContraChange,
-        onSubmit= vm::submitLogin,
+        onSubmit= vm::submitLoginAPI,
         onGoRegister= onGoRegister,
         onClear= vm::clearLoginResults,
         onNavigateHome= onLoginOkNavigateHome
@@ -86,7 +85,7 @@ private fun LoginScreen(
     onSubmit: ()->Unit,
     onGoRegister: () -> Unit,// Acción para ir a Registro
     onClear: ()-> Unit,
-    onNavigateHome: ()->Unit
+    onNavigateHome: ()-> Unit
 ) {
     val Blanco = Blanco //fondo
     var showPass by remember { mutableStateOf(false) }

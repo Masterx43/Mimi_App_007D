@@ -18,12 +18,14 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.uinavegacion.data.local.database.AppDatabase
 import com.example.uinavegacion.data.local.storage.UserPreferences
+import com.example.uinavegacion.data.repository.AuthRepository
 import com.example.uinavegacion.data.repository.CategoriaRepository
 import com.example.uinavegacion.data.repository.EstadoRepository
 import com.example.uinavegacion.data.repository.ReservaRepository
 import com.example.uinavegacion.data.repository.RolRepository
 import com.example.uinavegacion.data.repository.ServicioRepository
 import com.example.uinavegacion.data.repository.UserRepository
+import com.example.uinavegacion.data.repository.UserRepositoryTestAPI
 import com.example.uinavegacion.navigation.AppNavGraph
 import com.example.uinavegacion.ui.theme.UINavegacionTheme
 import com.example.uinavegacion.viewmodel.AdminViewModel
@@ -71,12 +73,14 @@ fun AppRoot() { // Raíz de la app para separar responsabilidades
     val servicioRepository = ServicioRepository(servicioDao)
     val rolRepository = RolRepository(rolDao)
     val categoriaRepository = CategoriaRepository(categoriaDao)
+    val repositoryTest = UserRepositoryTestAPI()
+    val authRepository = AuthRepository()
     // ^ Repositorios.
 
     val userPrefs = UserPreferences(context)
 
     val authViewModel: AuthViewModel = viewModel(
-        factory = AuthViewModelFactory(userRepository, userPrefs)
+        factory = AuthViewModelFactory(userRepository, userPrefs,authRepository,repositoryTest)
     )
     val adminVm: AdminViewModel = viewModel(
         factory = AdminViewModelFactory(
@@ -112,7 +116,7 @@ fun AppRoot() { // Raíz de la app para separar responsabilidades
             AppNavGraph(
                 navController = navController,
                 authViewModel=  authViewModel,
-                bookingViewModel = bookingViewModel,// <-- NUEVO parámetro
+                bookingViewModel = bookingViewModel,
                 adminViewModel = adminVm,
                 workerViewModel = workervm,
                 userInfoViewModel = userInfoVm,

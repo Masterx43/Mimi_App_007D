@@ -322,53 +322,78 @@ fun UserInfoScreen(
 
             // --- Campos editables (animados) ---
             AnimatedVisibility(visible = isEditing) {
+
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 8.dp)
                 ) {
-                    listOf(
-                        "Nombre" to nombre,
-                        "Apellido" to apellido,
-                        "Correo" to correo,
-                        "Teléfono" to telefono,
-                        "Contraseña" to contra
-                    ).forEach { (label, value) ->
-                        OutlinedTextField(
-                            value = value,
-                            onValueChange = {
-                                when (label) {
-                                    "Nombre" -> nombre = it
-                                    "Apellido" -> apellido = it
-                                    "Correo" -> correo = it
-                                    "Teléfono" -> telefono = it
-                                    "Contraseña" -> contra = it
-                                }
-                            },
-                            label = { Text(label) },
-                            modifier = Modifier.fillMaxWidth(),
-                            colors = OutlinedTextFieldDefaults.colors(
-                                focusedBorderColor = LilaPri,
-                                focusedLabelColor = LilaPri
-                            )
-                        )
-                        Spacer(Modifier.height(8.dp))
-                    }
 
+                    // 🔹 Inputs editables reales
+                    OutlinedTextField(
+                        value = nombre,
+                        onValueChange = { nombre = it },
+                        label = { Text("Nombre") },
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = LilaPri,
+                            focusedLabelColor = LilaPri
+                        )
+                    )
+                    Spacer(Modifier.height(8.dp))
+
+                    OutlinedTextField(
+                        value = apellido,
+                        onValueChange = { apellido = it },
+                        label = { Text("Apellido") },
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = LilaPri,
+                            focusedLabelColor = LilaPri
+                        )
+                    )
+                    Spacer(Modifier.height(8.dp))
+
+                    OutlinedTextField(
+                        value = telefono,
+                        onValueChange = { telefono = it },
+                        label = { Text("Teléfono") },
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = LilaPri,
+                            focusedLabelColor = LilaPri
+                        )
+                    )
+                    Spacer(Modifier.height(8.dp))
+
+                    // 🔸 EMAIL (Solo lectura)
+                    OutlinedTextField(
+                        value = correo,
+                        onValueChange = {},
+                        label = { Text("Correo (no editable)") },
+                        enabled = false,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                    Spacer(Modifier.height(16.dp))
+
+                    // 🔸 Botón guardar
                     Button(
                         onClick = {
-                            state.user?.let { currentUser ->
-                                val updatedUser = currentUser.copy(
-                                    nombre = nombre.ifEmpty { currentUser.nombre },
-                                    apellido = apellido.ifEmpty { currentUser.apellido },
-                                    correo = correo.ifEmpty { currentUser.correo },
-                                    phone = telefono.ifEmpty { currentUser.phone },
-                                    pass = contra.ifEmpty { currentUser.pass }
+                            val user = state.user
+                            if (user != null) {
+                                userInfoVm.actualizarUsuario(
+                                    userId = user.idUser,
+                                    nuevoNombre = nombre.ifBlank { user.nombre },
+                                    nuevoApellido = apellido.ifBlank { user.apellido },
+                                    nuevoPhone = telefono.ifBlank { user.phone }
                                 )
-                                userInfoVm.actualizarUsuario(updatedUser)
+
                                 Toast.makeText(context, "Datos actualizados", Toast.LENGTH_SHORT).show()
                                 isEditing = false
-                            } ?: Toast.makeText(context, "Error: usuario no cargado", Toast.LENGTH_SHORT).show()
+
+                            } else {
+                                Toast.makeText(context, "Error: usuario no cargado", Toast.LENGTH_SHORT).show()
+                            }
                         },
                         colors = ButtonDefaults.buttonColors(containerColor = LilaPri),
                         modifier = Modifier.fillMaxWidth()
@@ -377,6 +402,7 @@ fun UserInfoScreen(
                     }
                 }
             }
+
 
 
 

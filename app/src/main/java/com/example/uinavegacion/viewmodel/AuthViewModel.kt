@@ -85,7 +85,7 @@ class AuthViewModel(
                 if (loggedIn) {
                     val userId = userPrefs.userId.firstOrNull()
                     if (userId != null) {
-                        val result = repository.getUserById(userId)
+                        val result = repositoryTestAPI.getUserById(userId)
                         result.onSuccess { user ->
                             _session.update {
                                 SessionUiState(
@@ -276,39 +276,40 @@ class AuthViewModel(
         viewModelScope.launch {
             _login.update { it.copy(isSubmitting = true, errorMsg = null, success = false) }
 
+            val result = authRepository.login(s.email, s.contra)
 
-            val result = authRepository.login(s.email,s.contra)
+            if (result.isSuccess) {
+                val response = result.getOrNull()
 
-            _login.update {
-                if (result.isSuccess) {
-                    val user = result.getOrNull()?.user
+                if (response?.success == true && response.user != null) {
+                    val user = response.user
 
-                    //Solo si se encuentra usuario
-                    if (user != null) {
-                        // Guardamos la sesión en memoria
-                        _session.update {
-                            SessionUiState(
-                                isLoggedIn = true,
-                                userId = user.idUser,
-                                userName = user.nombre,
-                                userLastName = user.apellido,
-                                userPhone = null,
-                                userEmail = user.correo,
-                                userRoleId = user.rolId
-                            )
-                        }
-
-                        // Guardamos los datos también en DataStore
-                        viewModelScope.launch {
-                            userPrefs.saveLoginState(true, user.rolId, user.idUser)
-
-                            //Log de depuración — verás esto en Logcat
-                            println("LOGIN GUARDADO -> idUser=${user.idUser}, rol=${user.rolId}, email=${user.correo}")
-                        }
+                    _session.update {
+                        SessionUiState(
+                            isLoggedIn = true,
+                            userId = user.idUser,
+                            userName = user.nombre,
+                            userLastName = user.apellido,
+                            userPhone = null,
+                            userEmail = user.correo,
+                            userRoleId = user.rolId
+                        )
                     }
 
-                    it.copy(isSubmitting = false, success = true, errorMsg = null)
+                    userPrefs.saveLoginState(true, user.rolId, user.idUser)
+
+                    _login.update { it.copy(isSubmitting = false, success = true) }
                 } else {
+                    _login.update {
+                        it.copy(
+                            isSubmitting = false,
+                            success = false,
+                            errorMsg = response?.message ?: "Credenciales incorrectas"
+                        )
+                    }
+                }
+            } else {
+                _login.update {
                     it.copy(
                         isSubmitting = false,
                         success = false,
@@ -319,6 +320,7 @@ class AuthViewModel(
         }
     }
 
+
     fun submitRegisterAPI() {
         val s = _register.value
         if (!s.canSubmit || s.isSubmitting) return
@@ -326,25 +328,22 @@ class AuthViewModel(
         viewModelScope.launch {
             _register.update { it.copy(isSubmitting = true, errorMsg = null, success = false) }
 
-            // Llamada al microservicio UserService
             val result = repositoryTestAPI.register(
                 nombre = s.nombre.trim(),
                 apellido = s.apellido.trim(),
                 correo = s.email.trim(),
                 phone = s.cel.trim(),
                 password = s.contra,
-                rolId = 2L   // Usuario normal por defecto
+                rolId = 1L   //Usuario normal por defecto
             )
 
-            _register.update { reg ->
-                if (result.isSuccess) {
-                    reg.copy(
-                        isSubmitting = false,
-                        success = true,
-                        errorMsg = null
-                    )
-                } else {
-                    reg.copy(
+            if (result.isSuccess) {
+                _register.update {
+                    it.copy(isSubmitting = false, success = true)
+                }
+            } else {
+                _register.update {
+                    it.copy(
                         isSubmitting = false,
                         success = false,
                         errorMsg = result.exceptionOrNull()?.message ?: "No se pudo registrar"
@@ -353,6 +352,7 @@ class AuthViewModel(
             }
         }
     }
+
 
 
 }

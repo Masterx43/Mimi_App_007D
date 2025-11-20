@@ -4,6 +4,7 @@ import com.example.uinavegacion.data.remote.userservice.RmUsers
 import com.example.uinavegacion.data.remote.userservice.UserServiceAPI
 import com.example.uinavegacion.data.remote.userservice.dto.RegisterRequestDTO
 import com.example.uinavegacion.data.remote.userservice.dto.UserDTO
+import com.example.uinavegacion.data.remote.userservice.dto.UserUpdateRequestDTO
 import retrofit2.HttpException
 import java.io.IOException
 
@@ -125,4 +126,20 @@ class UserRepositoryTestAPI(
             Result.failure(e)
         }
     }
+
+    suspend fun updateUser(id: Long, req: UserUpdateRequestDTO): Result<UserDTO> {
+        return try {
+            val response = api.updateUser(id, req)
+
+            if (response.isSuccessful && response.body() != null) {
+                Result.success(response.body()!!)
+            } else {
+                Result.failure(Exception("No se pudo actualizar el usuario"))
+            }
+
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
 }

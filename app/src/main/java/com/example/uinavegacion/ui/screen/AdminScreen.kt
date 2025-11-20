@@ -31,6 +31,10 @@ import com.example.uinavegacion.viewmodel.AuthViewModel
 import com.example.uinavegacion.ui.theme.Blanco
 import com.example.uinavegacion.ui.theme.LilaPri
 import com.example.uinavegacion.ui.theme.textoNegro
+import com.example.uinavegacion.data.remote.servicioservice.dto.ServicioDTO
+import com.example.uinavegacion.data.remote.categoria.dto.CategoriaDTO
+import com.example.uinavegacion.data.remote.rol.dto.RolDTO
+import com.example.uinavegacion.data.remote.userservice.dto.UserDTO
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -292,10 +296,10 @@ fun AdminScreen(
 
                 Spacer(Modifier.height(24.dp))
                 Text("Trabajadores registrados:", fontWeight = FontWeight.Bold,color = LilaPri)
-                if (uiState.trbajadores.isEmpty()) {
+                if (uiState.trabajadores.isEmpty()) {
                     Text("Aún no hay trabajadores registrados.", color = Color.Gray)
                 } else {
-                    uiState.trbajadores.forEach { t ->
+                    uiState.trabajadores.forEach { t ->
                         Text("• ${t.nombre} ${t.apellido} — ${t.correo}", color = Color.DarkGray)
                     }
                 }
@@ -367,7 +371,7 @@ fun AdminScreen(
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Text("- ${categoria.nombreCategoria}", color = textoNegro)
+                            Text("- ${categoria.nombre}", color = textoNegro)
                             Row {
                                 IconButton(onClick = { adminVm.abrirDialogoEditarCategoria(categoria) }) {
                                     Icon(Icons.Default.Edit, contentDescription = "Editar", tint = LilaPri) // boton para modificar
@@ -391,12 +395,12 @@ fun AdminScreen(
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Text("- ${rol.descripcion}", color = textoNegro)
+                            Text("- ${rol.nombre}", color = textoNegro)
                             Row {
                                 IconButton(onClick = { adminVm.abrirDialogoEditarRol(rol) }) {
                                     Icon(Icons.Default.Edit, contentDescription = "Editar", tint = LilaPri) // boton para modificar
                                 }
-                                IconButton(onClick = { adminVm.eliminarRol(rol.idRol) }) {
+                                IconButton(onClick = { adminVm.eliminarRol(rol.id) }) {
                                     Icon(Icons.Default.Delete, contentDescription = "Eliminar", tint = Color.Red) //boton para eliminar
                                 }
                             }
@@ -457,7 +461,7 @@ fun AdminScreen(
             rol = uiState.rolAEditar!!,
             onDismiss = { adminVm.cerrarDialogoEditarRol() },
             onGuardar = { nuevoNombre ->
-                adminVm.actualizarRol(uiState.rolAEditar!!.idRol, nuevoNombre)
+                adminVm.actualizarRol(uiState.rolAEditar!!.id, nuevoNombre)
             }
         )
     }
@@ -469,7 +473,7 @@ fun AdminScreen(
 //editar los servcicios que existen
 @Composable
 fun EditarServicioDialog(
-    servicio: ServicioEntity,
+    servicio: ServicioDTO,
     onDismiss: () -> Unit,
     onGuardar: (String, String, Int) -> Unit
 ) {
@@ -513,11 +517,11 @@ fun EditarServicioDialog(
 //Editar las categorias que existen
 @Composable
 fun EditarCategoriaDialog(
-    categoria: CategoriaEntity,
+    categoria: CategoriaDTO,
     onDismiss: () -> Unit,
     onGuardar: (String) -> Unit
 ) {
-    var nombre by remember { mutableStateOf(categoria.nombreCategoria) }
+    var nombre by remember { mutableStateOf(categoria.nombre) }
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -543,11 +547,11 @@ fun EditarCategoriaDialog(
 //editar los roles que existen
 @Composable
 fun EditarRolDialog(
-    rol: RolEntity,
+    rol: RolDTO,
     onDismiss: () -> Unit,
     onGuardar: (String) -> Unit
 ) {
-    var nombre by remember { mutableStateOf(rol.descripcion) }
+    var nombre by remember { mutableStateOf(rol.nombre) }
 
     AlertDialog(
         onDismissRequest = onDismiss,

@@ -4,10 +4,12 @@ import com.example.uinavegacion.data.remote.userservice.dto.LoginRequestDTO
 import com.example.uinavegacion.data.remote.userservice.dto.RegisterRequestDTO
 import com.example.uinavegacion.data.remote.userservice.dto.UserAuthDTO
 import com.example.uinavegacion.data.remote.userservice.dto.UserDTO
+import com.example.uinavegacion.data.remote.userservice.dto.UserUpdateRequestDTO
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Path
 
 interface UserServiceAPI {
@@ -37,5 +39,11 @@ interface UserServiceAPI {
     suspend fun checkEmailExists(
         @Path("correo") correo: String
     ): Response<Boolean>
+
+    @PUT("api/users/{id}")
+    suspend fun updateUser(
+        @Path("id") id: Long,
+        @Body request: UserUpdateRequestDTO
+    ): Response<UserDTO>
 
 }

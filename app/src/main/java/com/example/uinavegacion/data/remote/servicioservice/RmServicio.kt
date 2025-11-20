@@ -12,7 +12,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 object RmServicio {
 
     // Línea 7: base URL del servicio JSONPlaceholder
-    private const val BASE_URL = "http://10.0.2.2:8084/api/users"
+    private const val BASE_URL = "https://2k6dwp9l-8083.brs.devtunnels.ms/"
 
     // Línea 9: creamos un interceptor de logging para depurar tráfico HTTP
     private val logging = HttpLoggingInterceptor().apply {
@@ -33,5 +33,7 @@ object RmServicio {
         .build()
 
     // Línea 26: función para crear una implementación de la interfaz API
-    fun <T> create(service: Class<T>): T = retrofit.create(service)
+    val api: ServicioServiceAPI by lazy {
+        retrofit.create(ServicioServiceAPI::class.java)
+    }
 }

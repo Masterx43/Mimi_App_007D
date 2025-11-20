@@ -11,18 +11,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun EstadoChip(estadoId: Long) {
-    val texto = when (estadoId) {
-        1L -> "Pendiente"
-        2L -> "Activa"
-        3L -> "Completada"
-        else -> "Estado desconocido"
-    }
+fun EstadoChip(estado: String) {
 
-    val color = when (estadoId) {
-        1L -> Color(0xFFFFC107)
-        2L -> Color(0xFF03A9F4)
-        3L -> Color(0xFF4CAF50)
+    val color = when (estado) {
+        "Pendiente" -> Color(0xFFFFC107)
+        "Completado" -> Color(0xFF4CAF50)
         else -> Color.Gray
     }
 
@@ -31,6 +24,6 @@ fun EstadoChip(estadoId: Long) {
             .background(color, shape = RoundedCornerShape(50))
             .padding(horizontal = 12.dp, vertical = 6.dp)
     ) {
-        Text(texto, color = Color.White)
+        Text(estado, color = Color.White)
     }
 }

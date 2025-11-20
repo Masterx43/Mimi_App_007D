@@ -94,7 +94,7 @@ fun AppRoot() { // Raíz de la app para separar responsabilidades
     )
 
     val workervm: WorkerViewModel = viewModel(
-        factory = WorkerViewModelFactory(reservaRepository)
+        factory = WorkerViewModelFactory(reservaRepositoryAPI)
     )
 
     val userInfoVm : UserInfoViewModel = viewModel(
@@ -103,11 +103,18 @@ fun AppRoot() { // Raíz de la app para separar responsabilidades
 
 
     val bookingViewModel : BookingViewModel = viewModel (
-        factory = BookingViewModelFactory(reservaRepository, servicioRepository, userRepository)
+        factory = BookingViewModelFactory(
+            reservaRepository,
+            servicioRepository,
+            userRepository,
+            reservaRepositoryAPI,
+            servicioRepositoryAPI,
+            repositoryTest
+        )
     )
 
     val historialViewModel : HistorialViewModel = viewModel (
-        factory = HistorialViewModelFactory(reservaRepository)
+        factory = HistorialViewModelFactory(reservaRepositoryAPI)
     )
     // ^ Creamos el ViewModel con factory para inyectar el repositorio.
 

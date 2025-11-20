@@ -14,9 +14,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.uinavegacion.data.local.entities.reservas.ReservaDetalle
+import com.example.uinavegacion.data.remote.reservas.dto.ReservaDetalleDTO
 
 @Composable
-fun CardReserva(reserva: ReservaDetalle) {
+fun CardReserva(reserva: ReservaDetalleDTO) {
     Card(
         modifier = Modifier
             .fillMaxWidth(),
@@ -30,20 +31,20 @@ fun CardReserva(reserva: ReservaDetalle) {
             modifier = Modifier.padding(16.dp)
         ) {
             Text(
-                reserva.nombreServicio,
+                reserva.servicio,
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.primary
             )
 
             Spacer(Modifier.height(4.dp))
 
-            Text("Cliente: ${reserva.nombreCliente}")
-            Text("Fecha: ${reserva.fechaReserva}")
-            reserva.horaReserva?.let { Text("Hora: $it") }
+            Text("Cliente: ${reserva.usuario}")
+            Text("Fecha: ${reserva.fecha}")
+            Text("Hora: ${reserva.hora}")
 
             Spacer(Modifier.height(6.dp))
 
-            EstadoChip(reserva.estadoId)
+            EstadoChip(reserva.estado)
         }
     }
 }

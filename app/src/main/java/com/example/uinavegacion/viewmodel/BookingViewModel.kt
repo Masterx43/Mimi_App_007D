@@ -7,9 +7,15 @@ import com.example.uinavegacion.data.local.entities.reservas.ReservaEntity
 import com.example.uinavegacion.data.local.entities.servicio.ServicioDao
 import com.example.uinavegacion.data.local.entities.servicio.ServicioEntity
 import com.example.uinavegacion.data.local.entities.user.UserEntity
+import com.example.uinavegacion.data.remote.reservas.dto.CrearReservaRequestDTO
+import com.example.uinavegacion.data.remote.servicioservice.dto.ServicioDTO
+import com.example.uinavegacion.data.remote.userservice.dto.UserDTO
 import com.example.uinavegacion.data.repository.ReservaRepository
+import com.example.uinavegacion.data.repository.ReservaRepositoryAPI
 import com.example.uinavegacion.data.repository.ServicioRepository
+import com.example.uinavegacion.data.repository.ServicioRepositoryAPI
 import com.example.uinavegacion.data.repository.UserRepository
+import com.example.uinavegacion.data.repository.UserRepositoryTestAPI
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -26,9 +32,9 @@ data class BookingUiState(
     val isLoading: Boolean= false,
     val successMessage: String? = null,
     val errorMessage: String? = null,
-    val serviciosDisponibles: List<ServicioEntity> = emptyList(),
+    val serviciosDisponibles: List<ServicioDTO> = emptyList(),
     val reservaUsuario: List<BookingViewModel.ReservaUsuario> = emptyList(),
-    val trabajadores: List<UserEntity> = emptyList(),
+    val trabajadores: List<UserDTO> = emptyList(),
     val workerIdSeleccionado: Long?= null
 
 )
@@ -36,7 +42,10 @@ data class BookingUiState(
 class BookingViewModel(
     private val reservaRepository: ReservaRepository, // para guardar la reserva
     private val servicioRepository: ServicioRepository, // para cargar los servicios
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val reservaRepository2: ReservaRepositoryAPI,
+    private val servicioRepository2: ServicioRepositoryAPI,
+    private val userRepository2: UserRepositoryTestAPI
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(BookingUiState())
@@ -51,17 +60,17 @@ class BookingViewModel(
     //carga todos los servicios disponibles
     private fun cargarServicios() {
         viewModelScope.launch {
+            val result = servicioRepository2.obtenerTodosServicios()
 
-            val result = servicioRepository.obtenerTodosServicios()
             result.onSuccess { lista ->
-
                 _uiState.update { it.copy(serviciosDisponibles = lista) }
             }.onFailure { e ->
-
                 _uiState.update { it.copy(errorMessage = e.message) }
             }
         }
     }
+
+
 
     fun onNombreChange(value: String) = _uiState.update { it.copy(nombre = value) }
     fun onEmailChange(value: String) = _uiState.update { it.copy(email = value) }
@@ -77,82 +86,39 @@ class BookingViewModel(
         viewModelScope.launch {
             val s = _uiState.value
 
-            // ✔ Validación de campos vacíos
-            if (s.nombre.isBlank() || s.email.isBlank() || s.servicio.isBlank() ||
-                s.fecha.isBlank() || s.hora.isBlank()
+            if (
+                s.fecha.isBlank() ||
+                s.hora.isBlank() ||
+                s.servicioId == null ||
+                s.workerIdSeleccionado == null
             ) {
-                _uiState.update {
-                    it.copy(
-                        errorMessage = "Completa todos los campos",
-                        successMessage = null
-                    )
-                }
+                _uiState.update { it.copy(errorMessage = "Completa todos los campos") }
                 return@launch
             }
 
-            if (s.workerIdSeleccionado == null) {
+            val req = CrearReservaRequestDTO(
+                idUsuario = userId,
+                idServicio = s.servicioId,
+                idTrabajador = s.workerIdSeleccionado,
+                fecha = s.fecha,
+                hora = s.hora
+            )
+
+            val result = reservaRepository2.crearReserva(req)
+
+            result.onSuccess {
                 _uiState.update {
                     it.copy(
-                        errorMessage = "Debe seleccionar un trabajador",
-                        successMessage = null
-                    )
-                }
-                return@launch
-            }
-
-            try {
-                // VALIDACIÓN DE RESERVA DUPLICADA
-                val existeDuplicada = reservaRepository.existeDuplicada(
-                    fecha = s.fecha,
-                    hora = s.hora,
-                    servicioId = s.servicioId ?: 0L,
-                    userId = userId
-                )
-
-                if (existeDuplicada.getOrDefault(false)) {
-                    _uiState.update {
-                        it.copy(
-                            errorMessage = "Ya tienes una reserva para este servicio, fecha y hora.",
-                            successMessage = null
-                        )
-                    }
-                    return@launch
-                }
-
-                // Si pasa la validación entonces crear reserva
-
-                val reserva = ReservaEntity(
-                    fechaReserva = s.fecha,
-                    horaReserva = s.hora,
-                    subtotal = s.precioServicio ?: 0,
-                    userId = userId,
-                    estadoId = 1L,
-                    servicioId = s.servicioId ?: 1L,
-                    workerId = s.workerIdSeleccionado
-                )
-
-                reservaRepository.crearReserva(reserva)
-
-                _uiState.update {
-                    it.copy(
-                        isLoading = false,
-                        successMessage = "Reserva agendada con éxito para ${s.fecha} a las ${s.hora} (${s.servicio}).\n" +
-                                "Le llegará un correo cuando un trabajador tome su reserva.",
+                        successMessage = "Reserva creada con éxito",
                         errorMessage = null
                     )
                 }
-
-            } catch (e: Exception) {
-                _uiState.update {
-                    it.copy(
-                        isLoading = false,
-                        errorMessage = "Error al registrar la reserva: ${e.message}",
-                        successMessage = null
-                    )
-                }
+            }.onFailure { e ->
+                _uiState.update { it.copy(errorMessage = e.message) }
             }
         }
     }
+
 
 
     //Listar y cargar las reservas
@@ -171,45 +137,33 @@ class BookingViewModel(
     //Función para cargar reservas del usuario logueado
     fun cargarReservasUsuario(userId: Long) {
         viewModelScope.launch {
-            try {
-                val resultado = reservaRepository.obtenerReservasPorUsuario(userId)
+            val result = reservaRepository2.obtenerReservasUsuario(userId)
 
-                resultado.onSuccess { lista ->
-                    val reservas = lista.map {
-                        ReservaUsuario(
-                            id = it.idReserva,
-                            fecha = it.fechaReserva,
-                            hora = it.horaReserva ?: "Sin hora",
-                            servicio = it.nombreServicio,
-                            estado = when (it.estadoId) {
-                                1L -> "Pendiente"
-                                2L -> "Confirmada"
-                                3L -> "Completada"
-                                else -> "Desconocido"
-                            }
-                        )
-                    }
+            result.onSuccess { lista ->
 
-                    _uiState.update {
-                        it.copy(
-                            reservaUsuario = reservas,
-                            successMessage = null,
-                            errorMessage = null
-                        )
-                    }
-                }.onFailure { e ->
-                    _uiState.update { it.copy(errorMessage = e.message) }
+                val reservas = lista.map {
+                    ReservaUsuario(
+                        id = it.idReserva,
+                        fecha = it.fecha,
+                        hora = it.hora,
+                        servicio = "Servicio #${it.idServicio}", // opcional
+                        estado = it.estado
+                    )
                 }
-            } catch (e: Exception) {
-                _uiState.update { it.copy(errorMessage = "Error al cargar reservas: ${e.message}") }
+
+                _uiState.update { it.copy(reservaUsuario = reservas) }
+
+            }.onFailure { e ->
+                _uiState.update { it.copy(errorMessage = e.message) }
             }
         }
     }
+
     //funcion para recargar servicios
     fun recargarServicios() {
         viewModelScope.launch {
             try {
-                val result = servicioRepository.obtenerTodosServicios()
+                val result = servicioRepository2.obtenerTodosServicios()
                 result.onSuccess { lista ->
                     _uiState.update { it.copy(serviciosDisponibles = lista) }
                 }.onFailure { e ->
@@ -222,12 +176,16 @@ class BookingViewModel(
     }
     fun cargarTrabajadores() {
         viewModelScope.launch {
-            val result = userRepository.getAllWorkers(3L) // 3L = Rol Trabajador
+            val result = userRepository2.getWorkers()
+
             result.onSuccess { lista ->
                 _uiState.update { it.copy(trabajadores = lista) }
+            }.onFailure {
+                _uiState.update { it.copy(errorMessage = "Error al cargar los trabajadores") }
             }
         }
     }
+
 
 
 

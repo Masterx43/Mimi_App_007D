@@ -23,7 +23,7 @@ fun HistorialScreen(
     authVm : AuthViewModel
 ) {
     val session by authVm.session.collectAsState()
-    val userId = session.userId ?: 0                        // ⭐ obtiene id actual
+    val userId = session.userId ?: 0                        // obtiene id actual
 
     val state by historialVm.uiState.collectAsState()
 
@@ -69,7 +69,7 @@ fun HistorialScreen(
         }
 
         // Agrupar por fecha
-        val reservasPorFecha = state.reservas.groupBy { it.fechaReserva }
+        val reservasPorFecha = state.reservas.groupBy { it.fecha }
 
         reservasPorFecha.forEach { (fecha, lista) ->
 

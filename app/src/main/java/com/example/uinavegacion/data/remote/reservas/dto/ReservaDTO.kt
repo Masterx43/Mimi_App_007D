@@ -17,3 +17,14 @@ data class ReservaResponseDTO(
     val hora: String,
     val estado: String
 )
+
+data class ReservaDetalleDTO(
+    val idReserva: Long,
+    val fecha: String,
+    val hora: String,
+    val estado: String,
+    val usuario: String,
+    val trabajador: String,
+    val servicio: String
+)
+

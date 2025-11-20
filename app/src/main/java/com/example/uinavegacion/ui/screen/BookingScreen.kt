@@ -46,6 +46,7 @@ fun BookingScreen(
     LaunchedEffect(Unit) {
         vm.clearMessages()
         vm.recargarServicios()
+        vm.cargarTrabajadores()
     }
 
 

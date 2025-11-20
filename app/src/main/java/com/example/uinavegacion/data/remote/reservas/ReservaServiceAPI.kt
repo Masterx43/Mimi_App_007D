@@ -2,6 +2,7 @@ package com.example.uinavegacion.data.remote.reservas
 
 
 import com.example.uinavegacion.data.remote.reservas.dto.CrearReservaRequestDTO
+import com.example.uinavegacion.data.remote.reservas.dto.ReservaDetalleDTO
 import com.example.uinavegacion.data.remote.reservas.dto.ReservaResponseDTO
 import retrofit2.Response
 import retrofit2.http.*
@@ -17,6 +18,12 @@ interface ReservaServiceAPI {
     suspend fun getReservasUsuario(
         @Path("id") idUsuario: Long
     ): Response<List<ReservaResponseDTO>>
+
+
+    @GET("api/reservas/usuario/detalle/{id}")
+    suspend fun getReservasDetalleUsuario(
+        @Path("id") idUsuario: Long
+    ): Response<List<ReservaDetalleDTO>>
 
     @GET("api/reservas/trabajador/{id}")
     suspend fun getReservasTrabajador(
@@ -36,4 +43,12 @@ interface ReservaServiceAPI {
         @Path("id") idReserva: Long,
         @Body estadoNuevo: String
     ): Response<ReservaResponseDTO>
+
+    @GET("api/reservas/detalles")
+    suspend fun getAllDetalle(): Response<List<ReservaDetalleDTO>>
+
+    @GET("api/reservas/trabajador/detalle/{id}")
+    suspend fun getReservasWorker(
+        @Path("id") idTrabajador: Long
+    ): Response<List<ReservaDetalleDTO>>
 }

@@ -4,28 +4,26 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.uinavegacion.data.local.database.AppDatabase
 import com.example.uinavegacion.data.local.storage.UserPreferences
+import com.example.uinavegacion.data.repository.AuthRepository
 import com.example.uinavegacion.data.repository.CategoriaRepository
-import com.example.uinavegacion.data.repository.EstadoRepository
+import com.example.uinavegacion.data.repository.CategoriaRepositoryAPI
 import com.example.uinavegacion.data.repository.ReservaRepository
+import com.example.uinavegacion.data.repository.ReservaRepositoryAPI
 import com.example.uinavegacion.data.repository.RolRepository
+import com.example.uinavegacion.data.repository.RolRepositoryAPI
 import com.example.uinavegacion.data.repository.ServicioRepository
+import com.example.uinavegacion.data.repository.ServicioRepositoryAPI
 import com.example.uinavegacion.data.repository.UserRepository
+import com.example.uinavegacion.data.repository.UserRepositoryTestAPI
 import com.example.uinavegacion.navigation.AppNavGraph
-import com.example.uinavegacion.ui.theme.UINavegacionTheme
 import com.example.uinavegacion.viewmodel.AdminViewModel
 import com.example.uinavegacion.viewmodel.AdminViewModelFactory
 import com.example.uinavegacion.viewmodel.AuthViewModel
@@ -71,33 +69,52 @@ fun AppRoot() { // Raíz de la app para separar responsabilidades
     val servicioRepository = ServicioRepository(servicioDao)
     val rolRepository = RolRepository(rolDao)
     val categoriaRepository = CategoriaRepository(categoriaDao)
+    val authRepository = AuthRepository()
     // ^ Repositorios.
+
+
+    //Repositorios de prueba
+    val repositoryTest = UserRepositoryTestAPI()
+    val categoriaRepositoryAPI = CategoriaRepositoryAPI()
+    val rolRepositoryAPI = RolRepositoryAPI()
+    val reservaRepositoryAPI = ReservaRepositoryAPI()
+    val servicioRepositoryAPI = ServicioRepositoryAPI()
 
     val userPrefs = UserPreferences(context)
 
     val authViewModel: AuthViewModel = viewModel(
-        factory = AuthViewModelFactory(userRepository, userPrefs)
+        factory = AuthViewModelFactory(userRepository, userPrefs,authRepository,repositoryTest)
     )
     val adminVm: AdminViewModel = viewModel(
         factory = AdminViewModelFactory(
-            servicioRepository,categoriaRepository,rolRepository,userRepository)
+            servicioRepositoryAPI,
+            categoriaRepositoryAPI,
+            rolRepositoryAPI,
+            repositoryTest)
     )
 
     val workervm: WorkerViewModel = viewModel(
-        factory = WorkerViewModelFactory(reservaRepository)
+        factory = WorkerViewModelFactory(reservaRepositoryAPI)
     )
 
     val userInfoVm : UserInfoViewModel = viewModel(
-        factory = UserInfoViewModelFactory(userRepository)
+        factory = UserInfoViewModelFactory(repositoryTest)
     )
 
 
     val bookingViewModel : BookingViewModel = viewModel (
-        factory = BookingViewModelFactory(reservaRepository, servicioRepository, userRepository)
+        factory = BookingViewModelFactory(
+            reservaRepository,
+            servicioRepository,
+            userRepository,
+            reservaRepositoryAPI,
+            servicioRepositoryAPI,
+            repositoryTest
+        )
     )
 
     val historialViewModel : HistorialViewModel = viewModel (
-        factory = HistorialViewModelFactory(reservaRepository)
+        factory = HistorialViewModelFactory(reservaRepositoryAPI)
     )
     // ^ Creamos el ViewModel con factory para inyectar el repositorio.
 
@@ -112,7 +129,7 @@ fun AppRoot() { // Raíz de la app para separar responsabilidades
             AppNavGraph(
                 navController = navController,
                 authViewModel=  authViewModel,
-                bookingViewModel = bookingViewModel,// <-- NUEVO parámetro
+                bookingViewModel = bookingViewModel,
                 adminViewModel = adminVm,
                 workerViewModel = workervm,
                 userInfoViewModel = userInfoVm,

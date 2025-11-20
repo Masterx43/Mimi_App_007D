@@ -60,7 +60,7 @@ fun RegisterScreenVm(
         onContraChange= vm::onContraChange,
         onConfirmChange= vm::onConfirmChange,
 
-        onSubmit = vm::submitRegister,
+        onSubmit = vm::submitRegisterAPI,
         onGoLogin= onGoLogin
 
 

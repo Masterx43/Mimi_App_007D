@@ -36,12 +36,13 @@ fun WorkerScreen(
     val uiState by workerVm.uiState.collectAsState()
     var showConfirmDialog by remember { mutableStateOf(false) }
     var selectedReservaId by remember { mutableStateOf<Long?>(null) }
+    val id = session.userId
 
 
 
     LaunchedEffect(session.userId) {
         if (session.userId != null) {
-            workerVm.cargarTodasLasReservas()
+            workerVm.cargarTodasLasReservas(id ?: -1)
         }
     }
 
@@ -108,20 +109,14 @@ fun WorkerScreen(
                                 fontWeight = FontWeight.Bold,
                                 color = LilaOscuro
                             )
-                            Text("Fecha: ${reserva.fechaReserva}")
-                            Text("Hora: ${reserva.horaReserva}")
-                            Text("Cliente: ${reserva.nombreCliente?:"Desconocido"}")
-                            Text("Servicio: ${reserva.nombreServicio?:"No especificado"}")
-
-                            val estadoTexto = when (reserva.estadoId){
-                                1L -> "Pendiente"
-                                2L -> "Activo"
-                                else -> "Completada"
-                            }
-                            Text("Estado: $estadoTexto")
+                            Text("Fecha: ${reserva.fecha}")
+                            Text("Hora: ${reserva.hora}")
+                            Text("Cliente: ${reserva.usuario}")
+                            Text("Servicio: ${reserva.servicio}")
+                            Text("Estado: ${reserva.estado}")
 
                             Spacer(Modifier.height(8.dp))
-                            if (reserva.estadoId == 1L) {
+                            if (reserva.estado == "CONFIRMADO") {
                                 Button(
                                     onClick = {
                                         selectedReservaId = reserva.idReserva
@@ -180,7 +175,7 @@ fun WorkerScreen(
                     },
                     confirmButton = {
                         TextButton(onClick = {
-                            workerVm.marcarCompletada(selectedReservaId!!)
+                            workerVm.marcarCompletada(selectedReservaId!!, id ?: -1)
                             showConfirmDialog = false
                         }) {
                             Text("Confirmar", color = LilaPri)

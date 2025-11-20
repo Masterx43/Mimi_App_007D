@@ -101,7 +101,6 @@ fun AppNavGraph(navController: NavHostController,
                             vm = authViewModel,            // <-- NUEVO: pasamos VM inyectado
                             onLoginOkNavigateHome = goHome,            // Si el VM marca success=true, navegamos a Home
                             onGoRegister = goRegister                  // Enlace para ir a la pantalla de Registro
-
                         )
                     }
                     composable(Route.Register.path) {

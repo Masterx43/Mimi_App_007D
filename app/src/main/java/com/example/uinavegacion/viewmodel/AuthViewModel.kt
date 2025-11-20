@@ -3,7 +3,10 @@ package com.example.uinavegacion.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.uinavegacion.data.local.storage.UserPreferences
+import com.example.uinavegacion.data.remote.userservice.dto.UserDTO
+import com.example.uinavegacion.data.repository.AuthRepository
 import com.example.uinavegacion.data.repository.UserRepository
+import com.example.uinavegacion.data.repository.UserRepositoryTestAPI
 import com.example.uinavegacion.domain.validation.validateCelDigitsOnly
 import com.example.uinavegacion.domain.validation.validateConfirm
 import com.example.uinavegacion.domain.validation.validateEmail
@@ -58,11 +61,13 @@ data class SessionUiState(
     val userLastName: String? = null,
     val userEmail: String? = null,
     val userPhone: String? = null,
-    val userRoleId: Long? = null
+    val userRoleId: Long? = null,
 )
 class AuthViewModel(
     private val repository: UserRepository,
-    private val userPrefs: UserPreferences
+    private val userPrefs: UserPreferences,
+    private val authRepository: AuthRepository,
+    private val repositoryTestAPI: UserRepositoryTestAPI
 ): ViewModel(){
 
     private val _login = MutableStateFlow(LoginUiState())
@@ -80,7 +85,7 @@ class AuthViewModel(
                 if (loggedIn) {
                     val userId = userPrefs.userId.firstOrNull()
                     if (userId != null) {
-                        val result = repository.getUserById(userId)
+                        val result = repositoryTestAPI.getUserById(userId)
                         result.onSuccess { user ->
                             _session.update {
                                 SessionUiState(
@@ -263,6 +268,92 @@ class AuthViewModel(
             }
         }
     }
+
+    fun submitLoginAPI() {
+        val s = _login.value
+        if (!s.canSubmit || s.isSubmitting) return
+
+        viewModelScope.launch {
+            _login.update { it.copy(isSubmitting = true, errorMsg = null, success = false) }
+
+            val result = authRepository.login(s.email, s.contra)
+
+            if (result.isSuccess) {
+                val response = result.getOrNull()
+
+                if (response?.success == true && response.user != null) {
+                    val user = response.user
+
+                    _session.update {
+                        SessionUiState(
+                            isLoggedIn = true,
+                            userId = user.idUser,
+                            userName = user.nombre,
+                            userLastName = user.apellido,
+                            userPhone = null,
+                            userEmail = user.correo,
+                            userRoleId = user.rolId
+                        )
+                    }
+
+                    userPrefs.saveLoginState(true, user.rolId, user.idUser)
+
+                    _login.update { it.copy(isSubmitting = false, success = true) }
+                } else {
+                    _login.update {
+                        it.copy(
+                            isSubmitting = false,
+                            success = false,
+                            errorMsg = response?.message ?: "Credenciales incorrectas"
+                        )
+                    }
+                }
+            } else {
+                _login.update {
+                    it.copy(
+                        isSubmitting = false,
+                        success = false,
+                        errorMsg = result.exceptionOrNull()?.message ?: "Error de autenticación"
+                    )
+                }
+            }
+        }
+    }
+
+
+    fun submitRegisterAPI() {
+        val s = _register.value
+        if (!s.canSubmit || s.isSubmitting) return
+
+        viewModelScope.launch {
+            _register.update { it.copy(isSubmitting = true, errorMsg = null, success = false) }
+
+            val result = repositoryTestAPI.register(
+                nombre = s.nombre.trim(),
+                apellido = s.apellido.trim(),
+                correo = s.email.trim(),
+                phone = s.cel.trim(),
+                password = s.contra,
+                rolId = 1L   //Usuario normal por defecto
+            )
+
+            if (result.isSuccess) {
+                _register.update {
+                    it.copy(isSubmitting = false, success = true)
+                }
+            } else {
+                _register.update {
+                    it.copy(
+                        isSubmitting = false,
+                        success = false,
+                        errorMsg = result.exceptionOrNull()?.message ?: "No se pudo registrar"
+                    )
+                }
+            }
+        }
+    }
+
+
 
 }
 

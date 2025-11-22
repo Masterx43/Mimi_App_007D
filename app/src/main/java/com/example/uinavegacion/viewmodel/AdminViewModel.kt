@@ -1,7 +1,5 @@
 package com.example.uinavegacion.viewmodel
 
-
-
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.uinavegacion.data.local.database.AppDatabase

@@ -104,9 +104,6 @@ fun AppRoot() { // Raíz de la app para separar responsabilidades
 
     val bookingViewModel : BookingViewModel = viewModel (
         factory = BookingViewModelFactory(
-            reservaRepository,
-            servicioRepository,
-            userRepository,
             reservaRepositoryAPI,
             servicioRepositoryAPI,
             repositoryTest

@@ -20,7 +20,7 @@ class WorkerViewModel(
     private val reservaRepository: ReservaRepositoryAPI   //  ahora usa el repo
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(WorkerUiState())
+    val _uiState = MutableStateFlow(WorkerUiState())
     val uiState: StateFlow<WorkerUiState> = _uiState
 
     fun cargarTodasLasReservas(id : Long) {

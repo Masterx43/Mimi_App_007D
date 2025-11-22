@@ -2,8 +2,10 @@ package com.example.uinavegacion.ui.screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.CheckCircle
@@ -99,7 +101,11 @@ private fun LoginScreen(
         contentAlignment = Alignment.Center // Centro
     ) {
         Column(
-            horizontalAlignment = Alignment.CenterHorizontally // Centrado horizontal
+            horizontalAlignment = Alignment.CenterHorizontally, // Centrado horizontal
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp)
+                .verticalScroll(rememberScrollState())
         ) {
             Icon(
                 imageVector = Icons.Filled.AccountCircle,

@@ -91,14 +91,19 @@ dependencies {
     testImplementation(libs.junit) //libreria junit
     testImplementation("io.mockk:mockk:1.13.12") //Mock para kotlin
     testImplementation("org.robolectric:robolectric:4.13") //simular pruebas en Android test locales
+    testImplementation("app.cash.turbine:turbine:1.0.0")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
+
     //test implementacion UI
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     androidTestImplementation(libs.androidx.compose.ui.test.manifest)
+
     //librerias para el manejo de reglas de test
     androidTestImplementation("androidx.test:core-ktx:1.5.0")
     androidTestImplementation("androidx.test:rules:1.5.0")
+
 
 
 

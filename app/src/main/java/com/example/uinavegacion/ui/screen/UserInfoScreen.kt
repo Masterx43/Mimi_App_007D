@@ -94,21 +94,11 @@ fun UserInfoScreen(
         }
     }
 
-// --- Efecto 2: carga las reservas ---
-    LaunchedEffect(currentUserId) {
-        if (currentUserId != null && currentUserId > 0) {
-            try {
-                bookingVm.cargarReservasUsuario(currentUserId)
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
-    }
 
     // --- Loading ---
     if (state.loading) {
         Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            CircularProgressIndicator(color = Blanco)
+            CircularProgressIndicator(color = BackDark )
         }
         return
     }

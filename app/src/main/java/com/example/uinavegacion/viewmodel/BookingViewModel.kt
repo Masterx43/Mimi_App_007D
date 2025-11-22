@@ -40,9 +40,6 @@ data class BookingUiState(
 )
 
 class BookingViewModel(
-    private val reservaRepository: ReservaRepository, // para guardar la reserva
-    private val servicioRepository: ServicioRepository, // para cargar los servicios
-    private val userRepository: UserRepository,
     private val reservaRepository2: ReservaRepositoryAPI,
     private val servicioRepository2: ServicioRepositoryAPI,
     private val userRepository2: UserRepositoryTestAPI
@@ -134,30 +131,6 @@ class BookingViewModel(
         val estado: String
     )
 
-    //Función para cargar reservas del usuario logueado
-    fun cargarReservasUsuario(userId: Long) {
-        viewModelScope.launch {
-            val result = reservaRepository2.obtenerReservasUsuario(userId)
-
-            result.onSuccess { lista ->
-
-                val reservas = lista.map {
-                    ReservaUsuario(
-                        id = it.idReserva,
-                        fecha = it.fecha,
-                        hora = it.hora,
-                        servicio = "Servicio #${it.idServicio}", // opcional
-                        estado = it.estado
-                    )
-                }
-
-                _uiState.update { it.copy(reservaUsuario = reservas) }
-
-            }.onFailure { e ->
-                _uiState.update { it.copy(errorMessage = e.message) }
-            }
-        }
-    }
 
     //funcion para recargar servicios
     fun recargarServicios() {

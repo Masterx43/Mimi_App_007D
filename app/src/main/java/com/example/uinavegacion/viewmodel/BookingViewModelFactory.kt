@@ -11,9 +11,6 @@ import com.example.uinavegacion.data.repository.UserRepositoryTestAPI
 
 // Factory simple para crear AuthViewModel con su UserRepository.
 class BookingViewModelFactory(
-    private val reservaRepository: ReservaRepository, // Dependencia que inyectaremos
-    private val servicioRepository: ServicioRepository,
-    private val userRepository: UserRepository,
     private val reservaRepository2: ReservaRepositoryAPI,
     private val servicioRepository2: ServicioRepositoryAPI,
     private val userRepository2: UserRepositoryTestAPI
@@ -24,9 +21,6 @@ class BookingViewModelFactory(
         // Si solicitan AuthViewModel, lo creamos con el repo.
         if (modelClass.isAssignableFrom(BookingViewModel::class.java)) {
             return BookingViewModel(
-                reservaRepository,
-                servicioRepository,
-                userRepository,
                 reservaRepository2,
                 servicioRepository2,
                 userRepository2

@@ -39,7 +39,7 @@ fun AppBottomBar(
 ) {
     val context = LocalContext.current
     val userPrefs = remember { UserPreferences(context) }
-    val isLoggedIn by userPrefs.isLoogedIn.collectAsStateWithLifecycle(false)
+    val isLoggedIn by userPrefs.isLoggedIn.collectAsStateWithLifecycle(false)
     val roleId by userPrefs.userRoleId.collectAsStateWithLifecycle(null)
 
     Surface(

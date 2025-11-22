@@ -54,21 +54,8 @@ fun AppRoot() { // Raíz de la app para separar responsabilidades
     val context = LocalContext.current.applicationContext
     // ^ Obtenemos el applicationContext para construir la base de datos de Room.
 
-    val db = AppDatabase.getInstance(context)
-    // ^ Singleton de Room. No crea múltiples instancias.
 
-    val userDao = db.userDao()
-    val reservaDao = db.reservaDao()
-    val servicioDao = db.servicioDao()
-    val rolDao = db.rolDao()
-    val categoriaDao = db.categoriaDao()
-    // ^ Daos para viewModel.
 
-    val userRepository = UserRepository(userDao)
-    val reservaRepository = ReservaRepository(reservaDao)
-    val servicioRepository = ServicioRepository(servicioDao)
-    val rolRepository = RolRepository(rolDao)
-    val categoriaRepository = CategoriaRepository(categoriaDao)
     val authRepository = AuthRepository()
     // ^ Repositorios.
 
@@ -83,14 +70,15 @@ fun AppRoot() { // Raíz de la app para separar responsabilidades
     val userPrefs = UserPreferences(context)
 
     val authViewModel: AuthViewModel = viewModel(
-        factory = AuthViewModelFactory(userRepository, userPrefs,authRepository,repositoryTest)
+        factory = AuthViewModelFactory( userPrefs,authRepository,repositoryTest)
     )
     val adminVm: AdminViewModel = viewModel(
         factory = AdminViewModelFactory(
             servicioRepositoryAPI,
             categoriaRepositoryAPI,
             rolRepositoryAPI,
-            repositoryTest)
+            repositoryTest
+        )
     )
 
     val workervm: WorkerViewModel = viewModel(

@@ -3,13 +3,12 @@ package com.example.uinavegacion.viewmodel
 import android.util.Patterns
 import app.cash.turbine.test
 import com.example.uinavegacion.MainDispatcherRule
-import com.example.uinavegacion.data.local.storage.UserPreferences
 import com.example.uinavegacion.data.remote.authservice.dto.AuthLoginResponseDTO
 import com.example.uinavegacion.data.remote.authservice.dto.UserAuthDTO
 import com.example.uinavegacion.data.remote.userservice.dto.UserDTO
 import com.example.uinavegacion.data.repository.AuthRepository
-import com.example.uinavegacion.data.repository.UserRepository
 import com.example.uinavegacion.data.repository.UserRepositoryTestAPI
+import com.example.uinavegacion.fakes.FakeUserPreferences
 import io.mockk.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.*
@@ -17,139 +16,187 @@ import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import java.util.regex.Pattern
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 
 @OptIn(ExperimentalCoroutinesApi::class)
+@RunWith(RobolectricTestRunner::class)
 class AuthViewModelTest {
 
     @get:Rule
-    val mainDispatcherRule = MainDispatcherRule()
+    val dispatcherRule = MainDispatcherRule()
 
-    // Repos/Prefs necesarios
-    private val repoUser = mockk<UserRepository>()
-    private val repoAPI = mockk<UserRepositoryTestAPI>()
-    private val repoAuth = mockk<AuthRepository>()
-    private val prefs = mockk<UserPreferences>(relaxed = true)
-
-    // VM real a testear
+    private lateinit var fakePrefs: FakeUserPreferences
+    private val authRepo = mockk<AuthRepository>()
+    private val userApiRepo = mockk<UserRepositoryTestAPI>()
     private lateinit var vm: AuthViewModel
 
     @Before
     fun setup() {
-        mockkStatic(Patterns::class)
-        every { Patterns.EMAIL_ADDRESS } returns Pattern.compile(".*@.*\\..*")
-
+        fakePrefs = FakeUserPreferences()
         vm = AuthViewModel(
-            repository = repoUser,
-            userPrefs = prefs,
-            authRepository = repoAuth,
-            repositoryTestAPI = repoAPI
+            userPrefs = fakePrefs,
+            authRepository = authRepo,
+            repositoryTestAPI = userApiRepo
         )
     }
 
-    // ============================================================
-    // 1️⃣ TEST: Validación simple de login
-    // ============================================================
     @Test
-    fun login_campos_validos_habilitan_canSubmit() = runTest {
+    fun submitLoginAPI_actualiza_session_login_success() = runTest {
 
-        vm.onLoginEmailChange("test@mail.com")
-        vm.onLoginContraChange("Demo123!")
+        // Datos de prueba
+        val fakeUser = UserAuthDTO(
+            idUser = 10L,
+            nombre = "Bastian",
+            apellido = "Gomez",
+            correo = "bas@test.com",
+            rolId = 1L
+        )
 
-        val state = vm.login.value
+        val fakeResponse = AuthLoginResponseDTO(
+            success = true,
+            message = "OK",
+            user = fakeUser
+        )
 
-        assertEquals("test@mail.com", state.email)
-        assertEquals("Demo123!", state.contra)
-        assertTrue(state.canSubmit)
-        assertNull(state.emailError)
+        // Mock principal del login API
+        coEvery { authRepo.login("bas@test.com", "1234") } returns Result.success(fakeResponse)
+
+        // Mock necesario por culpa del init { ... }
+        coEvery { userApiRepo.getUserById(any()) } returns Result.success(
+            UserDTO(
+                idUser = 10L,
+                nombre = "Bastian",
+                apellido = "Gomez",
+                correo = "bas@test.com",
+                phone = "99999999",
+                rolId = 1L
+            )
+        )
+
+        vm.onLoginEmailChange("bas@test.com")
+        vm.onLoginContraChange("1234")
+
+        vm.session.test {
+            vm.submitLoginAPI()
+
+            // estado 0 (inicial)
+            awaitItem()
+
+            // estado 1: login isSubmitting = true
+            awaitItem()
+
+            // estado 2: login completado
+            val finalState = awaitItem()
+            assertTrue(finalState.isLoggedIn)
+            assertEquals(10L, finalState.userId)
+            assertEquals("Bastian", finalState.userName)
+        }
     }
 
-    // ============================================================
-    // 2️⃣ TEST: submitLoginAPI (login por API externa)
-    // ============================================================
-    @Test
-    fun submitLoginAPI_exitoso_actualiza_sesion_y_estado() = runTest {
 
-        val backendUser = UserAuthDTO(
-            idUser = 1,
-            nombre = "Josefa",
+    @Test
+    fun submitRegisterAPI_registra_exitosamente() = runTest {
+
+        // Mock respuesta del API
+        val fakeUser = UserDTO(
+            idUser = 100,
+            nombre = "Bastian",
             apellido = "Gomez",
-            correo = "test@mail.com",
+            correo = "bastian@mail.com",
+            phone = "123123123",
             rolId = 1
         )
 
-        coEvery { repoAuth.login("test@mail.com", "Demo123!") } returns
-                Result.success(
-                    AuthLoginResponseDTO(
-                        success = true,
-                        message = "Login correcto",
-                        user = backendUser
-                    )
-                )
-
-        // Guardado de sesión
-        coEvery { prefs.saveLoginState(true, 1, 1) } returns Unit
-
-        vm.onLoginEmailChange("test@mail.com")
-        vm.onLoginContraChange("Demo123!")
-
-        vm.submitLoginAPI()
-        advanceUntilIdle()
-
-        val loginState = vm.login.value
-        val session = vm.session.value
-
-        assertTrue(loginState.success)
-        assertEquals(1L, session.userId)
-        assertEquals("Josefa", session.userName)
-        assertEquals("Gomez", session.userLastName)
-        assertEquals("test@mail.com", session.userEmail)
-        assertEquals(1L, session.userRoleId)
-        assertTrue(session.isLoggedIn)
-    }
-
-    // ============================================================
-    // 3️⃣ TEST: submitRegisterAPI exitoso
-    // ============================================================
-    @Test
-    fun submitRegisterAPI_exitoso_actualiza_estado() = runTest {
-
         coEvery {
-            repoAPI.register(
-                nombre = "Josefa",
-                apellido = "Gomez",
-                correo = "test@mail.com",
-                phone = "987654321",
-                password = "Demo123!",
+            userApiRepo.register(
+                nombre = any(),
+                apellido = any(),
+                correo = any(),
+                phone = any(),
+                password = any(),
                 rolId = 1L
             )
-        } returns Result.success(
-            UserDTO(
-                idUser = 10,
-                nombre = "Josefa",
-                apellido = "Gomez",
-                correo = "test@mail.com",
-                phone = "987654321",
-                rolId = 1
-            )
+        } returns Result.success(fakeUser)
+
+
+        vm.onNombreChange("Bastian")
+        vm.onApellidoChange("Gomez")
+        vm.onEmailChange("bastian@mail.com")
+        vm.onCelChange("987654321")
+        vm.onContraChange("Pass1234!")
+        vm.onConfirmChange("Pass1234!")
+
+        vm.register.test {
+
+            // ejecutar registro
+            vm.submitRegisterAPI()
+
+            // estado 0: inicial
+            awaitItem()
+
+            // estado 1: isSubmitting = true
+            awaitItem()
+
+            // estado 2: success = true
+            val final = awaitItem()
+            assertTrue(final.success)
+            assertNull(final.errorMsg)
+        }
+    }
+
+
+    @Test
+    fun init_restaura_sesion_userPrefs() = runTest {
+
+        // Usuario que debería cargar el init()
+        val fakeUser = UserDTO(
+            idUser = 10,
+            nombre = "Bastian",
+            apellido = "Gomez",
+            correo = "test@mail.com",
+            phone = "123456789",
+            rolId = 1
         )
 
-        vm.onNombreChange("Josefa")
-        vm.onApellidoChange("Gomez")
-        vm.onEmailChange("test@mail.com")
-        vm.onCelChange("987654321")
-        vm.onContraChange("Demo123!")
-        vm.onConfirmChange("Demo123!")
 
-        assertTrue(vm.register.value.canSubmit)
 
-        vm.submitRegisterAPI()
+        coEvery { userApiRepo.getUserById(10L) } returns Result.success(fakeUser)
+
+        fakePrefs.emitLoggedIn(true)
+        fakePrefs.emitUserId(10L)
+
+        vm.session.test {
+
+            // estado inicial
+            awaitItem()
+
+            // estado restaurado
+            val restored = awaitItem()
+
+            assertEquals(true, restored.isLoggedIn)
+            assertEquals(10L, restored.userId)
+            assertEquals("Bastian", restored.userName)
+            assertEquals("Gomez", restored.userLastName)
+            assertEquals("test@mail.com", restored.userEmail)
+            assertEquals(1L, restored.userRoleId)
+        }
+    }
+
+    @Test
+    fun logout_limpia_preferencias_session() = runTest {
+
+        coEvery { userApiRepo.getUserById(any()) } returns Result.success(
+            UserDTO(0, "", "", "", "", 1)
+        )
+
+        fakePrefs.saveLoginState(true, 2, 88)
+
+        vm.logout()
         advanceUntilIdle()
-
-        val state = vm.register.value
-
-        assertTrue(state.success)
-        assertNull(state.errorMsg)
-        assertFalse(state.isSubmitting)
+        assertFalse(vm.session.value.isLoggedIn)
+        assertNull(vm.session.value.userId)
+        assertNull(fakePrefs.userId.value)
+        assertFalse(fakePrefs.isLoggedIn.value)
     }
 }

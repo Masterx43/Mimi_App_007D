@@ -53,7 +53,7 @@ fun HomeScreen(
 
     val bg = MaterialTheme.colorScheme.surfaceVariant
     val userPrefs =remember { UserPreferences(context) }
-    val isLoggedIn by userPrefs.isLoogedIn.collectAsStateWithLifecycle(false)
+    val isLoggedIn by userPrefs.isLoggedIn.collectAsStateWithLifecycle(false)
 
     Box( // Contenedor a pantalla completa
         modifier = Modifier

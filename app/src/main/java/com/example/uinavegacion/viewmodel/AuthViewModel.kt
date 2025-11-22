@@ -2,6 +2,7 @@ package com.example.uinavegacion.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.uinavegacion.data.local.storage.IUserPreferences
 import com.example.uinavegacion.data.local.storage.UserPreferences
 import com.example.uinavegacion.data.remote.userservice.dto.UserDTO
 import com.example.uinavegacion.data.repository.AuthRepository
@@ -64,8 +65,7 @@ data class SessionUiState(
     val userRoleId: Long? = null,
 )
 class AuthViewModel(
-    private val repository: UserRepository,
-    private val userPrefs: UserPreferences,
+    private val userPrefs: IUserPreferences,
     private val authRepository: AuthRepository,
     private val repositoryTestAPI: UserRepositoryTestAPI
 ): ViewModel(){
@@ -81,7 +81,7 @@ class AuthViewModel(
 
     init {
         viewModelScope.launch {
-            userPrefs.isLoogedIn.collect { loggedIn ->
+            userPrefs.isLoggedIn.collect { loggedIn ->
                 if (loggedIn) {
                     val userId = userPrefs.userId.firstOrNull()
                     if (userId != null) {
@@ -123,56 +123,6 @@ class AuthViewModel(
         val s= _login.value
         val can= s.emailError==null && s.email.isNotBlank() && s.contra.isNotBlank()
         _login.update { it.copy(canSubmit = can) }
-    }
-
-    fun submitLogin() {
-        val s = _login.value
-        if (!s.canSubmit || s.isSubmitting) return
-
-        viewModelScope.launch {
-            _login.update { it.copy(isSubmitting = true, errorMsg = null, success = false) }
-
-
-            val result = repository.login(s.email.trim(), s.contra)
-
-            _login.update {
-                if (result.isSuccess) {
-                    val user = result.getOrNull()
-
-                    //Solo si se encuentra usuario
-                    if (user != null) {
-                        // Guardamos la sesión en memoria
-                        _session.update {
-                            SessionUiState(
-                                isLoggedIn = true,
-                                userId = user.idUser,
-                                userName = user.nombre,
-                                userLastName = user.apellido,
-                                userPhone = user.phone,
-                                userEmail = user.correo,
-                                userRoleId = user.rolId
-                            )
-                        }
-
-                        // Guardamos los datos también en DataStore
-                        viewModelScope.launch {
-                            userPrefs.saveLoginState(true, user.rolId, user.idUser)
-
-                            //Log de depuración — verás esto en Logcat
-                            println("LOGIN GUARDADO -> idUser=${user.idUser}, rol=${user.rolId}, email=${user.correo}")
-                        }
-                    }
-
-                    it.copy(isSubmitting = false, success = true, errorMsg = null)
-                } else {
-                    it.copy(
-                        isSubmitting = false,
-                        success = false,
-                        errorMsg = result.exceptionOrNull()?.message ?: "Error de autenticación"
-                    )
-                }
-            }
-        }
     }
 
 
@@ -221,34 +171,7 @@ class AuthViewModel(
         _register.update { it.copy(canSubmit = noErrors && filled) }
     }
 
-    fun submitRegister() {
-        val s = _register.value
-        if (!s.canSubmit || s.isSubmitting) return
 
-        viewModelScope.launch {
-            _register.update { it.copy(isSubmitting = true, errorMsg = null, success = false) }
-            delay(700)
-
-            // 7.- Se cambia esto por lo anterior inserta en BD (con teléfono) vía repositorio
-            val result = repository.register(
-                name = s.nombre.trim(),
-                apellido = s.apellido.trim(),                      //modificar para que reciba desde registerScreen
-                email = s.email.trim(),
-                phone = s.cel,                     // Incluye teléfono
-                password = s.contra,
-            )
-
-            // Interpreta resultado y actualiza estado
-            _register.update {
-                if (result.isSuccess) {
-                    it.copy(isSubmitting = false, success = true, errorMsg = null)  // OK
-                } else {
-                    it.copy(isSubmitting = false, success = false,
-                        errorMsg = result.exceptionOrNull()?.message ?: "No se pudo registrar")
-                }
-            }
-        }
-    }
 
     fun clearRegisterResult() {
         _register.update { it.copy(success = false, errorMsg = null) }
@@ -354,6 +277,7 @@ class AuthViewModel(
     }
 
 
-
 }
+
+
 

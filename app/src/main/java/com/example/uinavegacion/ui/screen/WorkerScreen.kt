@@ -88,12 +88,15 @@ fun WorkerScreen(
                 style = MaterialTheme.typography.titleMedium
             )
 
-            if (uiState.reservas.isEmpty()) {
-                Text(
-                    uiState.errorMessage.toString(),
-                    color = textoNegro,
-                    modifier = Modifier.padding(8.dp)
+            if (uiState.loading) {
+                CircularProgressIndicator(
+                    color = LilaPri,
+                    modifier = Modifier
+                        .padding(top = 20.dp)
+                        .size(60.dp)
+                        .align(Alignment.CenterHorizontally)
                 )
+                return@Column // evita que se renderice lo demás
             } else {
                 uiState.reservas.forEach { reserva ->
                     Card(
@@ -116,7 +119,7 @@ fun WorkerScreen(
                             Text("Estado: ${reserva.estado}")
 
                             Spacer(Modifier.height(8.dp))
-                            if (reserva.estado == "CONFIRMADO") {
+                            if (reserva.estado == "Pendiente") {
                                 Button(
                                     onClick = {
                                         selectedReservaId = reserva.idReserva

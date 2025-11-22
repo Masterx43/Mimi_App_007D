@@ -111,7 +111,11 @@ fun AppBottomBar(
                 selected = false,
                 onClick = {
                     if(isLoggedIn) {
-                        onReserve()
+                        when (roleId) {
+                            2L ->  Toast.makeText(context, "Solo pueden entrar los clientes.", Toast.LENGTH_SHORT).show()
+                            3L ->  Toast.makeText(context, "Solo pueden entrar los clientes.", Toast.LENGTH_SHORT).show()
+                            else -> onReserve()
+                        }
                     } else {
                         Toast.makeText(context, "Inicie sesion para continuar", Toast.LENGTH_SHORT).show()
                     }

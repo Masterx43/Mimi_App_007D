@@ -84,14 +84,17 @@ class BookingViewModel(
             val s = _uiState.value
 
             if (
-                s.fecha.isBlank() ||
-                s.hora.isBlank() ||
+                s.fecha.isBlank()||
+                s.hora.isBlank()||
                 s.servicioId == null ||
-                s.workerIdSeleccionado == null
+                    s.workerIdSeleccionado == null
             ) {
-                _uiState.update { it.copy(errorMessage = "Completa todos los campos") }
-                return@launch
-            }
+            _uiState.update { it.copy(errorMessage = "Completa todos los campos") }
+            return@launch
+        }
+
+            _uiState.update { it.copy(isLoading = true, errorMessage = null, successMessage = null) }
+
 
             val req = CrearReservaRequestDTO(
                 idUsuario = userId,
@@ -107,11 +110,18 @@ class BookingViewModel(
                 _uiState.update {
                     it.copy(
                         successMessage = "Reserva creada con éxito",
-                        errorMessage = null
+                        errorMessage = null,
+                        isLoading = false
                     )
                 }
             }.onFailure { e ->
-                _uiState.update { it.copy(errorMessage = e.message) }
+                _uiState.update {
+                    it.copy(
+                        successMessage = null,
+                        errorMessage = e.message,
+                        isLoading = false,
+                    )
+                }
             }
         }
     }

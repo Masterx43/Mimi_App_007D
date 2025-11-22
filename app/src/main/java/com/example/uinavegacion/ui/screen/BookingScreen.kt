@@ -189,9 +189,11 @@ fun BookingScreen(
 
         Spacer(Modifier.height(12.dp))
 
-        // ⭐⭐⭐ SELECTOR DE TRABAJADOR ⭐⭐⭐
+        // SELECTOR DE TRABAJADOR
 
-        Text("Seleccionar trabajador", style = MaterialTheme.typography.titleMedium)
+        Text("Seleccionar trabajador", style =
+            MaterialTheme.typography.titleMedium,
+            color = LilaPri)
         Spacer(Modifier.height(8.dp))
 
         var expandedTrabajador by remember { mutableStateOf(false) }
@@ -210,7 +212,13 @@ fun BookingScreen(
                 modifier = Modifier
                     .menuAnchor()
                     .fillMaxWidth()
-                    .clickable { expandedTrabajador = true }
+                    .clickable { expandedTrabajador = true },
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = LilaPri,
+                    focusedLabelColor = LilaPri
+                )
+
+
             )
 
             ExposedDropdownMenu(

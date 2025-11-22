@@ -106,8 +106,10 @@ class ReservaRepositoryAPI(
     suspend fun obtenerReservasDetalleUsuario(id: Long): Result<List<ReservaDetalleDTO>> {
         return try {
             val res = api.getReservasDetalleUsuario(id)
-            if (res.isSuccessful && res.body() != null)
+            if (res.isSuccessful && res.code() == 200)
                 Result.success(res.body()!!)
+            else if (res.isSuccessful && res.code() == 204)
+                Result.failure(Exception("No ha hecho ninguna reserva, porfavor diríjase al botón de agendar para poder realizar una reserva "))
             else
                 Result.failure(Exception("Error al obtener reservas del usuario"))
         } catch (e: Exception) {

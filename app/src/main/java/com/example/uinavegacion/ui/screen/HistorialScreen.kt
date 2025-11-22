@@ -7,6 +7,9 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -15,6 +18,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.uinavegacion.viewmodel.HistorialViewModel
 import com.example.uinavegacion.ui.components.CardReserva
+import com.example.uinavegacion.ui.components.EstadoChip
+import com.example.uinavegacion.ui.theme.BackDark
+import com.example.uinavegacion.ui.theme.LilaPri
 import com.example.uinavegacion.viewmodel.AuthViewModel
 
 @Composable
@@ -32,16 +38,23 @@ fun HistorialScreen(
     }
 
     Column(
+        horizontalAlignment = Alignment.CenterHorizontally, // Centrado horizontal
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
             .verticalScroll(rememberScrollState())
     ) {
 
+        Icon(
+            imageVector = Icons.Filled.CalendarMonth,
+            contentDescription = "Agenda",
+            tint = LilaPri,  ///
+            modifier = Modifier.size(150.dp)
+        )
+        Spacer(Modifier.height(20.dp))
         Text(
-            text = "Historial de Reservas",
-            style = MaterialTheme.typography.headlineMedium,
-            color = MaterialTheme.colorScheme.primary
+            text = "Reservas",
+            style = MaterialTheme.typography.headlineSmall.copy(color = LilaPri)// Título
         )
 
         Spacer(Modifier.height(16.dp))
@@ -54,19 +67,29 @@ fun HistorialScreen(
 
         // Error
         state.errorMessage?.let {
-            Text(
-                text = it,
-                color = MaterialTheme.colorScheme.error,
-                style = MaterialTheme.typography.titleMedium
-            )
+
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surface
+                ),
+                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+                shape = RoundedCornerShape(12.dp)
+            ) {
+                Column(
+                    modifier = Modifier.padding(16.dp)
+                ) {
+                    Text(
+                        text = it,
+                        color = LilaPri,
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                }
+            }
             return@Column
         }
 
-        // Sin reservas
-        if (state.reservas.isEmpty()) {
-            Text("No tienes reservas aún.")
-            return@Column
-        }
 
         // Agrupar por fecha
         val reservasPorFecha = state.reservas.groupBy { it.fecha }

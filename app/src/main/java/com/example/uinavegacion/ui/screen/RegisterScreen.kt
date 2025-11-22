@@ -170,7 +170,12 @@ private fun RegisterScreen(
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Text         // Teclado de texto
                 ),
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = LilaPri,
+                    focusedLabelColor = LilaPri
+                )
+
             )
             if (nombreError != null) {                         // Muestra error
                 Text(nombreError, color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.labelSmall)
@@ -184,7 +189,11 @@ private fun RegisterScreen(
                 singleLine = true,
                 isError = apellidoError != null,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = LilaPri,
+                    focusedLabelColor = LilaPri
+                )
             )
             if (apellidoError != null) {
                 Text(
@@ -205,7 +214,11 @@ private fun RegisterScreen(
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Email        // Teclado de email
                 ),
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = LilaPri,
+                    focusedLabelColor = LilaPri
+                )
             )
             if (emailError != null) {                        // Muestra error
                 Text(emailError, color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.labelSmall)
@@ -223,7 +236,11 @@ private fun RegisterScreen(
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Number       // Teclado numérico
                 ),
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = LilaPri,
+                    focusedLabelColor = LilaPri
+                )
             )
             if (celError != null) {                        // Muestra error
                 Text(celError, color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.labelSmall)
@@ -247,7 +264,11 @@ private fun RegisterScreen(
                         )
                     }
                 },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = LilaPri,
+                    focusedLabelColor = LilaPri
+                )
             )
             if (contraError != null) {                         // Muestra error
                 Text(contraError, color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.labelSmall)
@@ -271,7 +292,11 @@ private fun RegisterScreen(
                         )
                     }
                 },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = LilaPri,
+                    focusedLabelColor = LilaPri
+                )
             )
             if (confirmError != null) {                      // Muestra error
                 Text(confirmError, color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.labelSmall)

@@ -109,7 +109,9 @@ fun UserInfoScreen(
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Text(text = msg, color = Color.Red)
                 Spacer(Modifier.height(8.dp))
-                Button(onClick = { effectiveUserId?.let { userInfoVm.cargarUsuario(it) } }) {
+                Button(onClick = { effectiveUserId?.let { userInfoVm.cargarUsuario(it) } },
+                    colors = ButtonDefaults.buttonColors(LilaPri)) {
+
                     Text("Reintentar")
                 }
             }
@@ -120,7 +122,7 @@ fun UserInfoScreen(
     // --- Sin usuario ---
     if (state.user == null) {
         Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            Text("Esperando ID de usuario...", color = Blanco)
+            Text("Esperando ID de usuario...", color = LilaPri)
         }
         return
     }
@@ -319,7 +321,7 @@ fun UserInfoScreen(
                         .padding(horizontal = 8.dp)
                 ) {
 
-                    // 🔹 Inputs editables reales
+                    //Inputs editables reales
                     OutlinedTextField(
                         value = nombre,
                         onValueChange = { nombre = it },
@@ -356,7 +358,7 @@ fun UserInfoScreen(
                     )
                     Spacer(Modifier.height(8.dp))
 
-                    // 🔸 EMAIL (Solo lectura)
+                    // EMAIL (Solo lectura)
                     OutlinedTextField(
                         value = correo,
                         onValueChange = {},
@@ -366,7 +368,7 @@ fun UserInfoScreen(
                     )
                     Spacer(Modifier.height(16.dp))
 
-                    // 🔸 Botón guardar
+                    //Botón guardar
                     Button(
                         onClick = {
                             val user = state.user
@@ -393,13 +395,11 @@ fun UserInfoScreen(
                 }
             }
 
-
-
-
             //seccion para ver las reservas
             Spacer(Modifier.height(24.dp))
             Button(
                 onClick = { onHistorial() },
+                colors= ButtonDefaults.buttonColors(containerColor = LilaPri),
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text("Ver historial de reservas")

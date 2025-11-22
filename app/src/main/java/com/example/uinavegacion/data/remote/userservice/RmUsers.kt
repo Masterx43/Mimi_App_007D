@@ -13,7 +13,9 @@ import okhttp3.logging.HttpLoggingInterceptor
 object RmUsers {
 
     // Línea 7: base URL del servicio JSONPlaceholder
-    private const val BASE_URL = "https://2k6dwp9l-8084.brs.devtunnels.ms/"
+    private const val BASE_URL = "https://rh35ncvl-8084.brs.devtunnels.ms/"
+    //puerto: 8084
+
 
     // Línea 9: creamos un interceptor de logging para depurar tráfico HTTP
     private val logging = HttpLoggingInterceptor().apply {

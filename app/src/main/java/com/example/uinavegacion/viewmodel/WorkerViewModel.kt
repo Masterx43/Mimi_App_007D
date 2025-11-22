@@ -7,13 +7,15 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import androidx.lifecycle.ViewModel
+import coil.compose.AsyncImagePainter
 import com.example.uinavegacion.data.remote.reservas.dto.ReservaDetalleDTO
 import com.example.uinavegacion.data.repository.ReservaRepositoryAPI
 
 data class WorkerUiState(
     val reservas: List<ReservaDetalleDTO> = emptyList(),
     val successMessage: String? = null,
-    val errorMessage: String? = null
+    val errorMessage: String? = null,
+    val loading: Boolean= false
 )
 
 class WorkerViewModel(
@@ -23,22 +25,33 @@ class WorkerViewModel(
     val _uiState = MutableStateFlow(WorkerUiState())
     val uiState: StateFlow<WorkerUiState> = _uiState
 
-    fun cargarTodasLasReservas(id : Long) {
+    fun cargarTodasLasReservas(id: Long) {
         viewModelScope.launch {
-            _uiState.update { it.copy(errorMessage = null) }
+            _uiState.update { it.copy(loading = true, errorMessage = null) }
+
             val result = reservaRepository.obtenerReservasDetalleTrabajador(id)
 
             result.onSuccess { lista ->
-                _uiState.update { it.copy(reservas = lista) }
+                _uiState.update {
+                    it.copy(
+                        reservas = lista,
+                        loading = false
+                    )
+                }
             }.onFailure { e ->
-                _uiState.update { it.copy(errorMessage = e.message) }
+                _uiState.update {
+                    it.copy(
+                        errorMessage = e.message,
+                        loading = false
+                    )
+                }
             }
         }
     }
 
     fun marcarCompletada(reservaId: Long, id : Long) {
         viewModelScope.launch {
-            val result = reservaRepository.actualizarEstado(reservaId, "CONFIRMADO")
+            val result = reservaRepository.actualizarEstado(reservaId, "Confirmado")
             result.onSuccess {
                 _uiState.update { it.copy(successMessage ="Reserva $reservaId marcada como completada\n" +
                         "Se enviara un correo al cliente con la confirmacion de la reserva") }

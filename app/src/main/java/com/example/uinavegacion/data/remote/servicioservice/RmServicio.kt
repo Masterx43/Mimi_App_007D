@@ -1,5 +1,5 @@
 package com.example.uinavegacion.data.remote.servicioservice
-// Línea 1: importamos Retrofit para construir el cliente HTTP tipado
+// Líneimportamos Retrofit para construir el cliente HTTP tipado
 import retrofit2.Retrofit
 // Línea 2: importamos GsonConverterFactory para convertir JSON <-> objetos
 import retrofit2.converter.gson.GsonConverterFactory

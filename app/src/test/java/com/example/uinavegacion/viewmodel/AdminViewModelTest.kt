@@ -45,7 +45,7 @@ class AdminViewModelTest {
 
     // ------------------------------------------------------------------
     @Test
-    fun `cargarListas carga datos correctamente`() = runTest {
+    fun cargarListas() = runTest {
 
         val servicios = listOf(ServicioDTO(1, "Manicure", "desc", 10000, 1))
         val categorias = listOf(CategoriaDTO(1, "unias francesas", "Pintado de unias sutil estilo francesas"))
@@ -70,7 +70,7 @@ class AdminViewModelTest {
 
     // ------------------------------------------------------------------
     @Test
-    fun `crearServicio exitoso actualiza successMessage`() = runTest {
+    fun crearServicio_exitoso_actualiza() = runTest {
 
         coEvery { servicioRepo.crearServicio(any()) } returns Result.success(
             ServicioDTO(1, "Manicure", "desc", 10000, 1)
@@ -80,22 +80,22 @@ class AdminViewModelTest {
         vm.crearServicio("Manicure", "desc", 10000, 1)
         advanceUntilIdle()
 
-        assertEquals("Servicio creado con éxito", vm.uiState.value.successMessage)
+        assertEquals("Servicio creado con éxito", vm.uiState.value.successServicio)
     }
 
-    // ------------------------------------------------------------------
+
     @Test
-    fun `crearServicio con campos vacios muestra error`() = runTest {
+    fun crearServicio_con_campos_vacios_muestra_error() = runTest {
 
         vm.crearServicio("", "", 0, 1)
         advanceUntilIdle()
 
-        assertEquals("Nombre y descripción son obligatorios", vm.uiState.value.errorMessage)
+        assertEquals("Nombre y descripción son obligatorios", vm.uiState.value.errorServicio)
     }
 
-    // ------------------------------------------------------------------
+
     @Test
-    fun `actualizarServicio exitoso actualiza mensaje`() = runTest {
+    fun actualizarServicio_exitoso_actualiza_mensaje() = runTest {
 
         coEvery { servicioRepo.actualizarServicio(1, any()) } returns Result.success(
             ServicioDTO(1, "Nuevo", "desc", 12000, 1)
@@ -105,13 +105,13 @@ class AdminViewModelTest {
         vm.actualizarServicio(1, "Nuevo", "desc", 12000)
         advanceUntilIdle()
 
-        assertEquals("Servicio actualizado correctamente", vm.uiState.value.successMessage)
+        assertEquals("Servicio actualizado correctamente", vm.uiState.value.successServicio)
         assertNull(vm.uiState.value.servicioAEditar)
     }
 
     // ------------------------------------------------------------------
     @Test
-    fun `eliminarServicio exitoso muestra mensaje`() = runTest {
+    fun eliminarServicio_exitoso() = runTest {
 
         coEvery { servicioRepo.eliminarServicio(1) } returns Result.success(Unit)
         coEvery { servicioRepo.obtenerTodosServicios() } returns Result.success(emptyList())
@@ -119,12 +119,12 @@ class AdminViewModelTest {
         vm.eliminarServicio(1)
         advanceUntilIdle()
 
-        assertEquals("Servicio eliminado correctamente", vm.uiState.value.successMessage)
+        assertEquals("Servicio eliminado correctamente", vm.uiState.value.successServicio)
     }
 
-    // ------------------------------------------------------------------
+
     @Test
-    fun `crearCategoria funciona correctamente`() = runTest {
+    fun crearCategoria_funciona_correctamente() = runTest {
 
         coEvery { categoriaRepo.crearCategoria(any()) } returns Result.success(
             CategoriaDTO(1, "Pedicure","pintado de unas de pies")
@@ -134,12 +134,12 @@ class AdminViewModelTest {
         vm.crearCategoria("Pedicure")
         advanceUntilIdle()
 
-        assertEquals("Categoría creada correctamente", vm.uiState.value.successMessage)
+        assertEquals("Categoría creada correctamente", vm.uiState.value.successCategoria)
     }
 
-    // ------------------------------------------------------------------
+
     @Test
-    fun `crearRol actualiza estado correctamente`() = runTest {
+    fun crearRol_actualiza_estado_correctamente() = runTest {
 
         coEvery { rolRepo.insertarRol("Admin") } returns Result.success(
             RolDTO(1, "Admin")
@@ -149,12 +149,11 @@ class AdminViewModelTest {
         vm.crearRol("Admin")
         advanceUntilIdle()
 
-        assertEquals("Rol creado correctamente", vm.uiState.value.successMessage)
+        assertEquals("Rol creado correctamente", vm.uiState.value.successRol)
     }
 
-    // ------------------------------------------------------------------
     @Test
-    fun `crearTrabajador exitoso actualiza successMessage`() = runTest {
+    fun crearTrabajador_exitoso() = runTest {
 
         coEvery { userRepo.register(any(), any(), any(), any(), any(), any()) } returns
                 Result.success(
@@ -165,6 +164,6 @@ class AdminViewModelTest {
         vm.crearTrabajador("Juan", "Perez", "jp@mail.com", "123", "demo")
         advanceUntilIdle()
 
-        assertEquals("Trabajador creado", vm.uiState.value.successMessage)
+        assertEquals("Trabajador creado", vm.uiState.value.successTrabajador)
     }
 }

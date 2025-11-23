@@ -155,7 +155,7 @@ private fun RegisterScreen(
         Column(horizontalAlignment = Alignment.CenterHorizontally) { //Estructura vertical
             Text(
                 text = "Registro",
-                style = MaterialTheme.typography.headlineSmall //Título
+                style = MaterialTheme.typography.headlineSmall.copy(color = LilaPri)// Título
             )
             Spacer(Modifier.height(12.dp)) //Separación
             Text(
@@ -226,7 +226,7 @@ private fun RegisterScreen(
 
             Spacer(Modifier.height(8.dp))                    // Espacio
 
-            // ---------- Celular (solo números). El VM ya filtra a dígitos ----------
+            // Celular (solo números). El VM ya filtra a dígitos
             OutlinedTextField(
                 value = cel,                               // Valor actual (solo dígitos)
                 onValueChange = onCelChange,               // Notifica VM (filtra y valida)

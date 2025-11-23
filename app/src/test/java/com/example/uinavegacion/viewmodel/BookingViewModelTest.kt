@@ -38,9 +38,9 @@ class BookingViewModelTest {
         vm = BookingViewModel(reservaRepo, servicioRepo, userRepo)
     }
 
-    // ---------------------------------------------------------
+
     @Test
-    fun `cargarServicios carga lista correctamente`() = runTest {
+    fun cargarServicios() = runTest {
 
         val servicios = listOf(
             ServicioDTO(1, "Manicure", "desc", 10000, 1)
@@ -55,9 +55,9 @@ class BookingViewModelTest {
         assertEquals("Manicure", vm.uiState.value.serviciosDisponibles[0].nombre)
     }
 
-    // ---------------------------------------------------------
+
     @Test
-    fun `registrarReserva con campos incompletos muestra error`() = runTest {
+    fun registrarReserva_campos_incompletos_error() = runTest {
 
         vm.registrarReserva(1)
         advanceUntilIdle()
@@ -65,9 +65,9 @@ class BookingViewModelTest {
         assertEquals("Completa todos los campos", vm.uiState.value.errorMessage)
     }
 
-    // ---------------------------------------------------------
+
     @Test
-    fun `registrarReserva exitosa actualiza successMessage`() = runTest {
+    fun registrarReserva_exitosa() = runTest {
 
         // completar datos
         vm.onFechaChange("2025-02-01")
@@ -97,10 +97,9 @@ class BookingViewModelTest {
         assertNull(state.errorMessage)
     }
 
-    // ---------------------------------------------------------
 
     @Test
-    fun `cargarTrabajadores carga lista de trabajadores`() = runTest {
+    fun cargarTrabajadores_lista() = runTest {
 
         val workers = listOf(
             UserDTO(1, "Maria", "Lopez", "maria@mail.com", "98765", 3)

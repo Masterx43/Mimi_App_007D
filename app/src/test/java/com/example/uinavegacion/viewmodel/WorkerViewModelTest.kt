@@ -29,9 +29,9 @@ class WorkerViewModelTest {
         vm = WorkerViewModel(reservaRepo)
     }
 
-    // ---------------------------------------------------------
+
     @Test
-    fun `cargarTodasLasReservas carga lista correctamente`() = runTest {
+    fun cargarTodasLasReservas() = runTest {
 
         val reservas = listOf(
             ReservaDetalleDTO(
@@ -57,9 +57,9 @@ class WorkerViewModelTest {
         assertNull(state.errorMessage)
     }
 
-    // ---------------------------------------------------------
+
     @Test
-    fun `cargarTodasLasReservas con error actualiza errorMessage`() = runTest {
+    fun cargarTodasLasReservas_error() = runTest {
 
         coEvery { reservaRepo.obtenerReservasDetalleTrabajador(5) }
             .returns(Result.failure(Exception("Fallo servidor")))
@@ -70,9 +70,8 @@ class WorkerViewModelTest {
         assertEquals("Fallo servidor", vm.uiState.value.errorMessage)
     }
 
-    // ---------------------------------------------------------
     @Test
-    fun `marcarCompletada actualiza successMessage y recarga lista`() = runTest {
+    fun marcarCompletada_actualiza() = runTest {
 
         // RESERVA COMPLETADA:
         val response = ReservaResponseDTO(
@@ -82,10 +81,10 @@ class WorkerViewModelTest {
             idTrabajador = 3,
             fecha = "2025-03-01",
             hora = "11:00",
-            estado = "CONFIRMADO"
+            estado = "Confirmado"
         )
 
-        coEvery { reservaRepo.actualizarEstado(10, "CONFIRMADO") }
+        coEvery { reservaRepo.actualizarEstado(10, "Confirmado") }
             .returns(Result.success(response))
 
         // Lista recargada después
@@ -94,7 +93,7 @@ class WorkerViewModelTest {
                 idReserva = 10,
                 fecha = "2025-03-01",
                 hora = "11:00",
-                estado = "CONFIRMADO",
+                estado = "Confirmado",
                 usuario = "Luis",
                 trabajador = "Maria",
                 servicio = "Depilación"
@@ -111,14 +110,14 @@ class WorkerViewModelTest {
 
         assertTrue(state.successMessage!!.contains("Reserva 10 marcada como completada"))
         assertEquals(1, state.reservas.size)
-        assertEquals("CONFIRMADO", state.reservas[0].estado)
+        assertEquals("Confirmado", state.reservas[0].estado)
     }
 
-    // ---------------------------------------------------------
-    @Test
-    fun `marcarCompletada con error actualiza errorMessage`() = runTest {
 
-        coEvery { reservaRepo.actualizarEstado(99, "CONFIRMADO") }
+    @Test
+    fun marcarCompletada_error() = runTest {
+
+        coEvery { reservaRepo.actualizarEstado(99, "Confirmado") }
             .returns(Result.failure(Exception("Imposible actualizar")))
 
         vm.marcarCompletada(99, 2)
@@ -128,9 +127,9 @@ class WorkerViewModelTest {
             vm.uiState.value.errorMessage)
     }
 
-    // ---------------------------------------------------------
+
     @Test
-    fun `clearMessages limpia successMessage y errorMessage`() {
+    fun limpia_successMessage_errorMessage() {
 
         vm.apply {
             _uiState.update {

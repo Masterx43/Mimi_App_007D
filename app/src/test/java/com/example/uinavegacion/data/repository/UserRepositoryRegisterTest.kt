@@ -108,14 +108,14 @@ class UserRepositoryRegisterTest {
         val repo = UserRepositoryAPI(api)
 
         val updateRequest = UserUpdateRequestDTO(
-            nombre = "Josefa Edit",
+            nombre = "Elisa Edit",
             apellido = "Test Edit",
             phone = "555555"
         )
 
         val updatedUser = UserDTO(
             idUser = 99,
-            nombre = "Josefa Edit",
+            nombre = "Elisa Edit",
             apellido = "Test Edit",
             correo = "nuevo@mail.com",
             phone = "555555",
@@ -127,7 +127,7 @@ class UserRepositoryRegisterTest {
         val result = repo.updateUser(99, updateRequest)
 
         assertTrue(result.isSuccess)
-        assertEquals("Josefa Edit", result.getOrNull()!!.nombre)
+        assertEquals("Elisa Edit", result.getOrNull()!!.nombre)
         assertEquals("nuevo@mail.com", result.getOrNull()!!.correo)
     }
 

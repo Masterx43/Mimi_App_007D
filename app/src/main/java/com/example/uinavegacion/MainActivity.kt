@@ -44,14 +44,10 @@ class MainActivity : ComponentActivity() {
 
 @Composable // Indica que esta función dibuja UI
 fun AppRoot() { // Raíz de la app para separar responsabilidades
-    // ====== NUEVO: construcción de dependencias (Composition Root) ======
+
     val context = LocalContext.current.applicationContext
-    // ^ Obtenemos el applicationContext para construir la base de datos de Room.
-
-
-
     val authRepository = AuthRepository()
-    // ^ Repositorios.
+
 
 
     //Repositorios de prueba
@@ -95,14 +91,14 @@ fun AppRoot() { // Raíz de la app para separar responsabilidades
     val historialViewModel : HistorialViewModel = viewModel (
         factory = HistorialViewModelFactory(reservaRepositoryAPI)
     )
-    // ^ Creamos el ViewModel con factory para inyectar el repositorio.
+    // Creamos el ViewModel con factory para inyectar el repositorio.
 
-    // ====== TU NAVEGACIÓN ORIGINAL ======
-    val navController = rememberNavController() // Controlador de navegación (igual que antes)
-    MaterialTheme { // Provee colores/tipografías Material 3 (igual que antes)
-        Surface(color = MaterialTheme.colorScheme.background) { // Fondo general (igual que antes)
 
-            // ====== MOD: pasamos el AuthViewModel a tu NavGraph ======
+    val navController = rememberNavController()
+    MaterialTheme { // Provee colores/tipografías Material 3
+        Surface(color = MaterialTheme.colorScheme.background) { // Fondo general
+
+            // MOD: pasamos el AuthViewModel a tu NavGraph
             // Si tu AppNavGraph ya recibía el VM o lo creaba adentro, lo mejor ahora es PASARLO
             // para que toda la app use la MISMA instancia que acabamos de inyectar.
             AppNavGraph(

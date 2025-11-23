@@ -137,13 +137,6 @@ fun WorkerScreen(
                 }
             }
 
-            // Mensajes de estado
-//            uiState.successMessage?.let {
-//                Text(it, color = Color.Green, textAlign = TextAlign.Center)
-//            }
-//            uiState.errorMessage?.let {
-//                Text(it, color = Color.Red, textAlign = TextAlign.Center)
-//            }
 
             Spacer(Modifier.height(32.dp))
 

@@ -48,9 +48,7 @@ class UserRepositoryAPI(
         }
     }
 
-    // ----------------------------------------------------------
     // OBTENER USUARIO POR ID
-    // ----------------------------------------------------------
     suspend fun getUserById(id: Long): Result<UserDTO> {
         return try {
             val response = api.getUserById(id)
@@ -69,9 +67,9 @@ class UserRepositoryAPI(
     }
 
 
-    // ----------------------------------------------------------
+
     // LISTAR TODOS LOS USUARIOS
-    // ----------------------------------------------------------
+
     suspend fun getAllUsers(): Result<List<UserDTO>> {
         return try {
             val response = api.getAllUsers()
@@ -88,9 +86,9 @@ class UserRepositoryAPI(
     }
 
 
-    // ----------------------------------------------------------
+
     // LISTAR TRABAJADORES (rolId = 3)
-    // ----------------------------------------------------------
+
     suspend fun getWorkers(): Result<List<UserDTO>> {
         return try {
 
@@ -108,9 +106,9 @@ class UserRepositoryAPI(
     }
 
 
-    // ----------------------------------------------------------
+
     // VALIDAR SI CORREO EXISTE
-    // ----------------------------------------------------------
+
     suspend fun emailExists(correo: String): Result<Boolean> {
         return try {
 

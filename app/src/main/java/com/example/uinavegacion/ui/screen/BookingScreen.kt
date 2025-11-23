@@ -62,7 +62,7 @@ fun BookingScreen(
             { _, y, m, d ->
                 val seleccionada = Calendar.getInstance().apply { set(y, m, d) }
 
-                // Domingo → No trabajamos
+                // Domingo  No trabajamos
                 if (seleccionada.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) {
                     Toast.makeText(context, "No trabajamos los domingos", Toast.LENGTH_SHORT).show()
                     vm.onFechaChange("")
@@ -72,8 +72,8 @@ fun BookingScreen(
                     val fechaStr = formato.format(seleccionada.time)
                     vm.onFechaChange(fechaStr)
 
-                    // Sábado → Hasta las 14:00
-                    // Otros días → Hasta las 18:00
+                    // Sábado Hasta las 14:00
+                    // Otros días  Hasta las 18:00
                     horasDisponibles = if (seleccionada.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY) {
                         listOf("09:00", "10:00", "11:00", "12:00", "13:00", "14:00")
                     } else {

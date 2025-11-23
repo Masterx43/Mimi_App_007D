@@ -18,7 +18,7 @@ data class WorkerUiState(
 )
 
 class WorkerViewModel(
-    private val reservaRepository: ReservaRepositoryAPI   //  ahora usa el repo
+    private val reservaRepository: ReservaRepositoryAPI
 ) : ViewModel() {
 
     val _uiState = MutableStateFlow(WorkerUiState())

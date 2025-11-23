@@ -27,9 +27,9 @@ class HistorialViewModelTest {
         vm = HistorialViewModel(reservaRepo)
     }
 
-    // ---------------------------------------------------------
+
     @Test
-    fun `cargarHistorialUsuario carga reservas correctamente`() = runTest {
+    fun cargarHistorialUsuario_reservas() = runTest {
 
         val lista = listOf(
             ReservaDetalleDTO(
@@ -56,9 +56,9 @@ class HistorialViewModelTest {
         assertNull(state.errorMessage)
     }
 
-    // ---------------------------------------------------------
+
     @Test
-    fun `cargarHistorialUsuario con error actualiza errorMessage`() = runTest {
+    fun cargarHistorialUsuario_error() = runTest {
 
         coEvery { reservaRepo.obtenerReservasDetalleUsuario(10) } returns
                 Result.failure(Exception("Error de conexión"))

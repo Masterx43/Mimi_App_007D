@@ -82,9 +82,9 @@ class AdminViewModel(
         }
     }
 
-    // ---------------------------------------------------------
+
     // SERVICIOS
-    // ---------------------------------------------------------
+
     fun crearServicio(nombre: String, descripcion: String, precio: Int, categoriaId: Long) {
         viewModelScope.launch {
 
@@ -164,9 +164,9 @@ class AdminViewModel(
         _uiState.update { it.copy(servicioAEditar = null) }
     }
 
-    // ---------------------------------------------------------
+
     // CATEGORÍAS
-    // ---------------------------------------------------------
+
     fun crearCategoria(nombre: String) {
         viewModelScope.launch {
             val req = CrearCategoriaRequest(nombre)
@@ -217,9 +217,9 @@ class AdminViewModel(
         _uiState.update { it.copy(categoriaAEditar = null) }
     }
 
-    // ---------------------------------------------------------
+
     // ROLES
-    // ---------------------------------------------------------
+
     fun crearRol(nombre: String) {
         viewModelScope.launch {
 

@@ -15,7 +15,7 @@ class CategoriaRepositoryApiTest{
 
     //listar categorias
     @Test
-    fun obtenerTodasCategorias_devuelve_lista() = runBlocking {
+    fun obtenerTodasCategorias() = runBlocking {
 
         val api = mockk<CategoriaServiceAPI>()
         val repo = CategoriaRepositoryAPI(api)

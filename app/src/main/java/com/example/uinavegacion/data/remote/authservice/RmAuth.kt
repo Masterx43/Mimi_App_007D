@@ -8,7 +8,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 object RmAuth {
 
-    private const val BASE_URL = "https://rh35ncvl-8085.brs.devtunnels.ms/" // Puerto del AuthService
+    private const val BASE_URL = "https://2k6dwp9l-8085.brs.devtunnels.ms/" // Puerto del AuthService
     //puerto: 8085
 
     private val logging = HttpLoggingInterceptor().apply {

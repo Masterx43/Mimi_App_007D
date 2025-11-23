@@ -2,25 +2,16 @@ package com.example.uinavegacion.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.uinavegacion.data.local.database.AppDatabase
-import com.example.uinavegacion.data.local.entities.categoria.CategoriaEntity
-import com.example.uinavegacion.data.local.entities.rol.RolEntity
-import com.example.uinavegacion.data.local.entities.servicio.ServicioEntity
-import com.example.uinavegacion.data.local.entities.user.UserEntity
 import com.example.uinavegacion.data.remote.categoria.dto.CategoriaDTO
 import com.example.uinavegacion.data.remote.categoria.dto.CrearCategoriaRequest
 import com.example.uinavegacion.data.remote.rol.dto.RolDTO
 import com.example.uinavegacion.data.remote.servicioservice.dto.CrearServicioRequest
 import com.example.uinavegacion.data.remote.servicioservice.dto.ServicioDTO
 import com.example.uinavegacion.data.remote.userservice.dto.UserDTO
-import com.example.uinavegacion.data.repository.CategoriaRepository
 import com.example.uinavegacion.data.repository.CategoriaRepositoryAPI
-import com.example.uinavegacion.data.repository.RolRepository
 import com.example.uinavegacion.data.repository.RolRepositoryAPI
-import com.example.uinavegacion.data.repository.ServicioRepository
 import com.example.uinavegacion.data.repository.ServicioRepositoryAPI
-import com.example.uinavegacion.data.repository.UserRepository
-import com.example.uinavegacion.data.repository.UserRepositoryTestAPI
+import com.example.uinavegacion.data.repository.UserRepositoryAPI
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -45,7 +36,7 @@ class AdminViewModel(
     private val servicioRepository: ServicioRepositoryAPI,
     private val categoriaRepository: CategoriaRepositoryAPI,
     private val rolRepository: RolRepositoryAPI,
-    private val userRepository: UserRepositoryTestAPI
+    private val userRepository: UserRepositoryAPI
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(AdminUiState())

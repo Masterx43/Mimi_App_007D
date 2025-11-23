@@ -1,13 +1,12 @@
 package com.example.uinavegacion.viewmodel
 
 import com.example.uinavegacion.MainDispatcherRule
-import com.example.uinavegacion.data.remote.reservas.dto.CrearReservaRequestDTO
 import com.example.uinavegacion.data.remote.reservas.dto.ReservaResponseDTO
 import com.example.uinavegacion.data.remote.servicioservice.dto.ServicioDTO
 import com.example.uinavegacion.data.remote.userservice.dto.UserDTO
 import com.example.uinavegacion.data.repository.ReservaRepositoryAPI
 import com.example.uinavegacion.data.repository.ServicioRepositoryAPI
-import com.example.uinavegacion.data.repository.UserRepositoryTestAPI
+import com.example.uinavegacion.data.repository.UserRepositoryAPI
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -26,7 +25,7 @@ class BookingViewModelTest {
 
     private val reservaRepo = mockk<ReservaRepositoryAPI>()
     private val servicioRepo = mockk<ServicioRepositoryAPI>()
-    private val userRepo = mockk<UserRepositoryTestAPI>()
+    private val userRepo = mockk<UserRepositoryAPI>()
 
     private lateinit var vm: BookingViewModel
 

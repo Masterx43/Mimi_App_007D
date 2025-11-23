@@ -10,19 +10,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
-import com.example.uinavegacion.data.local.database.AppDatabase
 import com.example.uinavegacion.data.local.storage.UserPreferences
 import com.example.uinavegacion.data.repository.AuthRepository
-import com.example.uinavegacion.data.repository.CategoriaRepository
 import com.example.uinavegacion.data.repository.CategoriaRepositoryAPI
-import com.example.uinavegacion.data.repository.ReservaRepository
 import com.example.uinavegacion.data.repository.ReservaRepositoryAPI
-import com.example.uinavegacion.data.repository.RolRepository
 import com.example.uinavegacion.data.repository.RolRepositoryAPI
-import com.example.uinavegacion.data.repository.ServicioRepository
 import com.example.uinavegacion.data.repository.ServicioRepositoryAPI
-import com.example.uinavegacion.data.repository.UserRepository
-import com.example.uinavegacion.data.repository.UserRepositoryTestAPI
+import com.example.uinavegacion.data.repository.UserRepositoryAPI
 import com.example.uinavegacion.navigation.AppNavGraph
 import com.example.uinavegacion.viewmodel.AdminViewModel
 import com.example.uinavegacion.viewmodel.AdminViewModelFactory
@@ -61,7 +55,7 @@ fun AppRoot() { // Raíz de la app para separar responsabilidades
 
 
     //Repositorios de prueba
-    val repositoryTest = UserRepositoryTestAPI()
+    val repositoryTest = UserRepositoryAPI()
     val categoriaRepositoryAPI = CategoriaRepositoryAPI()
     val rolRepositoryAPI = RolRepositoryAPI()
     val reservaRepositoryAPI = ReservaRepositoryAPI()

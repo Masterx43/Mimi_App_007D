@@ -20,7 +20,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.uinavegacion.data.local.entities.reservas.ReservaDetalle
 import com.example.uinavegacion.viewmodel.WorkerViewModel
 import com.example.uinavegacion.viewmodel.AuthViewModel
 import com.example.uinavegacion.ui.theme.*

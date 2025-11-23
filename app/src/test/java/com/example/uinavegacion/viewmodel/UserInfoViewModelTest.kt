@@ -3,7 +3,7 @@ package com.example.uinavegacion.viewmodel
 import app.cash.turbine.test
 import com.example.uinavegacion.MainDispatcherRule
 import com.example.uinavegacion.data.remote.userservice.dto.UserDTO
-import com.example.uinavegacion.data.repository.UserRepositoryTestAPI
+import com.example.uinavegacion.data.repository.UserRepositoryAPI
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -19,7 +19,7 @@ class UserInfoViewModelTest {
     @get:Rule
     val dispatcherRule = MainDispatcherRule()
 
-    private val api = mockk<UserRepositoryTestAPI>()
+    private val api = mockk<UserRepositoryAPI>()
     private val vm = UserInfoViewModel(api)
 
     @Test

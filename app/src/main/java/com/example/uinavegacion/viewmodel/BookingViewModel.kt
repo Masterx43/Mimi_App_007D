@@ -1,21 +1,13 @@
 package com.example.uinavegacion.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.uinavegacion.data.local.entities.reservas.ReservaEntity
-import com.example.uinavegacion.data.local.entities.servicio.ServicioDao
-import com.example.uinavegacion.data.local.entities.servicio.ServicioEntity
-import com.example.uinavegacion.data.local.entities.user.UserEntity
 import com.example.uinavegacion.data.remote.reservas.dto.CrearReservaRequestDTO
 import com.example.uinavegacion.data.remote.servicioservice.dto.ServicioDTO
 import com.example.uinavegacion.data.remote.userservice.dto.UserDTO
-import com.example.uinavegacion.data.repository.ReservaRepository
 import com.example.uinavegacion.data.repository.ReservaRepositoryAPI
-import com.example.uinavegacion.data.repository.ServicioRepository
 import com.example.uinavegacion.data.repository.ServicioRepositoryAPI
-import com.example.uinavegacion.data.repository.UserRepository
-import com.example.uinavegacion.data.repository.UserRepositoryTestAPI
+import com.example.uinavegacion.data.repository.UserRepositoryAPI
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -42,7 +34,7 @@ data class BookingUiState(
 class BookingViewModel(
     private val reservaRepository2: ReservaRepositoryAPI,
     private val servicioRepository2: ServicioRepositoryAPI,
-    private val userRepository2: UserRepositoryTestAPI
+    private val userRepository2: UserRepositoryAPI
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(BookingUiState())

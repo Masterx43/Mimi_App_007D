@@ -8,7 +8,7 @@ import com.example.uinavegacion.data.remote.userservice.dto.UserUpdateRequestDTO
 import retrofit2.HttpException
 import java.io.IOException
 
-class UserRepositoryTestAPI(
+class UserRepositoryAPI(
     private val api: UserServiceAPI = RmUsers.create(UserServiceAPI::class.java)
 ) {
 

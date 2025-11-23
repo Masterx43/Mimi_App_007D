@@ -7,7 +7,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 object RmCategoria {
 
-    private const val BASE_URL = "https://rh35ncvl-8083.brs.devtunnels.ms/" // AJUSTAR
+    private const val BASE_URL = "https://2k6dwp9l-8083.brs.devtunnels.ms/" // AJUSTAR
     //puerto: 8083
     //ipLH: 10.0.2.2
     private val logging = HttpLoggingInterceptor().apply {

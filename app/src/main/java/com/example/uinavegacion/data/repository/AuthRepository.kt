@@ -12,13 +12,34 @@ class AuthRepository {
         return try {
             val response = api.login(AuthLoginRequestDTO(email, password))
 
-            if (response.isSuccessful && response.body() != null) {
-                Result.success(response.body()!!)
-            } else {
-                Result.failure(Exception(response.errorBody()?.string() ?: "Error de autenticación"))
+            return when {
+                response.isSuccessful -> {
+                    val body = response.body()
+                    if (body != null) {
+                        Result.success(body)
+                    } else {
+                        Result.failure(Exception("Respuesta vacía"))
+                    }
+                }
+
+                response.code() == 401 -> {
+                    Result.failure(Exception("Credenciales incorrectas"))
+                }
+
+                response.code() == 400 -> {
+                    Result.failure(Exception("Hubo un problema con la conexión"))
+                }
+
+                else -> {
+                    val errorMsg = response.errorBody()?.string() ?: "Error desconocido"
+                    Result.failure(Exception("Error ${response.code()}: $errorMsg"))
+                }
             }
+
         } catch (e: Exception) {
             Result.failure(e)
         }
     }
+
+
 }

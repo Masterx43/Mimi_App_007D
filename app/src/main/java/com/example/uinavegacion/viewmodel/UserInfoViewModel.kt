@@ -2,11 +2,9 @@ package com.example.uinavegacion.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.uinavegacion.data.local.entities.user.UserEntity
 import com.example.uinavegacion.data.remote.userservice.dto.UserDTO
 import com.example.uinavegacion.data.remote.userservice.dto.UserUpdateRequestDTO
-import com.example.uinavegacion.data.repository.UserRepository
-import com.example.uinavegacion.data.repository.UserRepositoryTestAPI
+import com.example.uinavegacion.data.repository.UserRepositoryAPI
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -19,7 +17,7 @@ data class UserInfoUiState(
 )
 
 class UserInfoViewModel(
-    private val userApi: UserRepositoryTestAPI
+    private val userApi: UserRepositoryAPI
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(UserInfoUiState())

@@ -13,7 +13,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.uinavegacion.data.local.entities.reservas.ReservaDetalle
 import com.example.uinavegacion.data.remote.reservas.dto.ReservaDetalleDTO
 
 @Composable

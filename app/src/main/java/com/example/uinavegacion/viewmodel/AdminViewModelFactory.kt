@@ -2,20 +2,16 @@ package com.example.uinavegacion.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.uinavegacion.data.repository.CategoriaRepository
 import com.example.uinavegacion.data.repository.CategoriaRepositoryAPI
-import com.example.uinavegacion.data.repository.RolRepository
 import com.example.uinavegacion.data.repository.RolRepositoryAPI
-import com.example.uinavegacion.data.repository.ServicioRepository
 import com.example.uinavegacion.data.repository.ServicioRepositoryAPI
-import com.example.uinavegacion.data.repository.UserRepository
-import com.example.uinavegacion.data.repository.UserRepositoryTestAPI
+import com.example.uinavegacion.data.repository.UserRepositoryAPI
 
 class AdminViewModelFactory(
     private val servicioRepository: ServicioRepositoryAPI,
     private val categoriaRepository: CategoriaRepositoryAPI,
     private val rolRepository: RolRepositoryAPI,
-    private val userRepository: UserRepositoryTestAPI
+    private val userRepository: UserRepositoryAPI
 ) : ViewModelProvider.Factory {
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {

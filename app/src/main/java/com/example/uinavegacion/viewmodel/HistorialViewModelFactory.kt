@@ -2,7 +2,6 @@ package com.example.uinavegacion.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.uinavegacion.data.repository.ReservaRepository
 import com.example.uinavegacion.data.repository.ReservaRepositoryAPI
 
 class HistorialViewModelFactory(

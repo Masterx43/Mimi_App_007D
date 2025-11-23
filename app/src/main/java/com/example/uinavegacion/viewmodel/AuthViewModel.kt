@@ -3,17 +3,13 @@ package com.example.uinavegacion.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.uinavegacion.data.local.storage.IUserPreferences
-import com.example.uinavegacion.data.local.storage.UserPreferences
-import com.example.uinavegacion.data.remote.userservice.dto.UserDTO
 import com.example.uinavegacion.data.repository.AuthRepository
-import com.example.uinavegacion.data.repository.UserRepository
-import com.example.uinavegacion.data.repository.UserRepositoryTestAPI
+import com.example.uinavegacion.data.repository.UserRepositoryAPI
 import com.example.uinavegacion.domain.validation.validateCelDigitsOnly
 import com.example.uinavegacion.domain.validation.validateConfirm
 import com.example.uinavegacion.domain.validation.validateEmail
 import com.example.uinavegacion.domain.validation.validateNombreLettersOnly
 import com.example.uinavegacion.domain.validation.validateStrongPassword
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.firstOrNull
@@ -67,7 +63,7 @@ data class SessionUiState(
 class AuthViewModel(
     private val userPrefs: IUserPreferences,
     private val authRepository: AuthRepository,
-    private val repositoryTestAPI: UserRepositoryTestAPI
+    private val repositoryTestAPI: UserRepositoryAPI
 ): ViewModel(){
 
     private val _login = MutableStateFlow(LoginUiState())

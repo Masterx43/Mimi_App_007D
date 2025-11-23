@@ -1,7 +1,6 @@
 package com.example.uinavegacion.viewmodel
 
 import androidx.lifecycle.viewModelScope
-import com.example.uinavegacion.data.local.entities.reservas.ReservaEntity
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update

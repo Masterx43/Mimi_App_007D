@@ -33,7 +33,6 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.FileProvider
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import com.example.uinavegacion.data.local.entities.user.UserEntity
 import com.example.uinavegacion.data.local.storage.UserPreferences
 import com.example.uinavegacion.ui.theme.*
 import com.example.uinavegacion.viewmodel.AuthViewModel

@@ -1,10 +1,8 @@
 package com.example.uinavegacion.data.repository
 
 import com.example.uinavegacion.data.remote.userservice.UserServiceAPI
-import com.example.uinavegacion.data.remote.userservice.dto.RegisterRequestDTO
 import com.example.uinavegacion.data.remote.userservice.dto.UserDTO
 import com.example.uinavegacion.data.remote.userservice.dto.UserUpdateRequestDTO
-import com.example.uinavegacion.data.repository.UserRepositoryTestAPI
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
@@ -19,7 +17,7 @@ class UserRepositoryRegisterTest {
 
         // Mockear API real
         val api = mockk<UserServiceAPI>()
-        val repo = UserRepositoryTestAPI(api)
+        val repo = UserRepositoryAPI(api)
 
         //Respuesta simulada de la API (lo que devuelve tu backend)
         val sampleResponse = UserDTO(
@@ -52,7 +50,7 @@ class UserRepositoryRegisterTest {
     @Test
     fun getUserById_devuelve_usuario() = runBlocking {
         val api = mockk<UserServiceAPI>()
-        val repo = UserRepositoryTestAPI(api)
+        val repo = UserRepositoryAPI(api)
 
         val sample = UserDTO(
             idUser = 10,
@@ -75,7 +73,7 @@ class UserRepositoryRegisterTest {
     @Test
     fun emailExists_true() = runBlocking {
         val api = mockk<UserServiceAPI>()
-        val repo = UserRepositoryTestAPI(api)
+        val repo = UserRepositoryAPI(api)
 
         coEvery { api.checkEmailExists("test@mail.com") } returns Response.success(true)
 
@@ -88,7 +86,7 @@ class UserRepositoryRegisterTest {
     @Test
     fun getWorkers_devuelve_lista() = runBlocking {
         val api = mockk<UserServiceAPI>()
-        val repo = UserRepositoryTestAPI(api)
+        val repo = UserRepositoryAPI(api)
 
         val workers = listOf(
             UserDTO(1,"Ana","Lopez","ana@mail.com","111",3),
@@ -107,7 +105,7 @@ class UserRepositoryRegisterTest {
     fun updateUser_devuelve_exito() = runBlocking {
 
         val api = mockk<UserServiceAPI>()
-        val repo = UserRepositoryTestAPI(api)
+        val repo = UserRepositoryAPI(api)
 
         val updateRequest = UserUpdateRequestDTO(
             nombre = "Josefa Edit",

@@ -3,16 +3,14 @@ package com.example.uinavegacion.viewmodel
 import androidx.lifecycle.ViewModel                              // Tipo base ViewModel
 import androidx.lifecycle.ViewModelProvider                      // Factory de ViewModels
 import com.example.uinavegacion.data.local.storage.IUserPreferences
-import com.example.uinavegacion.data.local.storage.UserPreferences
 import com.example.uinavegacion.data.repository.AuthRepository
-import com.example.uinavegacion.data.repository.UserRepository   // Repositorio a inyectar
-import com.example.uinavegacion.data.repository.UserRepositoryTestAPI
+import com.example.uinavegacion.data.repository.UserRepositoryAPI
 
 // Factory simple para crear AuthViewModel con su UserRepository.
 class AuthViewModelFactory(
     private val userPrefs: IUserPreferences,
     private val authRepository: AuthRepository,
-    private val repositoryTest : UserRepositoryTestAPI
+    private val repositoryTest : UserRepositoryAPI
 ) : ViewModelProvider.Factory {
 
     @Suppress("UNCHECKED_CAST")                                   // Evitar warning de cast genérico

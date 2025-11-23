@@ -2,15 +2,13 @@ package com.example.uinavegacion.viewmodel
 
 import com.example.uinavegacion.MainDispatcherRule
 import com.example.uinavegacion.data.remote.categoria.dto.CategoriaDTO
-import com.example.uinavegacion.data.remote.categoria.dto.CrearCategoriaRequest
 import com.example.uinavegacion.data.remote.rol.dto.RolDTO
-import com.example.uinavegacion.data.remote.servicioservice.dto.CrearServicioRequest
 import com.example.uinavegacion.data.remote.servicioservice.dto.ServicioDTO
 import com.example.uinavegacion.data.remote.userservice.dto.UserDTO
 import com.example.uinavegacion.data.repository.CategoriaRepositoryAPI
 import com.example.uinavegacion.data.repository.RolRepositoryAPI
 import com.example.uinavegacion.data.repository.ServicioRepositoryAPI
-import com.example.uinavegacion.data.repository.UserRepositoryTestAPI
+import com.example.uinavegacion.data.repository.UserRepositoryAPI
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -30,7 +28,7 @@ class AdminViewModelTest {
     private val servicioRepo = mockk<ServicioRepositoryAPI>()
     private val categoriaRepo = mockk<CategoriaRepositoryAPI>()
     private val rolRepo = mockk<RolRepositoryAPI>()
-    private val userRepo = mockk<UserRepositoryTestAPI>()
+    private val userRepo = mockk<UserRepositoryAPI>()
 
     private lateinit var vm: AdminViewModel
 

@@ -1,13 +1,12 @@
 package com.example.uinavegacion.viewmodel
 
-import android.util.Patterns
 import app.cash.turbine.test
 import com.example.uinavegacion.MainDispatcherRule
 import com.example.uinavegacion.data.remote.authservice.dto.AuthLoginResponseDTO
 import com.example.uinavegacion.data.remote.authservice.dto.UserAuthDTO
 import com.example.uinavegacion.data.remote.userservice.dto.UserDTO
 import com.example.uinavegacion.data.repository.AuthRepository
-import com.example.uinavegacion.data.repository.UserRepositoryTestAPI
+import com.example.uinavegacion.data.repository.UserRepositoryAPI
 import com.example.uinavegacion.fakes.FakeUserPreferences
 import io.mockk.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -28,7 +27,7 @@ class AuthViewModelTest {
 
     private lateinit var fakePrefs: FakeUserPreferences
     private val authRepo = mockk<AuthRepository>()
-    private val userApiRepo = mockk<UserRepositoryTestAPI>()
+    private val userApiRepo = mockk<UserRepositoryAPI>()
     private lateinit var vm: AuthViewModel
 
     @Before

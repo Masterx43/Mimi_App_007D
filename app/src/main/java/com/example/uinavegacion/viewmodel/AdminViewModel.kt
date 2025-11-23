@@ -29,6 +29,19 @@ data class AdminUiState(
     val servicioAEditar: ServicioDTO? = null,
     val categoriaAEditar: CategoriaDTO? = null,
     val rolAEditar: RolDTO? = null,
+
+    val errorServicio: String? = null,
+    val successServicio: String? = null,
+
+    val errorCategoria: String? = null,
+    val successCategoria: String? = null,
+
+    val errorRol: String? = null,
+    val successRol: String? = null,
+
+    val errorTrabajador: String? = null,
+    val successTrabajador: String? = null
+
 )
 
 
@@ -76,12 +89,16 @@ class AdminViewModel(
         viewModelScope.launch {
 
             if (nombre.isBlank() || descripcion.isBlank()) {
-                _uiState.update { it.copy(errorMessage = "Nombre y descripción son obligatorios") }
+                _uiState.update { it.copy(
+                    errorServicio = "Nombre y descripción son obligatorios",
+                    successServicio = null) }
                 return@launch
             }
 
             if (precio < 5000 || precio > 200000) {
-                _uiState.update { it.copy(errorMessage = "El precio debe estar entre 5.000 y 200.000") }
+                _uiState.update { it.copy(
+                    errorServicio = "El precio debe estar entre 5.000 y 200.000",
+                    successServicio = null) }
                 return@launch
             }
 
@@ -90,10 +107,11 @@ class AdminViewModel(
             val result = servicioRepository.crearServicio(req)
 
             if (result.isSuccess) {
-                _uiState.update { it.copy(successMessage = "Servicio creado con éxito") }
+                _uiState.update { it.copy(successServicio = "Servicio creado con éxito",
+                                            errorServicio = null) }
                 cargarListas()
             } else {
-                _uiState.update { it.copy(errorMessage = result.exceptionOrNull()?.message) }
+                _uiState.update { it.copy(errorServicio = result.exceptionOrNull()?.message) }
             }
         }
     }
@@ -102,12 +120,12 @@ class AdminViewModel(
         viewModelScope.launch {
 
             if (nombre.isBlank() || desc.isBlank()) {
-                _uiState.update { it.copy(errorMessage = "Nombre y descripción no pueden estar vacíos") }
+                _uiState.update { it.copy(errorServicio = "Nombre y descripción no pueden estar vacíos") }
                 return@launch
             }
 
             if (precio < 5000 || precio > 200000) {
-                _uiState.update { it.copy(errorMessage = "Precio fuera de rango") }
+                _uiState.update { it.copy(errorServicio = "Precio fuera de rango") }
                 return@launch
             }
 
@@ -116,11 +134,12 @@ class AdminViewModel(
             val result = servicioRepository.actualizarServicio(id, req)
 
             if (result.isSuccess) {
-                _uiState.update { it.copy(successMessage = "Servicio actualizado correctamente") }
+                _uiState.update { it.copy(successServicio = "Servicio actualizado correctamente",
+                                            errorServicio = null) }
                 cerrarDialogoEditarServicio()
                 cargarListas()
             } else {
-                _uiState.update { it.copy(errorMessage = result.exceptionOrNull()?.message) }
+                _uiState.update { it.copy(errorServicio = result.exceptionOrNull()?.message) }
             }
         }
     }
@@ -129,10 +148,10 @@ class AdminViewModel(
         viewModelScope.launch {
             val result = servicioRepository.eliminarServicio(id)
             if (result.isSuccess) {
-                _uiState.update { it.copy(successMessage = "Servicio eliminado correctamente") }
+                _uiState.update { it.copy(successServicio = "Servicio eliminado correctamente") }
                 cargarListas()
             } else {
-                _uiState.update { it.copy(errorMessage = result.exceptionOrNull()?.message) }
+                _uiState.update { it.copy(errorServicio = result.exceptionOrNull()?.message) }
             }
         }
     }
@@ -154,10 +173,11 @@ class AdminViewModel(
             val result = categoriaRepository.crearCategoria(req)
 
             if (result.isSuccess) {
-                _uiState.update { it.copy(successMessage = "Categoría creada correctamente") }
+                _uiState.update { it.copy(successCategoria = "Categoría creada correctamente")
+                                            }
                 cargarListas()
             } else {
-                _uiState.update { it.copy(errorMessage = "Error al crear categoría") }
+                _uiState.update { it.copy(errorCategoria = "El nombre de la categoria es obligatorio ") }
             }
         }
     }
@@ -168,11 +188,11 @@ class AdminViewModel(
             val result = categoriaRepository.actualizarCategoria(id, req)
 
             if (result.isSuccess) {
-                _uiState.update { it.copy(successMessage = "Categoría actualizada") }
+                _uiState.update { it.copy(successCategoria = "Categoría actualizada") }
                 cerrarDialogoEditarCategoria()
                 cargarListas()
             } else {
-                _uiState.update { it.copy(errorMessage = "Error al actualizar categoría") }
+                _uiState.update { it.copy(errorCategoria = "Error al actualizar categoría") }
             }
         }
     }
@@ -181,10 +201,10 @@ class AdminViewModel(
         viewModelScope.launch {
             val result = categoriaRepository.eliminarCategoria(id)
             if (result.isSuccess) {
-                _uiState.update { it.copy(successMessage = "Categoría eliminada") }
+                _uiState.update { it.copy(successCategoria = "Categoría eliminada") }
                 cargarListas()
             } else {
-                _uiState.update { it.copy(errorMessage = "Error al eliminar categoría") }
+                _uiState.update { it.copy(errorCategoria = "Error al eliminar categoría") }
             }
         }
     }
@@ -202,14 +222,53 @@ class AdminViewModel(
     // ---------------------------------------------------------
     fun crearRol(nombre: String) {
         viewModelScope.launch {
-            val result = rolRepository.insertarRol(nombre)
 
-            if (result.isSuccess) {
-                _uiState.update { it.copy(successMessage = "Rol creado correctamente") }
-                cargarListas()
-            } else {
-                _uiState.update { it.copy(errorMessage = "Error al crear rol") }
+            _uiState.update {
+                it.copy(
+                    errorRol = null,
+                    successRol = null
+                )
             }
+            val nombreLimpio = nombre.trim()
+
+            if (nombreLimpio.isEmpty()){
+                _uiState.update{
+                    it.copy(errorRol = "El nombre del rol es obligatorio")
+                }
+                return@launch
+            }
+            if (nombreLimpio.length < 3){
+                _uiState.update {
+                    it.copy(errorRol = "El nombre debe tener minimo 3 caracteres")
+                }
+                return@launch
+            }
+            val soloLetrasRegex= Regex("^[A-Za-zÁÉÍÓÚáéíóúñÑ ]+\$")
+            if (!soloLetrasRegex.matches(nombreLimpio)){
+                _uiState.update{
+                    it.copy(errorRol = "El nombre solo puede contener letras")
+                }
+                return@launch
+            }
+            val result= rolRepository.insertarRol(nombreLimpio)
+
+            if (result.isSuccess){
+                _uiState.update {
+                    it.copy(
+                        successRol = "Rol creado correctamente",
+                        errorRol = null
+                    )
+                }
+                cargarListas()
+            }else{
+                _uiState.update {
+                    it.copy(
+                        errorRol = result.exceptionOrNull()?.message ?: "Error al crear rol",
+                        successRol = null
+                    )
+                }
+            }
+
         }
     }
 
@@ -217,12 +276,15 @@ class AdminViewModel(
         viewModelScope.launch {
             val result = rolRepository.actualizarRol(id, nuevoNombre)
 
+
             if (result.isSuccess) {
-                _uiState.update { it.copy(successMessage = "Rol actualizado correctamente") }
+                _uiState.update { it.copy(successRol = "Rol actualizado correctamente",
+                                            errorRol = null) }
                 cerrarDialogoEditarRol()
                 cargarListas()
             } else {
-                _uiState.update { it.copy(errorMessage = "Error al actualizar rol") }
+                _uiState.update { it.copy(errorRol = "Error al actualizar rol",
+                                            successRol = null) }
             }
         }
     }
@@ -231,10 +293,12 @@ class AdminViewModel(
         viewModelScope.launch {
             val result = rolRepository.eliminarRol(id)
             if (result.isSuccess) {
-                _uiState.update { it.copy(successMessage = "Rol eliminado correctamente") }
+                _uiState.update { it.copy(successRol = "Rol eliminado correctamente",
+                                            errorRol = null) }
                 cargarListas()
             } else {
-                _uiState.update { it.copy(errorMessage = "Error al eliminar rol") }
+                _uiState.update { it.copy(errorRol = "Error al eliminar rol",
+                                            successRol = null) }
             }
         }
     }
@@ -247,21 +311,44 @@ class AdminViewModel(
         _uiState.update { it.copy(rolAEditar = null) }
     }
 
-    // ---------------------------------------------------------
+
     // TRABAJADORES (UserService)
-    // ---------------------------------------------------------
+
     fun crearTrabajador(nombre: String, apellido: String, correo: String, phone: String, pass: String) {
         viewModelScope.launch {
 
+            _uiState.update{
+                it.copy(
+                    errorTrabajador = null,
+                    successTrabajador = null
+                )
+            }
+
+            if (nombre.isBlank()|| apellido.isBlank()|| correo.isBlank()||
+                phone.isBlank()|| pass.isBlank()
+                ){
+                _uiState.update {
+                    it.copy(errorTrabajador = "Todos los campos son obligatorios")
+                }
+                return@launch
+            }
             val result = userRepository.register(
-                nombre, apellido, correo, phone, pass, rolId = 3L
+                nombre,apellido,correo,phone,pass, rolId = 3L
             )
 
             if (result.isSuccess) {
-                _uiState.update { it.copy(successMessage = "Trabajador creado") }
+                _uiState.update {
+                    it.copy(
+                        successTrabajador = "Trabajador creado",
+                        errorTrabajador = null) }
+
                 cargarListas()
             } else {
-                _uiState.update { it.copy(errorMessage = result.exceptionOrNull()?.message) }
+                _uiState.update {
+                    it.copy(
+                        errorTrabajador = result.exceptionOrNull()?.message
+                            ?:"Error desconocido",
+                        successTrabajador = null) }
             }
         }
     }

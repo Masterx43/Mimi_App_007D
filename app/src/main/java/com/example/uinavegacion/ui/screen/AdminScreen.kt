@@ -97,15 +97,30 @@ fun AdminScreen(
             ) {
                 Column(Modifier.padding(16.dp)) {
                     Text("Crear servicio", fontWeight = FontWeight.Bold, color = LilaPri)
-                    OutlinedTextField(value = serviceName, onValueChange = { serviceName = it }, label = { Text("Nombre") }, modifier = Modifier.fillMaxWidth(),colors = OutlinedTextFieldDefaults.colors(
+                    OutlinedTextField(
+                        value = serviceName,
+                        onValueChange = { serviceName = it },
+                        label = { Text("Nombre") },
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor = LilaPri,
                         focusedLabelColor = LilaPri
                     ))
-                    OutlinedTextField(value = serviceDesc, onValueChange = { serviceDesc = it }, label = { Text("Descripción") }, modifier = Modifier.fillMaxWidth(),colors = OutlinedTextFieldDefaults.colors(
+                    OutlinedTextField(
+                        value = serviceDesc,
+                        onValueChange = { serviceDesc = it },
+                        label = { Text("Descripción") },
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor = LilaPri,
                         focusedLabelColor = LilaPri
                     ))
-                    OutlinedTextField(value = servicePrice, onValueChange = { servicePrice = it }, label = { Text("Precio") }, modifier = Modifier.fillMaxWidth(),colors = OutlinedTextFieldDefaults.colors(
+                    OutlinedTextField(
+                        value = servicePrice,
+                        onValueChange = { servicePrice = it },
+                        label = { Text("Precio") },
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor = LilaPri,
                         focusedLabelColor = LilaPri
                     ))
@@ -165,7 +180,25 @@ fun AdminScreen(
                         Spacer(Modifier.width(8.dp))
                         Text("Guardar servicio", color = Blanco)
                     }
+                    uiState.errorServicio?.let {
+                        Text(
+                            text = it,
+                            color = Color.Red,
+                            style = MaterialTheme.typography.labelSmall,
+                            modifier = Modifier.padding(top = 6.dp)
+                        )
+                    }
+
+                    uiState.successServicio?.let {
+                        Text(
+                            text = it,
+                            color = Color.Green,
+                            style = MaterialTheme.typography.labelSmall,
+                            modifier = Modifier.padding(top = 6.dp)
+                        )
+                    }
                 }
+
             }
 
             Spacer(Modifier.height(16.dp))
@@ -194,6 +227,23 @@ fun AdminScreen(
                         Icon(Icons.Filled.Check, contentDescription = "Guardar", tint = Blanco)
                         Spacer(Modifier.width(8.dp))
                         Text("Guardar categoría", color = Blanco)
+                    }
+                    uiState.errorCategoria?.let {
+                        Text(
+                            text = it,
+                            color = Color.Red,
+                            style = MaterialTheme.typography.labelSmall,
+                            modifier = Modifier.padding(top = 6.dp)
+                        )
+                    }
+
+                    uiState.successCategoria?.let {
+                        Text(
+                            text = it,
+                            color = Color.Green,
+                            style = MaterialTheme.typography.labelSmall,
+                            modifier = Modifier.padding(top = 6.dp)
+                        )
                     }
                 }
             }
@@ -224,6 +274,23 @@ fun AdminScreen(
                         Icon(Icons.Filled.Check, contentDescription = "Guardar", tint = Blanco)
                         Spacer(Modifier.width(8.dp))
                         Text("Guardar rol", color = Blanco)
+                    }
+                    uiState.errorRol?.let {
+                        Text(
+                            text = it,
+                            color = Color.Red,
+                            style = MaterialTheme.typography.labelSmall,
+                            modifier = Modifier.padding(top = 6.dp)
+                        )
+                    }
+
+                    uiState.successRol?.let {
+                        Text(
+                            text = it,
+                            color = Color.Green,
+                            style = MaterialTheme.typography.labelSmall,
+                            modifier = Modifier.padding(top = 6.dp)
+                        )
                     }
                 }
             }
@@ -307,10 +374,7 @@ fun AdminScreen(
                 Spacer(Modifier.height(8.dp))
                 Button(
                     onClick = {
-                        if (nombreTrabajador.isNotBlank() && apellidoTrabajador.isNotBlank()
-                            && correoTrabajador.isNotBlank() && telefonoTrabajador.isNotBlank()
-                            && contrasenaTrabajador.isNotBlank()
-                        ) {
+
                             adminVm.crearTrabajador(
                                 nombreTrabajador.trim(),
                                 apellidoTrabajador.trim(),
@@ -318,12 +382,8 @@ fun AdminScreen(
                                 telefonoTrabajador.trim(),
                                 contrasenaTrabajador.trim()
                             )
-                            nombreTrabajador = ""
-                            apellidoTrabajador = ""
-                            correoTrabajador = ""
-                            telefonoTrabajador = ""
-                            contrasenaTrabajador = ""
-                        }
+
+
                     },
                     colors = ButtonDefaults.buttonColors(containerColor = LilaPri),
                     modifier = Modifier.fillMaxWidth(),
@@ -333,8 +393,26 @@ fun AdminScreen(
                     Spacer(Modifier.width(8.dp))
                     Text("Registrar Trabajador", color = Blanco)
                 }
+                uiState.errorTrabajador?.let {
+                    Text(
+                        text = it,
+                        color = Color.Red,
+                        style = MaterialTheme.typography.labelSmall,
+                        modifier = Modifier.padding(top = 6.dp)
+                    )
+                }
+
+                uiState.successTrabajador?.let {
+                    Text(
+                        text = it,
+                        color = Color.Green,
+                        style = MaterialTheme.typography.labelSmall,
+                        modifier = Modifier.padding(top = 6.dp)
+                    )
+                }
 
                 Spacer(Modifier.height(24.dp))
+
                 Text("Trabajadores registrados:", fontWeight = FontWeight.Bold,color = LilaPri)
                 if (uiState.trabajadores.isEmpty()) {
                     Text("Aún no hay trabajadores registrados.", color = Color.Gray)
@@ -347,13 +425,7 @@ fun AdminScreen(
                 Spacer(Modifier.height(32.dp))
             }
 
-            // Mensajes de resultado
-            uiState.successMessage?.let {
-                Text(it, color = Color.Green, textAlign = TextAlign.Center)
-            }
-            uiState.errorMessage?.let {
-                Text(it, color = Color.Red, textAlign = TextAlign.Center)
-            }
+
 
             Spacer(Modifier.height(16.dp))
 

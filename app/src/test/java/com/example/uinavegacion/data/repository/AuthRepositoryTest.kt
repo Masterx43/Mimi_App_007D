@@ -46,7 +46,7 @@ class AuthRepositoryTest {
         // 5. Simulación de llamada login()
         coEvery { apiMock.login(any()) } returns Response.success(sample)
 
-        // 6. Probar el repositorio REAL
+        // 6. Probar el repositorio
         val repo = AuthRepository()
         val result = repo.login("test@mail.com", "1234")
 

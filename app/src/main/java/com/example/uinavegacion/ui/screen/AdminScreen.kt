@@ -2,6 +2,7 @@ package com.example.uinavegacion.ui.screen
 
 import android.R
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -41,6 +42,10 @@ fun AdminScreen(
 ) {
     val session by vm.session.collectAsState()
     val uiState by adminVm.uiState.collectAsState()
+
+    var categorySelected by remember { mutableStateOf<CategoriaDTO?>(null) }
+    var isCategoryMenuExpanded by remember { mutableStateOf(false) }
+
 
     // Campos de formulario
     var serviceName by remember { mutableStateOf("") }
@@ -104,14 +109,53 @@ fun AdminScreen(
                         focusedBorderColor = LilaPri,
                         focusedLabelColor = LilaPri
                     ))
+                    ExposedDropdownMenuBox(
+                        expanded = isCategoryMenuExpanded,
+                        onExpandedChange = { isCategoryMenuExpanded = !isCategoryMenuExpanded }
+                    ) {
+                        OutlinedTextField(
+                            value = categorySelected?.nombre ?: "Selecciona una categoría",
+                            onValueChange = {},
+                            readOnly = true,
+                            modifier = Modifier
+                                .menuAnchor()
+                                .fillMaxWidth()
+                                .clickable { isCategoryMenuExpanded = true },
+                            label = { Text("Categoría") },
+                            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = isCategoryMenuExpanded) },
+                            colors = OutlinedTextFieldDefaults.colors(
+                                focusedBorderColor = LilaPri,
+                                focusedLabelColor = LilaPri
+                            )
+                        )
+
+                        ExposedDropdownMenu(
+                            expanded = isCategoryMenuExpanded,
+                            onDismissRequest = { isCategoryMenuExpanded = false }
+                        ) {
+                            uiState.categorias.forEach { categoria ->
+                                DropdownMenuItem(
+                                    text = { Text(categoria.nombre) },
+                                    onClick = {
+                                        categorySelected = categoria
+                                        isCategoryMenuExpanded = false
+                                    }
+                                )
+                            }
+                        }
+                    }
                     Spacer(Modifier.height(8.dp))
                     Button(
                         onClick = {
                             val precio = servicePrice.toIntOrNull() ?: 0
-                            adminVm.crearServicio(serviceName, serviceDesc, precio, 1L)
-                            serviceName = ""
-                            serviceDesc = ""
-                            servicePrice = ""
+                            if (categorySelected == null) return@Button
+
+                            adminVm.crearServicio(
+                                serviceName,
+                                serviceDesc,
+                                precio,
+                                categorySelected!!.idCategoria
+                            )
                         },
                         colors = ButtonDefaults.buttonColors(containerColor = LilaPri),
                         modifier = Modifier.fillMaxWidth(),
